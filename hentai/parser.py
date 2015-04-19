@@ -1,13 +1,12 @@
+import sys
 import re
 import requests
 from bs4 import BeautifulSoup
 from constant import DETAIL_URL
-
-
-dojinshi_fields = ['Artists:']
-
+from hentai.logger import logger
 
 def dojinshi_parser(id):
+    logger.debug('Fetching dojinshi information')
     if not isinstance(id, (int, )) or (isinstance(id, (str, )) and not id.isdigit()):
         raise Exception('Dojinshi id(%s) is not valid' % str(id))
     id = int(id)
@@ -24,6 +23,14 @@ def dojinshi_parser(id):
 
     dojinshi['name'] = title
     dojinshi['subtitle'] = subtitle.text if subtitle else ''
+
+    dojinshi_cover = html.find('div', attrs={'id': 'cover'})
+    img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png)$', dojinshi_cover.a.img['src'])
+    if not img_id:
+        logger.critical('Tried yo get image id failed')
+        sys.exit()
+    dojinshi['img_id'] = img_id.group(1)
+    dojinshi['ext'] = img_id.group(2)
 
     pages = 0
     for _ in dojinshi_info.find_all('div', class_=''):

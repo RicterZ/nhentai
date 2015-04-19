@@ -1,3 +1,2 @@
 requests>=2.5.0
-wget>=2.2
 BeautifulSoup4>=4.0.0
