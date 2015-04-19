@@ -1,6 +1,7 @@
 #coding: utf-8
 import os
 import sys
+import signal
 import threading
 import Queue
 import requests
@@ -83,3 +84,4 @@ class Downloader(object):
             thread.join()
 
         logger.log(15, u'🍺 All done, saved to \'%s\'!' % folder)
+

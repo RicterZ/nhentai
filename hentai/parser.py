@@ -14,7 +14,12 @@ def dojinshi_parser(id):
     dojinshi['id'] = id
     url = '%s/%d/' % (DETAIL_URL, id)
 
-    response = requests.get(url).content
+    try:
+        response = requests.get(url).content
+    except Exception, e:
+        logger.critical('%s%s' % tuple(e.message))
+        sys.exit()
+
     html = BeautifulSoup(response)
     dojinshi_info = html.find('div', attrs={'id': 'info'})
 
