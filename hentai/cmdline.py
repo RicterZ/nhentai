@@ -14,11 +14,13 @@ def banner():
 
 def cmd_parser():
     parser = OptionParser()
-    parser.add_option('--search', type='string', dest='keyword', action='store')
-    parser.add_option('--download', dest='is_download', action='store_true')
-    parser.add_option('--id', type='int', dest='id', action='store')
-    parser.add_option('--path', type='string', dest='saved_path', action='store', default='')
-    parser.add_option('--threads', type='int', dest='threads', action='store', default=1)
+    parser.add_option('--search', type='string', dest='keyword', action='store', help='keyword searched')
+    parser.add_option('--download', dest='is_download', action='store_true', help='download dojinshi or not')
+    parser.add_option('--id', type='int', dest='id', action='store', help='dojinshi id of nhentai')
+    parser.add_option('--path', type='string', dest='saved_path', action='store', default='',
+                      help='path which save the dojinshi downloaded')
+    parser.add_option('--threads', type='int', dest='threads', action='store', default=1,
+                      help='thread count of download dojinshi')
     args, _ = parser.parse_args()
 
     if args.threads <= 0:
