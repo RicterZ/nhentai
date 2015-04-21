@@ -7,9 +7,15 @@ import requests
 from urlparse import urlparse
 from hentai.logger import logger
 
-shutdown = threading.Event()
 
 class Downloader(object):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(Downloader, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self, path='', thread=1):
         if not isinstance(thread, (int, )) or thread < 1 or thread > 10:
             raise ValueError('Invalid threads count')
@@ -18,9 +24,6 @@ class Downloader(object):
         self.threads = []
 
     def _download(self, url, folder='', filename=''):
-        if shutdown.is_set():
-            return
-
         if not os.path.exists(folder):
             try:
                 os.mkdir(folder)
@@ -83,4 +86,3 @@ class Downloader(object):
             thread.join()
 
         logger.log(15, u'🍺 All done, saved to \'%s\'!' % folder)
-

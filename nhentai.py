@@ -12,23 +12,26 @@ __version__ = '0.1'
 def main():
     banner()
     options = cmd_parser()
-    dojinshi = None
 
     logger.log(15, 'nHentai: あなたも変態。 いいね?')
-    if options.id:
-        dojinshi_info = dojinshi_parser(options.id)
-        dojinshi = Dojinshi(**dojinshi_info)
+
+    dojinshi_list = []
+    if options.ids:
+        for id in options.ids:
+            dojinshi_info = dojinshi_parser(id)
+            dojinshi_list.append(Dojinshi(**dojinshi_info))
     elif options.keyword:
         pass
     else:
         raise SystemExit
 
     if options.is_download:
-        dojinshi.downloader = Downloader(path=options.saved_path,
-                                         thread=options.threads)
-        dojinshi.download()
+        downloader = Downloader(path=options.saved_path, thread=options.threads)
+        for dojinshi in dojinshi_list:
+            dojinshi.downloader = downloader
+            dojinshi.download()
     else:
-        dojinshi.show()
+        map(lambda dojinshi: dojinshi.show(), dojinshi_list)
 
 
 if __name__ == '__main__':

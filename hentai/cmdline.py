@@ -44,4 +44,6 @@ def cmd_parser():
         logger.critical(u'并没有做这个功能_(:3」∠)_')
         sys.exit()
 
+    args.ids = (args.id, ) if not args.ids else args.ids
+
     return args

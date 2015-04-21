@@ -32,7 +32,7 @@ class Dojinshi(object):
                 download_queue.put('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext))
             self.downloader.download(download_queue, self.id)
         else:
-            raise Exception('Downloader has not be loaded')
+            logger.critical('Downloader has not be loaded')
 
 
 if __name__ == '__main__':
