@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from constant import DETAIL_URL
 from hentai.logger import logger
 
+
 def dojinshi_parser(id):
     logger.debug('Fetching dojinshi information')
     if not isinstance(id, (int, )) or (isinstance(id, (str, )) and not id.isdigit()):
@@ -45,6 +46,10 @@ def dojinshi_parser(id):
             break
     dojinshi['pages'] = int(pages)
     return dojinshi
+
+
+def search_parser(data):
+    pass
 
 
 if __name__ == '__main__':

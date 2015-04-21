@@ -1,7 +1,9 @@
 #coding: utf-8
 import sys
 from optparse import OptionParser
+from itertools import ifilter
 from logger import logger
+
 
 def banner():
     print '''       _   _            _        _
@@ -17,9 +19,10 @@ def cmd_parser():
     parser.add_option('--search', type='string', dest='keyword', action='store', help='keyword searched')
     parser.add_option('--download', dest='is_download', action='store_true', help='download dojinshi or not')
     parser.add_option('--id', type='int', dest='id', action='store', help='dojinshi id of nhentai')
+    parser.add_option('--ids', type='str', dest='ids', action='store', help='dojinshi id set, e.g. 1,2,3')
     parser.add_option('--path', type='string', dest='saved_path', action='store', default='',
-                      help='path which save the dojinshi downloaded')
-    parser.add_option('--threads', type='int', dest='threads', action='store', default=1,
+                      help='path which save the dojinshi')
+    parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=1,
                       help='thread count of download dojinshi')
     args, _ = parser.parse_args()
 
@@ -29,11 +32,16 @@ def cmd_parser():
         logger.critical('Maximum number of used threads is 10')
         sys.exit()
 
-    if args.is_download and not args.id:
-        logger.critical('Dojinshi id is required for downloading')
+    if args.ids:
+        _ = map(lambda id: id.strip(), args.ids.split(','))
+        args.ids = set(map(int, ifilter(lambda id: id.isdigit(), _)))
+
+    if args.is_download and not args.id and not args.ids:
+        logger.critical('Dojinshi id/ids is required for downloading')
         sys.exit()
 
     if args.keyword:
         logger.critical(u'并没有做这个功能_(:3」∠)_')
+        sys.exit()
 
     return args
