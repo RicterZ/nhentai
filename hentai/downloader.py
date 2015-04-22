@@ -48,7 +48,7 @@ class Downloader(object):
         except Exception, e:
             raise e
 
-        logger.info('%s downloaded: %s done!' % (threading.currentThread().getName(), url))
+        logger.info('%s %s downloaded.' % (threading.currentThread().getName(), url))
 
     def _download_thread(self, queue, folder=''):
         while True:
@@ -67,7 +67,7 @@ class Downloader(object):
             folder = str(folder)
 
         if self.path:
-            folder = self.path
+            folder = '%s/%s' % (self.path, folder)
 
         if os.path.exists(path=folder):
             logger.warn('Path \'%s\' already exist' % folder)
@@ -85,4 +85,6 @@ class Downloader(object):
         for thread in self.threads:
             thread.join()
 
+        # clean threads list
+        self.threads = []
         logger.log(15, u'🍺 All done, saved to \'%s\'!' % folder)
