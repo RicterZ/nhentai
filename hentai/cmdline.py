@@ -1,5 +1,4 @@
 #coding: utf-8
-import sys
 from optparse import OptionParser
 from itertools import ifilter
 from logger import logger
@@ -9,7 +8,7 @@ def banner():
     print '''       _   _            _        _
  _ __ | | | | ___ _ __ | |_ __ _(_)
 | '_ \| |_| |/ _ \ '_ \| __/ _` | |
-| | | |  _  |  __/ | | | || (_| | |
+| | | |  _  |  __/ | | | || (_| |w |
 |_| |_|_| |_|\___|_| |_|\__\__,_|_|
 '''
 
@@ -26,24 +25,30 @@ def cmd_parser():
                       help='thread count of download dojinshi')
     args, _ = parser.parse_args()
 
-    if args.threads <= 0:
-        args.threads = 1
-    elif args.threads > 10:
-        logger.critical('Maximum number of used threads is 10')
-        sys.exit()
-
     if args.ids:
         _ = map(lambda id: id.strip(), args.ids.split(','))
         args.ids = set(map(int, ifilter(lambda id: id.isdigit(), _)))
 
     if args.is_download and not args.id and not args.ids:
         logger.critical('Dojinshi id/ids is required for downloading')
-        sys.exit()
+        parser.print_help()
+        raise SystemExit
 
     if args.keyword:
         logger.critical(u'并没有做这个功能_(:3」∠)_')
-        sys.exit()
+        raise SystemExit
 
-    args.ids = (args.id, ) if not args.ids else args.ids
+    if args.id:
+        args.ids = (args.id, ) if not args.ids else args.ids
+
+    if not args.keyword and not args.ids:
+        parser.print_help()
+        raise SystemExit
+
+    if args.threads <= 0:
+        args.threads = 1
+    elif args.threads > 10:
+        logger.critical('Maximum number of used threads is 10')
+        raise SystemExit
 
     return args
