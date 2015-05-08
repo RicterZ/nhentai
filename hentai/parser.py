@@ -48,7 +48,12 @@ def dojinshi_parser(id):
     return dojinshi
 
 
-def search_parser(data):
+def search_parser(keyword):
+    logger.debug('Searching dojinshis of keyword %s' % keyword)
+    return []
+
+
+def tag_parser(tag):
     pass
 
 
