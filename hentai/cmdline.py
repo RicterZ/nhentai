@@ -16,7 +16,6 @@ def banner():
 def cmd_parser():
     parser = OptionParser()
     parser.add_option('--search', type='string', dest='keyword', action='store', help='keyword searched')
-    parser.add_option('--tag', type='string', dest='tag', action='store', help='dojinshi tag')
     parser.add_option('--download', dest='is_download', action='store_true', help='download dojinshi or not')
     parser.add_option('--id', type='int', dest='id', action='store', help='dojinshi id of nhentai')
     parser.add_option('--ids', type='str', dest='ids', action='store', help='dojinshi id set, e.g. 1,2,3')
@@ -37,10 +36,6 @@ def cmd_parser():
 
     if args.id:
         args.ids = (args.id, ) if not args.ids else args.ids
-
-    if args.tag:
-        logger.critical(u'并没有做这个功能_(:3」∠)_')
-        raise SystemExit
 
     if not args.keyword and not args.ids:
         parser.print_help()
