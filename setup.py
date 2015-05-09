@@ -14,11 +14,13 @@ setup(
     description='nhentai.net dojinshis downloader',
     url='https://github.com/RicterZ/nhentai',
     include_package_data=True,
+    zip_safe=False,
 
     install_requires=requirements,
     entry_points={
         'console_scripts': [
-            'nhentai = nhentai:main',
+            'nhentai = nhentai.command:main',
         ]
-    }
+    },
+    license='MIT',
 )

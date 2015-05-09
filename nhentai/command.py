@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 #coding: utf-8
 
-from hentai.cmdline import cmd_parser, banner
-from hentai.parser import dojinshi_parser, search_parser, print_dojinshi
-from hentai.dojinshi import Dojinshi
-from hentai.downloader import Downloader
-from hentai.logger import logger
+from nhentai.cmdline import cmd_parser, banner
+from nhentai.parser import dojinshi_parser, search_parser, print_dojinshi
+from nhentai.dojinshi import Dojinshi
+from nhentai.downloader import Downloader
+from nhentai.logger import logger
 
 
 __version__ = '0.1'

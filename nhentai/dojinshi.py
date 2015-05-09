@@ -1,6 +1,6 @@
 import Queue
 from constant import DETAIL_URL, IMAGE_URL
-from hentai.logger import logger
+from nhentai.logger import logger
 
 
 class Dojinshi(object):
@@ -36,7 +36,7 @@ class Dojinshi(object):
 
 
 if __name__ == '__main__':
-    test = Dojinshi(name='test hentai dojinshi', id=1)
+    test = Dojinshi(name='test nhentai dojinshi', id=1)
     print test
     test.show()
     try:

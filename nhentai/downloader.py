@@ -6,7 +6,7 @@ import threading
 import Queue
 import requests
 from urlparse import urlparse
-from hentai.logger import logger
+from nhentai.logger import logger
 
 
 # global timeout

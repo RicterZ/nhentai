@@ -146,7 +146,7 @@ logger.setLevel(logging.DEBUG)
 
 
 if __name__ == '__main__':
-    logger.log(15, 'hentai')
+    logger.log(15, 'nhentai')
     logger.info('info')
     logger.warn('warn')
     logger.debug('debug')
