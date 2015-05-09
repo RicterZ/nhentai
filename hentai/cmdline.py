@@ -8,7 +8,7 @@ def banner():
     print '''       _   _            _        _
  _ __ | | | | ___ _ __ | |_ __ _(_)
 | '_ \| |_| |/ _ \ '_ \| __/ _` | |
-| | | |  _  |  __/ | | | || (_| |w |
+| | | |  _  |  __/ | | | || (_| | |
 |_| |_|_| |_|\___|_| |_|\__\__,_|_|
 '''
 
@@ -30,7 +30,7 @@ def cmd_parser():
         _ = map(lambda id: id.strip(), args.ids.split(','))
         args.ids = set(map(int, ifilter(lambda id: id.isdigit(), _)))
 
-    if args.is_download and not args.id and not args.ids:
+    if args.is_download and not args.id and not args.ids and not args.keyword:
         logger.critical('Dojinshi id/ids is required for downloading')
         parser.print_help()
         raise SystemExit

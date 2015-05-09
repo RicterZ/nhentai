@@ -2,15 +2,15 @@ import sys
 import re
 import requests
 from bs4 import BeautifulSoup
-from constant import DETAIL_URL
+from constant import DETAIL_URL, SEARCH_URL
 from hentai.logger import logger
 
 
 def dojinshi_parser(id):
-    logger.debug('Fetching dojinshi information')
-    if not isinstance(id, (int, )) or (isinstance(id, (str, )) and not id.isdigit()):
+    if not isinstance(id, (int, )) and (isinstance(id, (str, )) and not id.isdigit()):
         raise Exception('Dojinshi id(%s) is not valid' % str(id))
     id = int(id)
+    logger.debug('Fetching dojinshi information of id %d' % id)
     dojinshi = dict()
     dojinshi['id'] = id
     url = '%s/%d/' % (DETAIL_URL, id)
@@ -50,11 +50,28 @@ def dojinshi_parser(id):
 
 def search_parser(keyword):
     logger.debug('Searching dojinshis of keyword %s' % keyword)
-    return []
+    result = []
+    response = requests.get(SEARCH_URL, params={'q': keyword}).content
+    html = BeautifulSoup(response)
+    dojinshi_search_result = html.find_all('div', attrs={'class': 'preview-container'})
+    for dojinshi in dojinshi_search_result:
+        dojinshi_container = dojinshi.find('div', attrs={'class': 'caption'})
+        title = dojinshi_container.text.strip()
+        id_ = re.search('/g/(\d+)/', dojinshi.a['href']).group(1)
+        result.append({'id': id_, 'title': title})
+    return result
 
 
 def tag_parser(tag):
     pass
+
+
+def print_dojinshi(dojinshi_list):
+    logger.log(15, 'Print Dojinshi list')
+    print '-' * 60
+    for dojinshi in dojinshi_list:
+        print dojinshi['id'], '-', dojinshi['title']
+    print '-' * 60
 
 
 if __name__ == '__main__':

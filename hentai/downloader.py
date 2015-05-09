@@ -87,4 +87,3 @@ class Downloader(object):
 
         # clean threads list
         self.threads = []
-        logger.log(15, u'🍺 All done, saved to \'%s\'!' % folder)
