@@ -1,11 +1,17 @@
 #coding: utf-8
 import os
 import sys
+import socket
 import threading
 import Queue
 import requests
 from urlparse import urlparse
 from hentai.logger import logger
+
+
+# global timeout
+timeout = 30
+socket.setdefaulttimeout(timeout)
 
 
 class Downloader(object):
@@ -34,7 +40,7 @@ class Downloader(object):
         filename = filename if filename else os.path.basename(urlparse(url).path)
         try:
             with open(os.path.join(folder, filename), "wb") as f:
-                response = requests.get(url, stream=True)
+                response = requests.get(url, stream=True, timeout=10)
                 length = response.headers.get('content-length')
                 if length is None:
                     f.write(response.content)
