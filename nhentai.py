@@ -19,7 +19,7 @@ def main():
     dojinshi_list = []
 
     if options.keyword:
-        dojinshis = search_parser(options.keyword)
+        dojinshis = search_parser(options.keyword, options.page)
         if options.is_download:
             dojinshi_ids = map(lambda d: d['id'], dojinshis)
         else:

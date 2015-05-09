@@ -48,10 +48,10 @@ def dojinshi_parser(id):
     return dojinshi
 
 
-def search_parser(keyword):
+def search_parser(keyword, page):
     logger.debug('Searching dojinshis of keyword %s' % keyword)
     result = []
-    response = requests.get(SEARCH_URL, params={'q': keyword}).content
+    response = requests.get(SEARCH_URL, params={'q': keyword, 'page': page}).content
     html = BeautifulSoup(response)
     dojinshi_search_result = html.find_all('div', attrs={'class': 'preview-container'})
     for dojinshi in dojinshi_search_result:
@@ -62,12 +62,10 @@ def search_parser(keyword):
     return result
 
 
-def tag_parser(tag):
-    pass
-
-
 def print_dojinshi(dojinshi_list):
-    logger.log(15, 'Print Dojinshi list')
+    if not dojinshi_list:
+        return
+    logger.log(15, 'Print dojinshi list')
     print '-' * 60
     for dojinshi in dojinshi_list:
         print dojinshi['id'], '-', dojinshi['title']
