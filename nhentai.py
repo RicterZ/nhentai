@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 #coding: utf-8
+
 from hentai.cmdline import cmd_parser, banner
 from hentai.parser import dojinshi_parser, search_parser, print_dojinshi
 from hentai.dojinshi import Dojinshi
