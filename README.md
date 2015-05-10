@@ -13,15 +13,18 @@ nhentai
 ### 用法
 + 下载指定 id 的本子：
 
+
     nhentai --id=123855 --download
 
 
 + 下载指定 id 列表的本子：
 
+
     nhentai --ids=123855,123866 --download
     
 
 + 下载某关键词第一页的本子（不推荐）：
+
 
     nhentai --search="panda" --page=1 --download
 
