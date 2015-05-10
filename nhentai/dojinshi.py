@@ -1,4 +1,3 @@
-import Queue
 from constant import DETAIL_URL, IMAGE_URL
 from logger import logger
 
@@ -27,9 +26,9 @@ class Dojinshi(object):
     def download(self):
         logger.info('Start download dojinshi: %s' % self.name)
         if self.downloader:
-            download_queue = Queue.Queue()
+            download_queue = []
             for i in xrange(1, self.pages + 1):
-                download_queue.put('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext))
+                download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext))
             self.downloader.download(download_queue, self.id)
         else:
             logger.critical('Downloader has not be loaded')

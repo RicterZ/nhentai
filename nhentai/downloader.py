@@ -5,6 +5,7 @@ import socket
 import threading
 import Queue
 import requests
+import threadpool
 from urlparse import urlparse
 from logger import logger
 
@@ -36,9 +37,10 @@ class Downloader(object):
             try:
                 os.mkdir(folder)
             except os.error, e:
-                logger.error('%s error %s' % (threading.currentThread().getName(), str(e)))
+                logger.critical('Error: %s' % str(e))
                 sys.exit()
 
+        logger.info('Start downloading: %s ...' % url)
         filename = filename if filename else os.path.basename(urlparse(url).path)
         try:
             with open(os.path.join(folder, filename), "wb") as f:
@@ -50,23 +52,14 @@ class Downloader(object):
                     for chunk in response.iter_content(2048):
                         f.write(chunk)
         except (os.error, IOError), e:
-            logger.error('%s error %s' % (threading.currentThread().getName(), str(e)))
+            logger.critical('Error: %s' % str(e))
             sys.exit()
         except Exception, e:
             raise e
-        logger.info('%s %s downloaded.' % (threading.currentThread().getName(), url))
+        return url
 
-    def _download_thread(self, queue, folder=''):
-        while not self.kill_received:
-            if queue.empty():
-                queue.task_done()
-                break
-            try:
-                url = queue.get(False)
-                logger.info('%s downloading: %s ...' % (threading.currentThread().getName(), url))
-                self._download(url, folder)
-            except Queue.Empty:
-                break
+    def _download_callback(self, request, result):
+        logger.log(15, '%s download successfully' % result)
 
     def download(self, queue, folder=''):
         if not isinstance(folder, (str, unicode)):
@@ -80,20 +73,14 @@ class Downloader(object):
         else:
             logger.warn('Path \'%s\' not exist' % folder)
 
-        for i in range(self.thread_count):
-            _ = threading.Thread(target=self._download_thread, args=(queue, folder, ))
-            _.setDaemon(True)
-            self.threads.append(_)
+        queue = [([url], {'folder': folder}) for url in queue]
 
-        for thread in self.threads:
-            thread.start()
+        self.thread_pool = threadpool.ThreadPool(self.thread_count)
+        requests_ = threadpool.makeRequests(self._download, queue, self._download_callback)
+        [self.thread_pool.putRequest(req) for req in requests_]
 
-        while len(self.threads) > 0:
-            try:
-                self.threads = [t.join(THREAD_TIMEOUT) for t in self.threads if t and t.isAlive()]
-            except KeyboardInterrupt:
-                logger.warning('Ctrl-C received, sending kill signal.')
-                self.kill_received = True
-
-        # clean threads list
-        self.threads = []
+        try:
+            self.thread_pool.wait()
+        except KeyboardInterrupt:
+            print
+            logger.error('Ctrl-C pressed, exiting threads ...')
