@@ -16,6 +16,7 @@ socket.setdefaulttimeout(timeout)
 
 class Downloader(object):
     _instance = None
+    kill_received = False
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -34,13 +35,13 @@ class Downloader(object):
             try:
                 os.mkdir(folder)
             except os.error, e:
-                logger.error('Error %s' % str(e))
+                logger.error('%s error %s' % (threading.currentThread().getName(), str(e)))
                 sys.exit()
 
         filename = filename if filename else os.path.basename(urlparse(url).path)
         try:
             with open(os.path.join(folder, filename), "wb") as f:
-                response = requests.get(url, stream=True, timeout=10)
+                response = requests.get(url, stream=True, timeout=timeout)
                 length = response.headers.get('content-length')
                 if length is None:
                     f.write(response.content)
@@ -48,16 +49,14 @@ class Downloader(object):
                     for chunk in response.iter_content(2048):
                         f.write(chunk)
         except (os.error, IOError), e:
-            logger.error('Error %s' % e)
+            logger.error('%s error %s' % (threading.currentThread().getName(), str(e)))
             sys.exit()
-
         except Exception, e:
             raise e
-
         logger.info('%s %s downloaded.' % (threading.currentThread().getName(), url))
 
     def _download_thread(self, queue, folder=''):
-        while True:
+        while not self.kill_received:
             if queue.empty():
                 queue.task_done()
                 break
@@ -73,7 +72,7 @@ class Downloader(object):
             folder = str(folder)
 
         if self.path:
-            folder = '%s/%s' % (self.path, folder)
+            folder = os.path.join(self.path, folder)
 
         if os.path.exists(path=folder):
             logger.warn('Path \'%s\' already exist' % folder)
@@ -88,8 +87,12 @@ class Downloader(object):
         for thread in self.threads:
             thread.start()
 
-        for thread in self.threads:
-            thread.join()
+        while len(self.threads) > 0:
+            try:
+                self.threads = [t.join(1) for t in self.threads if t is not None and t.isAlive()]
+            except KeyboardInterrupt:
+                logger.warning('Ctrl-C received, sending kill signal.')
+                self.kill_received = True
 
         # clean threads list
         self.threads = []
