@@ -6,11 +6,12 @@ import threading
 import Queue
 import requests
 from urlparse import urlparse
-from nhentai.logger import logger
+from logger import logger
 
 
 # global timeout
 timeout = 30
+THREAD_TIMEOUT = 99999
 socket.setdefaulttimeout(timeout)
 
 
@@ -89,7 +90,7 @@ class Downloader(object):
 
         while len(self.threads) > 0:
             try:
-                self.threads = [t.join(1) for t in self.threads if t is not None and t.isAlive()]
+                self.threads = [t.join(THREAD_TIMEOUT) for t in self.threads if t and t.isAlive()]
             except KeyboardInterrupt:
                 logger.warning('Ctrl-C received, sending kill signal.')
                 self.kill_received = True

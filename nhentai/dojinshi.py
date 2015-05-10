@@ -1,6 +1,6 @@
 import Queue
 from constant import DETAIL_URL, IMAGE_URL
-from nhentai.logger import logger
+from logger import logger
 
 
 class Dojinshi(object):

@@ -3,7 +3,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from constant import DETAIL_URL, SEARCH_URL
-from nhentai.logger import logger
+from logger import logger
 
 
 def dojinshi_parser(id):

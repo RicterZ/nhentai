@@ -1,11 +1,11 @@
 #!/usr/bin/env python2.7
 #coding: utf-8
 
-from nhentai.cmdline import cmd_parser, banner
-from nhentai.parser import dojinshi_parser, search_parser, print_dojinshi
-from nhentai.dojinshi import Dojinshi
-from nhentai.downloader import Downloader
-from nhentai.logger import logger
+from cmdline import cmd_parser, banner
+from parser import dojinshi_parser, search_parser, print_dojinshi
+from dojinshi import Dojinshi
+from downloader import Downloader
+from logger import logger
 
 
 __version__ = '0.1'
