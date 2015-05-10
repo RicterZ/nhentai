@@ -41,5 +41,5 @@ nhentai
 ### License  
 MIT
 
-### 噫
+### あなたも変態
 ![](./image.jpg)
