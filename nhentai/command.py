@@ -8,9 +8,6 @@ from downloader import Downloader
 from logger import logger
 
 
-__version__ = '0.1'
-
-
 def main():
     banner()
     options = cmd_parser()
