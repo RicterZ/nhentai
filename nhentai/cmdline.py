@@ -25,6 +25,8 @@ def cmd_parser():
                       help='path which save the dojinshi')
     parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=1,
                       help='thread count of download dojinshi')
+    parser.add_option('--timeout', type='int', dest='timeout', action='store', default=30,
+                      help='timeout of download dojinshi')
     args, _ = parser.parse_args()
 
     if args.ids:
