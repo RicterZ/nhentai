@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.7
 #coding: utf-8
-
+import signal
 from cmdline import cmd_parser, banner
 from parser import dojinshi_parser, search_parser, print_dojinshi
 from dojinshi import Dojinshi
@@ -35,7 +35,8 @@ def main():
         raise SystemExit
 
     if options.is_download:
-        downloader = Downloader(path=options.saved_path, thread=options.threads)
+        downloader = Downloader(path=options.saved_path,
+                                thread=options.threads, timeout=options.timeout)
         for dojinshi in dojinshi_list:
             dojinshi.downloader = downloader
             dojinshi.download()
@@ -45,5 +46,10 @@ def main():
     logger.log(15, u'🍺 All done.')
 
 
+def signal_handler(signal, frame):
+    logger.error('Ctrl-C signal received. Quit.')
+    raise SystemExit
+
+signal.signal(signal.SIGINT, signal_handler)
 if __name__ == '__main__':
     main()
