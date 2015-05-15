@@ -17,7 +17,7 @@ def dojinshi_parser(id):
 
     try:
         response = requests.get(url).content
-    except Exception, e:
+    except Exception as e:
         logger.critical('%s%s' % tuple(e.message))
         sys.exit()
 

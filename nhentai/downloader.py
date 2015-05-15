@@ -34,20 +34,20 @@ class Downloader(object):
                 else:
                     for chunk in response.iter_content(2048):
                         f.write(chunk)
-        except (os.error, IOError), e:
+        except requests.HTTPError as e:
             if not retried:
                 logger.error('Error: %s, retrying' % str(e))
                 return self._download(url=url, folder=folder, filename=filename, retried=True)
             else:
                 return None
-        except Exception, e:
+        except Exception as e:
             logger.critical('CRITICAL: %s' % str(e))
-            raise e
+            return None
         return url
 
     def _download_callback(self, request, result):
         if not result:
-            logger.critical('Too many network errors occurred, please check your connection.')
+            logger.critical('Too many errors occurred, quit.')
             raise SystemExit
         logger.log(15, '%s download successfully' % result)
 
@@ -62,7 +62,7 @@ class Downloader(object):
             logger.warn('Path \'%s\' not exist.' % folder)
             try:
                 os.mkdir(folder)
-            except os.error, e:
+            except EnvironmentError as e:
                 logger.critical('Error: %s' % str(e))
                 raise SystemExit
         else:

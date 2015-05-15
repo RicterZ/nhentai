@@ -40,5 +40,5 @@ if __name__ == '__main__':
     test.show()
     try:
         test.download()
-    except Exception, e:
+    except Exception as e:
         print 'Exception: %s' % str(e)
