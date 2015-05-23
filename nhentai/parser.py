@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import re
 import requests
@@ -66,11 +67,11 @@ def print_dojinshi(dojinshi_list):
     if not dojinshi_list:
         return
     logger.log(15, 'Print dojinshi list')
-    print '-' * 60
+    print('-' * 60)
     for dojinshi in dojinshi_list:
-        print dojinshi['id'], '-', dojinshi['title']
-    print '-' * 60
+        print(dojinshi['id'], '-', dojinshi['title'])
+    print('-' * 60)
 
 
 if __name__ == '__main__':
-    print dojinshi_parser(32271)
+    print(dojinshi_parser(32271))

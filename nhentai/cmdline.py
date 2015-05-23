@@ -1,16 +1,20 @@
 #coding: utf-8
+from __future__ import print_function
 from optparse import OptionParser
-from itertools import ifilter
 from logger import logger
+try:
+    from itertools import ifilter as filter
+except ImportError:
+    pass
 
 
 def banner():
-    print '''       _   _            _        _
+    print('''       _   _            _        _
  _ __ | | | | ___ _ __ | |_ __ _(_)
 | '_ \| |_| |/ _ \ '_ \| __/ _` | |
 | | | |  _  |  __/ | | | || (_| | |
 |_| |_|_| |_|\___|_| |_|\__\__,_|_|
-'''
+''')
 
 
 def cmd_parser():
@@ -31,7 +35,7 @@ def cmd_parser():
 
     if args.ids:
         _ = map(lambda id: id.strip(), args.ids.split(','))
-        args.ids = set(map(int, ifilter(lambda id: id.isdigit(), _)))
+        args.ids = set(map(int, filter(lambda id: id.isdigit(), _)))
 
     if args.is_download and not args.id and not args.ids and not args.keyword:
         logger.critical('Dojinshi id/ids is required for downloading')

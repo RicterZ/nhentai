@@ -1,3 +1,4 @@
+from __future__ import print_function
 from constant import DETAIL_URL, IMAGE_URL
 from logger import logger
 
@@ -18,10 +19,10 @@ class Dojinshi(object):
 
     def show(self):
         logger.info('Print dojinshi information')
-        print 'Dojinshi: %s' % self.name
-        print 'Subtitle: %s' % self.subtitle
-        print 'URL: %s' % self.url
-        print 'Pages: %d' % self.pages
+        print('Dojinshi: %s' % self.name)
+        print('Subtitle: %s' % self.subtitle)
+        print('URL: %s' % self.url)
+        print('Pages: %d' % self.pages)
 
     def download(self):
         logger.info('Start download dojinshi: %s' % self.name)
@@ -36,9 +37,9 @@ class Dojinshi(object):
 
 if __name__ == '__main__':
     test = Dojinshi(name='test nhentai dojinshi', id=1)
-    print test
+    print(test)
     test.show()
     try:
         test.download()
     except Exception as e:
-        print 'Exception: %s' % str(e)
+        print('Exception: %s' % str(e))
