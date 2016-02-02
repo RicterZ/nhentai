@@ -1,3 +1,4 @@
+# coding: utf-8
 from __future__ import print_function
 from constant import DETAIL_URL, IMAGE_URL
 from logger import logger

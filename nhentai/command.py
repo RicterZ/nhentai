@@ -1,5 +1,5 @@
 #!/usr/bin/env python2.7
-#coding: utf-8
+# coding: utf-8
 import signal
 from cmdline import cmd_parser, banner
 from parser import dojinshi_parser, search_parser, print_dojinshi
