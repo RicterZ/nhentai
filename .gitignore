@@ -1,2 +1,5 @@
 *.py[cod]
 .idea/
+build
+dist/
+
