@@ -19,10 +19,9 @@ def main():
 
     if options.keyword:
         dojinshis = search_parser(options.keyword, options.page)
+        print_dojinshi(dojinshis)
         if options.is_download:
             dojinshi_ids = map(lambda d: d['id'], dojinshis)
-        else:
-            print_dojinshi(dojinshis)
     else:
         dojinshi_ids = options.ids
 
@@ -31,7 +30,6 @@ def main():
             dojinshi_info = dojinshi_parser(id)
             dojinshi_list.append(Dojinshi(**dojinshi_info))
     else:
-        logger.log(15, 'Nothing has been done.')
         raise SystemExit
 
     if options.is_download:

@@ -61,7 +61,7 @@ class Downloader(object):
         if not os.path.exists(folder):
             logger.warn('Path \'%s\' not exist.' % folder)
             try:
-                os.mkdir(folder)
+                os.makedirs(folder)
             except EnvironmentError as e:
                 logger.critical('Error: %s' % str(e))
                 raise SystemExit

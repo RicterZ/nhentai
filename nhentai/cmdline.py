@@ -1,4 +1,4 @@
-#coding: utf-8
+# coding: utf-8
 from __future__ import print_function
 from optparse import OptionParser
 from logger import logger
@@ -27,7 +27,7 @@ def cmd_parser():
                       help='page number of search result')
     parser.add_option('--path', type='string', dest='saved_path', action='store', default='',
                       help='path which save the dojinshi')
-    parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=1,
+    parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=5,
                       help='thread count of download dojinshi')
     parser.add_option('--timeout', type='int', dest='timeout', action='store', default=30,
                       help='timeout of download dojinshi')

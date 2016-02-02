@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from constant import DETAIL_URL, SEARCH_URL
 from logger import logger
+from tabulate import tabulate
 
 
 def dojinshi_parser(id):
@@ -54,10 +55,11 @@ def search_parser(keyword, page):
     result = []
     response = requests.get(SEARCH_URL, params={'q': keyword, 'page': page}).content
     html = BeautifulSoup(response)
-    dojinshi_search_result = html.find_all('div', attrs={'class': 'preview-container'})
+    dojinshi_search_result = html.find_all('div', attrs={'class': 'gallery'})
     for dojinshi in dojinshi_search_result:
         dojinshi_container = dojinshi.find('div', attrs={'class': 'caption'})
         title = dojinshi_container.text.strip()
+        title = (title[:85] + '..') if len(title) > 85 else title
         id_ = re.search('/g/(\d+)/', dojinshi.a['href']).group(1)
         result.append({'id': id_, 'title': title})
     return result
@@ -66,12 +68,10 @@ def search_parser(keyword, page):
 def print_dojinshi(dojinshi_list):
     if not dojinshi_list:
         return
-    logger.log(15, 'Print dojinshi list')
-    print('-' * 60)
-    for dojinshi in dojinshi_list:
-        print(dojinshi['id'], '-', dojinshi['title'])
-    print('-' * 60)
-
+    dojinshi_list = [i.values() for i in dojinshi_list]
+    headers = ['id', 'dojinshi']
+    logger.info('Search Result\n' +
+                tabulate(tabular_data=dojinshi_list, headers=headers, tablefmt='rst'))
 
 if __name__ == '__main__':
-    print(dojinshi_parser(32271))
+    print(dojinshi_parser("32271"))
