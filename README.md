@@ -32,15 +32,19 @@ nhentai
 + 下载某关键词第一页的本子（不推荐）：
 
 
-    nhentai --search="panda" --page=1 --download
+    nhentai --search="tomori" --page=1 --download
 
 
 `-t, --thread` 指定下载的线程数，最多为 10 线程。  
 `--path` 指定下载文件的输出路径，默认为当前目录。  
 `--timeout` 指定下载图片的超时时间，默认为 30 秒。  
 
+
+![](./images/search.png)  
+![](./images/download.png)  
+
 ### License  
 MIT
 
 ### あなたも変態
-![](./image.jpg)
+![](./images/image.jpg)
