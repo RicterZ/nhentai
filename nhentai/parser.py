@@ -9,13 +9,13 @@ from logger import logger
 from tabulate import tabulate
 
 
-def dojinshi_parser(id):
+def doujinshi_parser(id):
     if not isinstance(id, (int, )) and (isinstance(id, (str, )) and not id.isdigit()):
-        raise Exception('Dojinshi id(%s) is not valid' % str(id))
+        raise Exception('Doujinshi id(%s) is not valid' % str(id))
     id = int(id)
-    logger.debug('Fetching dojinshi information of id %d' % id)
-    dojinshi = dict()
-    dojinshi['id'] = id
+    logger.debug('Fetching doujinshi information of id %d' % id)
+    doujinshi = dict()
+    doujinshi['id'] = id
     url = '%s/%d/' % (DETAIL_URL, id)
 
     try:
@@ -25,54 +25,54 @@ def dojinshi_parser(id):
         sys.exit()
 
     html = BeautifulSoup(response)
-    dojinshi_info = html.find('div', attrs={'id': 'info'})
+    doujinshi_info = html.find('div', attrs={'id': 'info'})
 
-    title = dojinshi_info.find('h1').text
-    subtitle = dojinshi_info.find('h2')
+    title = doujinshi_info.find('h1').text
+    subtitle = doujinshi_info.find('h2')
 
-    dojinshi['name'] = title
-    dojinshi['subtitle'] = subtitle.text if subtitle else ''
+    doujinshi['name'] = title
+    doujinshi['subtitle'] = subtitle.text if subtitle else ''
 
-    dojinshi_cover = html.find('div', attrs={'id': 'cover'})
-    img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png)$', dojinshi_cover.a.img['src'])
+    doujinshi_cover = html.find('div', attrs={'id': 'cover'})
+    img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png)$', doujinshi_cover.a.img['src'])
     if not img_id:
         logger.critical('Tried yo get image id failed')
         sys.exit()
-    dojinshi['img_id'] = img_id.group(1)
-    dojinshi['ext'] = img_id.group(2)
+    doujinshi['img_id'] = img_id.group(1)
+    doujinshi['ext'] = img_id.group(2)
 
     pages = 0
-    for _ in dojinshi_info.find_all('div', class_=''):
+    for _ in doujinshi_info.find_all('div', class_=''):
         pages = re.search('([\d]+) pages', _.text)
         if pages:
             pages = pages.group(1)
             break
-    dojinshi['pages'] = int(pages)
-    return dojinshi
+    doujinshi['pages'] = int(pages)
+    return doujinshi
 
 
 def search_parser(keyword, page):
-    logger.debug('Searching dojinshis of keyword %s' % keyword)
+    logger.debug('Searching doujinshis of keyword %s' % keyword)
     result = []
     response = requests.get(SEARCH_URL, params={'q': keyword, 'page': page}).content
     html = BeautifulSoup(response)
-    dojinshi_search_result = html.find_all('div', attrs={'class': 'gallery'})
-    for dojinshi in dojinshi_search_result:
-        dojinshi_container = dojinshi.find('div', attrs={'class': 'caption'})
-        title = dojinshi_container.text.strip()
+    doujinshi_search_result = html.find_all('div', attrs={'class': 'gallery'})
+    for doujinshi in doujinshi_search_result:
+        doujinshi_container = doujinshi.find('div', attrs={'class': 'caption'})
+        title = doujinshi_container.text.strip()
         title = (title[:85] + '..') if len(title) > 85 else title
-        id_ = re.search('/g/(\d+)/', dojinshi.a['href']).group(1)
+        id_ = re.search('/g/(\d+)/', doujinshi.a['href']).group(1)
         result.append({'id': id_, 'title': title})
     return result
 
 
-def print_dojinshi(dojinshi_list):
-    if not dojinshi_list:
+def print_doujinshi(doujinshi_list):
+    if not doujinshi_list:
         return
-    dojinshi_list = [i.values() for i in dojinshi_list]
-    headers = ['id', 'dojinshi']
+    doujinshi_list = [i.values() for i in doujinshi_list]
+    headers = ['id', 'doujinshi']
     logger.info('Search Result\n' +
-                tabulate(tabular_data=dojinshi_list, headers=headers, tablefmt='rst'))
+                tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 if __name__ == '__main__':
-    print(dojinshi_parser("32271"))
+    print(doujinshi_parser("32271"))

@@ -4,7 +4,7 @@ from constant import DETAIL_URL, IMAGE_URL
 from logger import logger
 
 
-class Dojinshi(object):
+class Doujinshi(object):
     def __init__(self, name=None, subtitle=None, id=None, img_id=None, ext='jpg', pages=0):
         self.name = name
         self.subtitle = subtitle
@@ -16,17 +16,17 @@ class Dojinshi(object):
         self.url = '%s/%d' % (DETAIL_URL, self.id)
 
     def __repr__(self):
-        return '<Dojinshi: %s>' % self.name
+        return '<Doujinshi: %s>' % self.name
 
     def show(self):
-        logger.info('Print dojinshi information')
-        print('Dojinshi: %s' % self.name)
+        logger.info('Print doujinshi information')
+        print('Doujinshi: %s' % self.name)
         print('Subtitle: %s' % self.subtitle)
         print('URL: %s' % self.url)
         print('Pages: %d' % self.pages)
 
     def download(self):
-        logger.info('Start download dojinshi: %s' % self.name)
+        logger.info('Start download doujinshi: %s' % self.name)
         if self.downloader:
             download_queue = []
             for i in xrange(1, self.pages + 1):
@@ -37,7 +37,7 @@ class Dojinshi(object):
 
 
 if __name__ == '__main__':
-    test = Dojinshi(name='test nhentai dojinshi', id=1)
+    test = Doujinshi(name='test nhentai doujinshi', id=1)
     print(test)
     test.show()
     try:

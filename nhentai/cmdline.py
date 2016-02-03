@@ -19,18 +19,18 @@ def banner():
 
 def cmd_parser():
     parser = OptionParser()
-    parser.add_option('--download', dest='is_download', action='store_true', help='download dojinshi or not')
-    parser.add_option('--id', type='int', dest='id', action='store', help='dojinshi id of nhentai')
-    parser.add_option('--ids', type='str', dest='ids', action='store', help='dojinshi id set, e.g. 1,2,3')
+    parser.add_option('--download', dest='is_download', action='store_true', help='download doujinshi or not')
+    parser.add_option('--id', type='int', dest='id', action='store', help='doujinshi id of nhentai')
+    parser.add_option('--ids', type='str', dest='ids', action='store', help='doujinshi id set, e.g. 1,2,3')
     parser.add_option('--search', type='string', dest='keyword', action='store', help='keyword searched')
     parser.add_option('--page', type='int', dest='page', action='store', default=1,
                       help='page number of search result')
     parser.add_option('--path', type='string', dest='saved_path', action='store', default='',
-                      help='path which save the dojinshi')
+                      help='path which save the doujinshi')
     parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=5,
-                      help='thread count of download dojinshi')
+                      help='thread count of download doujinshi')
     parser.add_option('--timeout', type='int', dest='timeout', action='store', default=30,
-                      help='timeout of download dojinshi')
+                      help='timeout of download doujinshi')
     args, _ = parser.parse_args()
 
     if args.ids:
@@ -38,7 +38,7 @@ def cmd_parser():
         args.ids = set(map(int, filter(lambda id: id.isdigit(), _)))
 
     if args.is_download and not args.id and not args.ids and not args.keyword:
-        logger.critical('Dojinshi id/ids is required for downloading')
+        logger.critical('Doujinshi id/ids is required for downloading')
         parser.print_help()
         raise SystemExit
 
