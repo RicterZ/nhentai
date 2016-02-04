@@ -24,7 +24,7 @@ class Downloader(object):
         self.timeout = timeout
 
     def _download(self, url, folder='', filename='', retried=False):
-        logger.info('Start downloading: %s ...' % url)
+        logger.info('Start downloading: {} ...'.format(url))
         filename = filename if filename else os.path.basename(urlparse(url).path)
         try:
             with open(os.path.join(folder, filename), "wb") as f:
@@ -37,12 +37,12 @@ class Downloader(object):
                         f.write(chunk)
         except requests.HTTPError as e:
             if not retried:
-                logger.error('Error: %s, retrying' % str(e))
+                logger.error('Error: {}, retrying'.format(str(e)))
                 return self._download(url=url, folder=folder, filename=filename, retried=True)
             else:
                 return None
         except Exception as e:
-            logger.critical('CRITICAL: %s' % str(e))
+            logger.critical(str(e))
             return None
         return url
 
@@ -50,7 +50,7 @@ class Downloader(object):
         if not result:
             logger.critical('Too many errors occurred, quit.')
             raise SystemExit
-        logger.log(15, '%s download successfully' % result)
+        logger.log(15, '{} download successfully'.format(result))
 
     def download(self, queue, folder=''):
         if not isinstance(folder, (str, unicode)):
@@ -60,14 +60,14 @@ class Downloader(object):
             folder = os.path.join(self.path, folder)
 
         if not os.path.exists(folder):
-            logger.warn('Path \'%s\' not exist.' % folder)
+            logger.warn('Path \'{}\' not exist.'.format(folder))
             try:
                 os.makedirs(folder)
             except EnvironmentError as e:
-                logger.critical('Error: %s' % str(e))
+                logger.critical('Error: {}'.format(str(e)))
                 raise SystemExit
         else:
-            logger.warn('Path \'%s\' already exist.' % folder)
+            logger.warn('Path \'{}\' already exist.'.format(folder))
 
         queue = [([url], {'folder': folder}) for url in queue]
 

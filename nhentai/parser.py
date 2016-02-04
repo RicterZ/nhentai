@@ -16,19 +16,20 @@ def request(method, url, **kwargs):
     return requests.__dict__[method](url, proxies=constant.PROXY, **kwargs)
 
 
-def doujinshi_parser(id):
-    if not isinstance(id, (int, )) and (isinstance(id, (str, )) and not id.isdigit()):
-        raise Exception('Doujinshi id(%s) is not valid' % str(id))
-    id = int(id)
-    logger.debug('Fetching doujinshi information of id %d' % id)
+def doujinshi_parser(id_):
+    if not isinstance(id_, (int,)) and (isinstance(id_, (str,)) and not id_.isdigit()):
+        raise Exception('Doujinshi id({}) is not valid'.format(id_))
+
+    id_ = int(id_)
+    logger.log(15, 'Fetching doujinshi information of id {}'.format(id_))
     doujinshi = dict()
-    doujinshi['id'] = id
-    url = '%s/%d/' % (constant.DETAIL_URL, id)
+    doujinshi['id'] = id_
+    url = '{}/{}/'.format(constant.DETAIL_URL, id_)
 
     try:
         response = request('get', url).content
     except Exception as e:
-        logger.critical('%s%s' % tuple(e.message))
+        logger.critical(str(e))
         sys.exit()
 
     html = BeautifulSoup(response)
@@ -36,7 +37,6 @@ def doujinshi_parser(id):
 
     title = doujinshi_info.find('h1').text
     subtitle = doujinshi_info.find('h2')
-
     doujinshi['name'] = title
     doujinshi['subtitle'] = subtitle.text if subtitle else ''
 
@@ -59,7 +59,7 @@ def doujinshi_parser(id):
 
 
 def search_parser(keyword, page):
-    logger.debug('Searching doujinshis of keyword %s' % keyword)
+    logger.debug('Searching doujinshis of keyword {}'.format(keyword))
     result = []
     try:
         response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page}).content

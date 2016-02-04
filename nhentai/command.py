@@ -12,8 +12,6 @@ def main():
     banner()
     options = cmd_parser()
 
-    logger.log(15, 'nHentai: あなたも変態。 いいね?')
-
     doujinshi_ids = []
     doujinshi_list = []
 

@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import print_function
+from tabulate import tabulate
 from constant import DETAIL_URL, IMAGE_URL
 from logger import logger
 
@@ -16,14 +17,16 @@ class Doujinshi(object):
         self.url = '%s/%d' % (DETAIL_URL, self.id)
 
     def __repr__(self):
-        return '<Doujinshi: %s>' % self.name
+        return '<Doujinshi: {}>'.format(self.name)
 
     def show(self):
-        logger.info('Print doujinshi information')
-        print('Doujinshi: %s' % self.name)
-        print('Subtitle: %s' % self.subtitle)
-        print('URL: %s' % self.url)
-        print('Pages: %d' % self.pages)
+        table = [
+            ["Doujinshi", self.name],
+            ["Subtitle", self.subtitle],
+            ["URL", self.url],
+            ["Pages", self.pages],
+        ]
+        logger.info(u'Print doujinshi information\n{}'.format(tabulate(table)))
 
     def download(self):
         logger.info('Start download doujinshi: %s' % self.name)
