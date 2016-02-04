@@ -35,7 +35,7 @@ def cmd_parser():
     parser.add_option('--timeout', type='int', dest='timeout', action='store', default=30,
                       help='timeout of download doujinshi')
     parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
-                      help='use proxy, example: socks5://127.0.0.1:1080')
+                      help='use proxy, example: http://127.0.0.1:1080')
     args, _ = parser.parse_args()
 
     if args.ids:
