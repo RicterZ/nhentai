@@ -8,6 +8,9 @@ except ImportError:
     pass
 
 
+import constant
+
+
 def banner():
     print('''       _   _            _        _
  _ __ | | | | ___ _ __ | |_ __ _(_)
@@ -31,6 +34,8 @@ def cmd_parser():
                       help='thread count of download doujinshi')
     parser.add_option('--timeout', type='int', dest='timeout', action='store', default=30,
                       help='timeout of download doujinshi')
+    parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
+                      help='use proxy, example: socks5://127.0.0.1:1080')
     args, _ = parser.parse_args()
 
     if args.ids:
@@ -54,5 +59,13 @@ def cmd_parser():
     elif args.threads > 10:
         logger.critical('Maximum number of used threads is 10')
         raise SystemExit
+
+    if args.proxy:
+        import urlparse
+        proxy_url = urlparse.urlparse(args.proxy)
+        if proxy_url.scheme not in ('http', 'https'):
+            logger.error('Invalid protocol \'{}\' of proxy, ignored'.format(proxy_url.scheme))
+        else:
+            constant.PROXY = {proxy_url.scheme: args.proxy}
 
     return args

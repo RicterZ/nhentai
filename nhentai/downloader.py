@@ -4,6 +4,7 @@ import requests
 import threadpool
 from urlparse import urlparse
 from logger import logger
+from parser import request
 
 
 class Downloader(object):
@@ -27,7 +28,7 @@ class Downloader(object):
         filename = filename if filename else os.path.basename(urlparse(url).path)
         try:
             with open(os.path.join(folder, filename), "wb") as f:
-                response = requests.get(url, stream=True, timeout=self.timeout)
+                response = request('get', url, stream=True, timeout=self.timeout)
                 length = response.headers.get('content-length')
                 if length is None:
                     f.write(response.content)

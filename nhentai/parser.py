@@ -4,9 +4,16 @@ import sys
 import re
 import requests
 from bs4 import BeautifulSoup
-from constant import DETAIL_URL, SEARCH_URL
+import constant
 from logger import logger
 from tabulate import tabulate
+
+
+def request(method, url, **kwargs):
+    if not hasattr(requests, method):
+        raise AttributeError('\'requests\' object has no attribute \'{}\''.format(method))
+
+    return requests.__dict__[method](url, proxies=constant.PROXY, **kwargs)
 
 
 def doujinshi_parser(id):
@@ -16,10 +23,10 @@ def doujinshi_parser(id):
     logger.debug('Fetching doujinshi information of id %d' % id)
     doujinshi = dict()
     doujinshi['id'] = id
-    url = '%s/%d/' % (DETAIL_URL, id)
+    url = '%s/%d/' % (constant.DETAIL_URL, id)
 
     try:
-        response = requests.get(url).content
+        response = request('get', url).content
     except Exception as e:
         logger.critical('%s%s' % tuple(e.message))
         sys.exit()
@@ -54,7 +61,13 @@ def doujinshi_parser(id):
 def search_parser(keyword, page):
     logger.debug('Searching doujinshis of keyword %s' % keyword)
     result = []
-    response = requests.get(SEARCH_URL, params={'q': keyword, 'page': page}).content
+    try:
+        response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page}).content
+    except requests.ConnectionError as e:
+        logger.critical(e)
+        logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
+        raise SystemExit
+
     html = BeautifulSoup(response)
     doujinshi_search_result = html.find_all('div', attrs={'class': 'gallery'})
     for doujinshi in doujinshi_search_result:

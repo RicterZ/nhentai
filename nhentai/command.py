@@ -48,6 +48,8 @@ def signal_handler(signal, frame):
     logger.error('Ctrl-C signal received. Quit.')
     raise SystemExit
 
+
 signal.signal(signal.SIGINT, signal_handler)
+
 if __name__ == '__main__':
     main()
