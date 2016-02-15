@@ -37,6 +37,7 @@ def doujinshi_parser(id_):
 
     title = doujinshi_info.find('h1').text
     subtitle = doujinshi_info.find('h2')
+
     doujinshi['name'] = title
     doujinshi['subtitle'] = subtitle.text if subtitle else ''
 
@@ -55,6 +56,17 @@ def doujinshi_parser(id_):
             pages = pages.group(1)
             break
     doujinshi['pages'] = int(pages)
+
+    # gain information of the doujinshi
+    information_fields = doujinshi_info.find_all('div', attrs={'class': 'field-name'})
+    needed_fields = ['Characters', 'Artists', 'Language', 'Tags']
+    for field in information_fields:
+        field_name = field.contents[0].strip().strip(':')
+        if field_name in needed_fields:
+            data = [sub_field.contents[0].strip() for sub_field in
+                    field.find_all('a', attrs={'class': 'tag'})]
+            doujinshi[field_name.lower()] = ', '.join(data)
+
     return doujinshi
 
 

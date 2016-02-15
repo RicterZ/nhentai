@@ -5,16 +5,27 @@ from constant import DETAIL_URL, IMAGE_URL
 from logger import logger
 
 
+class DoujinshiInfo(dict):
+    def __init__(self, **kwargs):
+        super(DoujinshiInfo, self).__init__(**kwargs)
+
+    def __getattr__(self, item):
+        try:
+            return dict.__getitem__(self, item)
+        except KeyError:
+            return ''
+
+
 class Doujinshi(object):
-    def __init__(self, name=None, subtitle=None, id=None, img_id=None, ext='jpg', pages=0):
+    def __init__(self, name=None, id=None, img_id=None, ext='jpg', pages=0, **kwargs):
         self.name = name
-        self.subtitle = subtitle
         self.id = id
         self.img_id = img_id
         self.ext = ext
         self.pages = pages
         self.downloader = None
         self.url = '%s/%d' % (DETAIL_URL, self.id)
+        self.info = DoujinshiInfo(**kwargs)
 
     def __repr__(self):
         return '<Doujinshi: {}>'.format(self.name)
@@ -22,7 +33,11 @@ class Doujinshi(object):
     def show(self):
         table = [
             ["Doujinshi", self.name],
-            ["Subtitle", self.subtitle],
+            ["Subtitle", self.info.subtitle],
+            ["Characters", self.info.characters],
+            ["Authors", self.info.artists],
+            ["Language", self.info.language],
+            ["Tags", self.info.tags],
             ["URL", self.url],
             ["Pages", self.pages],
         ]
