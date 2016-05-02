@@ -46,20 +46,20 @@ def cmd_parser():
     if args.is_download and not args.id and not args.ids and not args.keyword:
         logger.critical('Doujinshi id/ids is required for downloading')
         parser.print_help()
-        exit(1)
+        exit(0)
 
     if args.id:
         args.ids = (args.id, ) if not args.ids else args.ids
 
     if not args.keyword and not args.ids:
         parser.print_help()
-        exit(1)
+        exit(0)
 
     if args.threads <= 0:
         args.threads = 1
     elif args.threads > 10:
         logger.critical('Maximum number of used threads is 10')
-        exit(1)
+        exit(0)
 
     if args.proxy:
         import urlparse

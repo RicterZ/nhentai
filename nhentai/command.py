@@ -28,7 +28,7 @@ def main():
             doujinshi_info = doujinshi_parser(id)
             doujinshi_list.append(Doujinshi(**doujinshi_info))
     else:
-        exit(1)
+        exit(0)
 
     if options.is_download:
         downloader = Downloader(path=options.saved_path,

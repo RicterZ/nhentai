@@ -1,6 +1,5 @@
 # coding: utf-8
 from __future__ import print_function
-import sys
 import re
 import requests
 from bs4 import BeautifulSoup
@@ -30,7 +29,7 @@ def doujinshi_parser(id_):
         response = request('get', url).content
     except Exception as e:
         logger.critical(str(e))
-        sys.exit()
+        exit(1)
 
     html = BeautifulSoup(response)
     doujinshi_info = html.find('div', attrs={'id': 'info'})
@@ -45,7 +44,8 @@ def doujinshi_parser(id_):
     img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png)$', doujinshi_cover.a.img['src'])
     if not img_id:
         logger.critical('Tried yo get image id failed')
-        sys.exit()
+        exit(1)
+
     doujinshi['img_id'] = img_id.group(1)
     doujinshi['ext'] = img_id.group(2)
 
