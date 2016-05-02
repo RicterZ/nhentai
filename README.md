@@ -7,6 +7,7 @@ nhentai
     |_| |_|_| |_|\___|_| |_|\__\__,_|_|
 
 あなたも変態。 いいね?  
+[![Build Status](https://travis-ci.org/RicterZ/nhentai.svg?branch=master)](https://travis-ci.org/RicterZ/nhentai)  
 
 由于 [http://nhentai.net](http://nhentai.net) 下载下来的种子速度很慢，而且官方也提供在线观看本子的功能，所以可以利用本脚本下载本子。
 ### 安装
