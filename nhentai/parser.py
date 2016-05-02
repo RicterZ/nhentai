@@ -11,20 +11,20 @@ from tabulate import tabulate
 
 def request(method, url, **kwargs):
     if not hasattr(requests, method):
-        raise AttributeError('\'requests\' object has no attribute \'{}\''.format(method))
+        raise AttributeError('\'requests\' object has no attribute \'{0}\''.format(method))
 
     return requests.__dict__[method](url, proxies=constant.PROXY, **kwargs)
 
 
 def doujinshi_parser(id_):
     if not isinstance(id_, (int,)) and (isinstance(id_, (str,)) and not id_.isdigit()):
-        raise Exception('Doujinshi id({}) is not valid'.format(id_))
+        raise Exception('Doujinshi id({0}) is not valid'.format(id_))
 
     id_ = int(id_)
-    logger.log(15, 'Fetching doujinshi information of id {}'.format(id_))
+    logger.log(15, 'Fetching doujinshi information of id {0}'.format(id_))
     doujinshi = dict()
     doujinshi['id'] = id_
-    url = '{}/{}/'.format(constant.DETAIL_URL, id_)
+    url = '{0}/{1}/'.format(constant.DETAIL_URL, id_)
 
     try:
         response = request('get', url).content
@@ -71,14 +71,14 @@ def doujinshi_parser(id_):
 
 
 def search_parser(keyword, page):
-    logger.debug('Searching doujinshis of keyword {}'.format(keyword))
+    logger.debug('Searching doujinshis of keyword {0}'.format(keyword))
     result = []
     try:
         response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page}).content
     except requests.ConnectionError as e:
         logger.critical(e)
         logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
-        raise SystemExit
+        exit(1)
 
     html = BeautifulSoup(response)
     doujinshi_search_result = html.find_all('div', attrs={'class': 'gallery'})

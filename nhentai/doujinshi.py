@@ -28,7 +28,7 @@ class Doujinshi(object):
         self.info = DoujinshiInfo(**kwargs)
 
     def __repr__(self):
-        return '<Doujinshi: {}>'.format(self.name)
+        return '<Doujinshi: {0}>'.format(self.name)
 
     def show(self):
         table = [
@@ -41,7 +41,7 @@ class Doujinshi(object):
             ["URL", self.url],
             ["Pages", self.pages],
         ]
-        logger.info(u'Print doujinshi information\n{}'.format(tabulate(table)))
+        logger.info(u'Print doujinshi information\n{0}'.format(tabulate(table)))
 
     def download(self):
         logger.info('Start download doujinshi: %s' % self.name)

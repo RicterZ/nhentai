@@ -28,7 +28,7 @@ def main():
             doujinshi_info = doujinshi_parser(id)
             doujinshi_list.append(Doujinshi(**doujinshi_info))
     else:
-        raise SystemExit
+        exit(1)
 
     if options.is_download:
         downloader = Downloader(path=options.saved_path,
@@ -44,7 +44,7 @@ def main():
 
 def signal_handler(signal, frame):
     logger.error('Ctrl-C signal received. Quit.')
-    raise SystemExit
+    exit(1)
 
 
 signal.signal(signal.SIGINT, signal_handler)
