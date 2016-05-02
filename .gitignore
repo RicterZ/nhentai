@@ -3,4 +3,5 @@
 build
 dist/
 *.egg-info
+.python-version
 
