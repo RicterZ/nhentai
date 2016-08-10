@@ -26,8 +26,9 @@ class Downloader(object):
     def _download(self, url, folder='', filename='', retried=False):
         logger.info('Start downloading: {0} ...'.format(url))
         filename = filename if filename else os.path.basename(urlparse(url).path)
+        base_filename, extension = os.path.splitext(filename)
         try:
-            with open(os.path.join(folder, filename), "wb") as f:
+            with open(os.path.join(folder, base_filename.zfill(3) + extension), "wb") as f:
                 response = request('get', url, stream=True, timeout=self.timeout)
                 length = response.headers.get('content-length')
                 if length is None:
