@@ -6,14 +6,10 @@ from urlparse import urlparse
 from logger import logger
 from parser import request
 
+from nhentai.utils import Singleton
 
-class Downloader(object):
-    _instance = None
 
-    def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = super(Downloader, cls).__new__(cls, *args, **kwargs)
-        return cls._instance
+class Downloader(Singleton):
 
     def __init__(self, path='', thread=1, timeout=30):
         if not isinstance(thread, (int, )) or thread < 1 or thread > 10:
