@@ -1,11 +1,12 @@
 #!/usr/bin/env python2.7
 # coding: utf-8
 import signal
-from cmdline import cmd_parser, banner
-from parser import doujinshi_parser, search_parser, print_doujinshi
-from doujinshi import Doujinshi
-from downloader import Downloader
-from logger import logger
+
+from nhentai.cmdline import cmd_parser, banner
+from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi
+from nhentai.doujinshi import Doujinshi
+from nhentai.downloader import Downloader
+from nhentai.logger import logger
 
 
 def main():

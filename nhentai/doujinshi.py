@@ -1,8 +1,10 @@
 # coding: utf-8
 from __future__ import print_function
 from tabulate import tabulate
-from constant import DETAIL_URL, IMAGE_URL
-from logger import logger
+from builtins import range
+
+from nhentai.constant import DETAIL_URL, IMAGE_URL
+from nhentai.logger import logger
 
 
 class DoujinshiInfo(dict):
@@ -47,7 +49,7 @@ class Doujinshi(object):
         logger.info('Start download doujinshi: %s' % self.name)
         if self.downloader:
             download_queue = []
-            for i in xrange(1, self.pages + 1):
+            for i in range(1, self.pages + 1):
                 download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext))
             self.downloader.download(download_queue, self.id)
         else:

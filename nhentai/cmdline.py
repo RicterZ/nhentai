@@ -1,14 +1,13 @@
 # coding: utf-8
 from __future__ import print_function
 from optparse import OptionParser
-from logger import logger
 try:
     from itertools import ifilter as filter
 except ImportError:
     pass
 
-
-import constant
+import nhentai.constant as constant
+from nhentai.logger import logger
 
 
 def banner():
