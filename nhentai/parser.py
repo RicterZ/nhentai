@@ -90,6 +90,9 @@ def search_parser(keyword, page):
         title = (title[:85] + '..') if len(title) > 85 else title
         id_ = re.search('/g/(\d+)/', doujinshi.a['href']).group(1)
         result.append({'id': id_, 'title': title})
+    if not result:
+        logger.warn('Not found anything of keyword {}'.format(keyword))
+
     return result
 
 
