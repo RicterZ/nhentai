@@ -82,7 +82,7 @@ def search_parser(keyword, page):
         logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
         exit(1)
 
-    html = BeautifulSoup(response)
+    html = BeautifulSoup(response, 'html.parser')
     doujinshi_search_result = html.find_all('div', attrs={'class': 'gallery'})
     for doujinshi in doujinshi_search_result:
         doujinshi_container = doujinshi.find('div', attrs={'class': 'caption'})
