@@ -33,7 +33,7 @@ def doujinshi_parser(id_):
         logger.critical(str(e))
         exit(1)
 
-    html = BeautifulSoup(response)
+    html = BeautifulSoup(response, 'html.parser')
     doujinshi_info = html.find('div', attrs={'id': 'info'})
 
     title = doujinshi_info.find('h1').text
