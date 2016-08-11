@@ -1,11 +1,13 @@
 # coding: utf-8
 from __future__ import print_function
+
+from bs4 import BeautifulSoup
 import re
 import requests
-from bs4 import BeautifulSoup
-import constant
-from logger import logger
 from tabulate import tabulate
+
+import nhentai.constant as constant
+from nhentai.logger import logger
 
 
 def request(method, url, **kwargs):

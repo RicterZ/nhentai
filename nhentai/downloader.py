@@ -1,19 +1,19 @@
 # coding: utf-8
+from builtins import str as text
 import os
 import requests
 import threadpool
-from urlparse import urlparse
-from logger import logger
-from parser import request
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
+
+from nhentai.logger import logger
+from nhentai.parser import request
+from nhentai.utils import Singleton
 
 
-class Downloader(object):
-    _instance = None
-
-    def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = super(Downloader, cls).__new__(cls, *args, **kwargs)
-        return cls._instance
+class Downloader(Singleton):
 
     def __init__(self, path='', thread=1, timeout=30):
         if not isinstance(thread, (int, )) or thread < 1 or thread > 10:
@@ -54,7 +54,7 @@ class Downloader(object):
         logger.log(15, '{0} download successfully'.format(result))
 
     def download(self, queue, folder=''):
-        if not isinstance(folder, (str, unicode)):
+        if not isinstance(folder, (text)):
             folder = str(folder)
 
         if self.path:
