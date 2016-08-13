@@ -1,8 +1,7 @@
 import os
 
-SCHEMA = os.getenv('NHENTAI_SCHEMA', 'http://')
-# BASE_URL = 'nhentai.net'
-BASE_URL = os.getenv('NHENTAI', 'nhentai.ricterz.me')
+SCHEMA = os.getenv('NHENTAI_SCHEMA', 'https://')
+BASE_URL = os.getenv('NHENTAI', 'nhentai.net')
 
 URL = '%s%s' % (SCHEMA, BASE_URL)
 DETAIL_URL = '%s/g' % URL
