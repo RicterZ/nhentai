@@ -1,10 +1,9 @@
 import os
 
-SCHEMA = os.getenv('NHENTAI_SCHEMA', 'https://')
-BASE_URL = os.getenv('NHENTAI', 'nhentai.net')
+BASE_URL = os.getenv('NHENTAI', 'https://nhentai.net')
 
-URL = '%s%s' % (SCHEMA, BASE_URL)
-DETAIL_URL = '%s/g' % URL
-SEARCH_URL = '%s/search/' % URL
-IMAGE_URL = '%si.%s/galleries' % (SCHEMA, BASE_URL)
+DETAIL_URL = '%s/g' % BASE_URL
+SEARCH_URL = '%s/search/' % BASE_URL
+IMAGE_URL = 'https://i.%s/galleries' % BASE_URL
+
 PROXY = {}

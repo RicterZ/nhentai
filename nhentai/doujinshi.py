@@ -43,7 +43,7 @@ class Doujinshi(object):
             ["URL", self.url],
             ["Pages", self.pages],
         ]
-        logger.info(u'Print doujinshi information\n{0}'.format(tabulate(table)))
+        logger.info(u'Print doujinshi information of {0}\n{1}'.format(self.id, tabulate(table)))
 
     def download(self):
         logger.info('Start download doujinshi: %s' % self.name)

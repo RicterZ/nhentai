@@ -31,13 +31,18 @@ def main():
     else:
         exit(0)
 
-    downloader = Downloader(path=options.output_dir,
-                            thread=options.threads, timeout=options.timeout)
-    for doujinshi in doujinshi_list:
-        doujinshi.downloader = downloader
-        doujinshi.download()
+    if not options.is_show:
+        downloader = Downloader(path=options.output_dir,
+                                thread=options.threads, timeout=options.timeout)
 
-    logger.log(15, u'🍺 All done.')
+        for doujinshi in doujinshi_list:
+            doujinshi.downloader = downloader
+            doujinshi.download()
+
+        logger.log(15, u'🍺 All done.')
+
+    else:
+        [doujinshi.show() for doujinshi in doujinshi_list]
 
 
 def signal_handler(signal, frame):

@@ -23,10 +23,12 @@ def banner():
 def cmd_parser():
     parser = OptionParser()
     parser.add_option('--download', dest='is_download', action='store_true', help='download doujinshi or not')
+    parser.add_option('--show-info', dest='is_show', action='store_true', help='just show the doujinshi information.')
     parser.add_option('--id', type='str', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
-    parser.add_option('--search', type='string', dest='keyword', action='store', help='keyword searched')
+    parser.add_option('--search', type='string', dest='keyword', action='store', help='search doujinshi by keyword')
     parser.add_option('--page', type='int', dest='page', action='store', default=1,
                       help='page number of search result')
+    parser.add_option('--tags', type='string', dest='tags', action='store', help='download doujinshi by tags')
     parser.add_option('--output', type='string', dest='output_dir', action='store', default='',
                       help='output dir')
     parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=5,
@@ -37,11 +39,15 @@ def cmd_parser():
                       help='use proxy, example: http://127.0.0.1:1080')
     args, _ = parser.parse_args()
 
+    if args.tags:
+        logger.warning('`--tags` is under construction')
+        exit(0)
+
     if args.id:
         _ = map(lambda id: id.strip(), args.id.split(','))
         args.id = set(map(int, filter(lambda id: id.isdigit(), _)))
 
-    if args.is_download and not args.id and not args.keyword:
+    if (args.is_download or args.is_show) and not args.id and not args.keyword:
         logger.critical('Doujinshi id(s) are required for downloading')
         parser.print_help()
         exit(0)
