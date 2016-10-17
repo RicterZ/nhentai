@@ -18,6 +18,6 @@ def urlparse(url):
     try:
         from urlparse import urlparse
     except ImportError:
-        import urllib.parse as urlparse
+        from urllib import parse as urlparse
 
     return urlparse(url)
