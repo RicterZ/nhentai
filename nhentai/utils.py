@@ -11,4 +11,12 @@ class _Singleton(type):
         return cls._instances[cls]
 
 
-class Singleton(_Singleton('SingletonMeta', (object,), {})): pass
+class Singleton(_Singleton('SingletonMeta', (object,), {})):
+    pass
+
+
+def urlparse(url):
+    try:
+        import urlparse
+    except ImportError:
+        import urllib.parse as urlparse

@@ -7,6 +7,7 @@ except ImportError:
     pass
 
 import nhentai.constant as constant
+from nhentai.utils import urlparse
 from nhentai.logger import logger
 
 
@@ -64,8 +65,7 @@ def cmd_parser():
         exit(0)
 
     if args.proxy:
-        import urlparse
-        proxy_url = urlparse.urlparse(args.proxy)
+        proxy_url = urlparse(args.proxy)
         if proxy_url.scheme not in ('http', 'https'):
             logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
         else:
