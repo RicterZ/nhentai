@@ -1,6 +1,5 @@
 # coding: utf-8
 
-
 class _Singleton(type):
     """ A metaclass that creates a Singleton base class when called. """
     _instances = {}
@@ -17,6 +16,8 @@ class Singleton(_Singleton('SingletonMeta', (object,), {})):
 
 def urlparse(url):
     try:
-        import urlparse
+        from urlparse import urlparse
     except ImportError:
         import urllib.parse as urlparse
+
+    return urlparse(url)
