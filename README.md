@@ -21,13 +21,13 @@ nhentai
 + 下载指定 id 的本子：
 
 
-    nhentai --id=123855 --download
+    nhentai --id=123855
 
 
 + 下载指定 id 列表的本子：
 
 
-    nhentai --ids=123855,123866 --download
+    nhentai --ids=123855,123866
     
 
 + 下载某关键词第一页的本子（不推荐）：

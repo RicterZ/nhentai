@@ -22,7 +22,7 @@ def main():
         if options.is_download:
             doujinshi_ids = map(lambda d: d['id'], doujinshis)
     else:
-        doujinshi_ids = options.ids
+        doujinshi_ids = options.id
 
     if doujinshi_ids:
         for id in doujinshi_ids:
@@ -31,14 +31,11 @@ def main():
     else:
         exit(0)
 
-    if options.is_download:
-        downloader = Downloader(path=options.saved_path,
-                                thread=options.threads, timeout=options.timeout)
-        for doujinshi in doujinshi_list:
-            doujinshi.downloader = downloader
-            doujinshi.download()
-    else:
-        map(lambda doujinshi: doujinshi.show(), doujinshi_list)
+    downloader = Downloader(path=options.output_dir,
+                            thread=options.threads, timeout=options.timeout)
+    for doujinshi in doujinshi_list:
+        doujinshi.downloader = downloader
+        doujinshi.download()
 
     logger.log(15, u'🍺 All done.')
 
