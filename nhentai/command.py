@@ -7,10 +7,12 @@ from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi
 from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
+from nhentai.constant import BASE_URL
 
 
 def main():
     banner()
+    logger.info('Using mirror: {0}'.format(BASE_URL))
     options = cmd_parser()
 
     doujinshi_ids = []
