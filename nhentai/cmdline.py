@@ -16,7 +16,7 @@ sys.setdefaultencoding(sys.stdin.encoding)
 
 
 def banner():
-    logger.info('''nHentai: あなたも変態。 いいね?
+    logger.info(u'''nHentai: あなたも変態。 いいね?
        _   _            _        _
  _ __ | | | | ___ _ __ | |_ __ _(_)
 | '_ \| |_| |/ _ \ '_ \| __/ _` | |
