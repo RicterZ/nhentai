@@ -10,7 +10,7 @@ with open('requirements.txt') as f:
 
 def long_description():
     with codecs.open('README.md', 'rb') as f:
-        return f.read()
+        return str(f.read())
 
 setup(
     name='nhentai',
