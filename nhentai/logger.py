@@ -3,9 +3,20 @@
 #
 from __future__ import print_function, unicode_literals
 import logging
-import os
 import re
+import subprocess
 import sys
+
+
+if subprocess.mswindows:
+    import ctypes
+    import ctypes.wintypes
+
+    # Reference: https://gist.github.com/vsajip/758430
+    #            https://github.com/ipython/ipython/issues/4252
+    #            https://msdn.microsoft.com/en-us/library/windows/desktop/ms686047%28v=vs.85%29.aspx
+    ctypes.windll.kernel32.SetConsoleTextAttribute.argtypes = [ctypes.wintypes.HANDLE, ctypes.wintypes.WORD]
+    ctypes.windll.kernel32.SetConsoleTextAttribute.restype = ctypes.wintypes.BOOL
 
 
 class ColorizingStreamHandler(logging.StreamHandler):
@@ -22,22 +33,13 @@ class ColorizingStreamHandler(logging.StreamHandler):
     }
 
     # levels to (background, foreground, bold/intense)
-    if os.name == 'nt':
-        level_map = {
-            logging.DEBUG: (None, 'white', False),
-            logging.INFO: (None, 'green', False),
-            logging.WARNING: (None, 'yellow', False),
-            logging.ERROR: (None, 'red', False),
-            logging.CRITICAL: ('red', 'white', False)
-        }
-    else:
-        level_map = {
-            logging.DEBUG: (None, 'white', False),
-            logging.INFO: (None, 'green', False),
-            logging.WARNING: (None, 'yellow', False),
-            logging.ERROR: (None, 'red', False),
-            logging.CRITICAL: ('red', 'white', False)
-        }
+    level_map = {
+        logging.DEBUG: (None, 'blue', False),
+        logging.INFO: (None, 'green', False),
+        logging.WARNING: (None, 'yellow', False),
+        logging.ERROR: (None, 'red', False),
+        logging.CRITICAL: ('red', 'white', False)
+    }
     csi = '\x1b['
     reset = '\x1b[0m'
     disable_coloring = False
@@ -47,7 +49,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
         isatty = getattr(self.stream, 'isatty', None)
         return isatty and isatty() and not self.disable_coloring
 
-    if os.name != 'nt':
+    if not subprocess.mswindows:
         def output_colorized(self, message):
             self.stream.write(message)
     else:
@@ -65,8 +67,6 @@ class ColorizingStreamHandler(logging.StreamHandler):
         }
 
         def output_colorized(self, message):
-            import ctypes
-
             parts = self.ansi_esc.split(message)
             write = self.stream.write
             h = None
@@ -75,7 +75,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
             if fd is not None:
                 fd = fd()
 
-                if fd in (1, 2):  # stdout or stderr
+                if fd in (1, 2): # stdout or stderr
                     h = ctypes.windll.kernel32.GetStdHandle(-10 - fd)
 
             while parts:
@@ -97,11 +97,11 @@ class ColorizingStreamHandler(logging.StreamHandler):
                             elif 30 <= p <= 37:
                                 color |= self.nt_color_map[p - 30]
                             elif p == 1:
-                                color |= 0x08  # foreground intensity on
-                            elif p == 0:  # reset to default color
+                                color |= 0x08 # foreground intensity on
+                            elif p == 0: # reset to default color
                                 color = 0x07
                             else:
-                                pass  # error condition ignored
+                                pass # error condition ignored
 
                         ctypes.windll.kernel32.SetConsoleTextAttribute(h, color)
 
@@ -134,6 +134,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
     def format(self, record):
         message = logging.StreamHandler.format(self, record)
         return self.colorize(message, record)
+
 
 logging.addLevelName(15, "INFO")
 logger = logging.getLogger('nhentai')
