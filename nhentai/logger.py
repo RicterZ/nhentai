@@ -4,11 +4,11 @@
 from __future__ import print_function, unicode_literals
 import logging
 import re
-import subprocess
+import platform
 import sys
 
 
-if subprocess.mswindows:
+if platform.system() == 'Windows':
     import ctypes
     import ctypes.wintypes
 
@@ -49,7 +49,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
         isatty = getattr(self.stream, 'isatty', None)
         return isatty and isatty() and not self.disable_coloring
 
-    if not subprocess.mswindows:
+    if not platform.system() == 'Windows':
         def output_colorized(self, message):
             self.stream.write(message)
     else:
