@@ -1,5 +1,7 @@
 os:
     - linux
+    - windows
+    - darwin
 
 language: python
 python:
