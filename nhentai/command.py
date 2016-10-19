@@ -2,6 +2,7 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
 import signal
+import platform
 
 from nhentai.cmdline import cmd_parser, banner
 from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi
@@ -42,7 +43,10 @@ def main():
             doujinshi.downloader = downloader
             doujinshi.download()
 
-        logger.log(15, u'🍺 All done.')
+        if not platform.system() == 'Windows':
+            logger.log(15, '🍺 All done.')
+        else:
+            logger.log(15, 'All done.')
 
     else:
         [doujinshi.show() for doujinshi in doujinshi_list]
