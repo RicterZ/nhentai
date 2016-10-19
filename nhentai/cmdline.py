@@ -11,8 +11,12 @@ import nhentai.constant as constant
 from nhentai.utils import urlparse
 from nhentai.logger import logger
 
-reload(sys)
-sys.setdefaultencoding(sys.stdin.encoding)
+try:
+    reload(sys)
+    sys.setdefaultencoding(sys.stdin.encoding)
+except NameError:
+    # python3
+    pass
 
 
 def banner():
