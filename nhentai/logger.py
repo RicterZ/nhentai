@@ -49,6 +49,28 @@ class ColorizingStreamHandler(logging.StreamHandler):
         isatty = getattr(self.stream, 'isatty', None)
         return isatty and isatty() and not self.disable_coloring
 
+    def emit(self, record):
+        try:
+            message = self.format(record)
+            stream = self.stream
+
+            if not self.is_tty:
+                if message and message[0] == "\r":
+                    message = message[1:]
+                stream.write(message)
+            else:
+                self.output_colorized(message)
+            stream.write(getattr(self, 'terminator', '\n'))
+
+            self.flush()
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except IOError:
+            pass
+        except:
+            self.handleError(record)
+
+
     if not platform.system() == 'Windows':
         def output_colorized(self, message):
             self.stream.write(message)
