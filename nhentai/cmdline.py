@@ -1,5 +1,6 @@
 # coding: utf-8
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
+import sys
 from optparse import OptionParser
 try:
     from itertools import ifilter as filter
@@ -25,7 +26,7 @@ def cmd_parser():
     parser = OptionParser()
     parser.add_option('--download', dest='is_download', action='store_true', help='download doujinshi or not')
     parser.add_option('--show-info', dest='is_show', action='store_true', help='just show the doujinshi information.')
-    parser.add_option('--id', type='str', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
+    parser.add_option('--id', type='string', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
     parser.add_option('--search', type='string', dest='keyword', action='store', help='search doujinshi by keyword')
     parser.add_option('--page', type='int', dest='page', action='store', default=1,
                       help='page number of search result')
@@ -38,7 +39,13 @@ def cmd_parser():
                       help='timeout of download doujinshi')
     parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
                       help='use proxy, example: http://127.0.0.1:1080')
-    args, _ = parser.parse_args()
+
+    try:
+        sys.argv = list(map(lambda x: unicode(x.decode('utf-8')), sys.argv))
+    except (NameError, TypeError):
+        pass
+
+    args, _ = parser.parse_args(sys.argv[1:])
 
     if args.tags:
         logger.warning('`--tags` is under construction')

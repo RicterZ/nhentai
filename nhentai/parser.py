@@ -1,5 +1,5 @@
 # coding: utf-8
-from __future__ import print_function
+from __future__ import unicode_literals, print_function
 
 from bs4 import BeautifulSoup
 import re
@@ -99,7 +99,7 @@ def search_parser(keyword, page):
 def print_doujinshi(doujinshi_list):
     if not doujinshi_list:
         return
-    doujinshi_list = [i.values() for i in doujinshi_list]
+    doujinshi_list = [(i['id'], i['title']) for i in doujinshi_list]
     headers = ['id', 'doujinshi']
     logger.info('Search Result\n' +
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))

@@ -1,5 +1,6 @@
-# coding: utf-8
-from builtins import str as text
+# coding: utf-
+from __future__ import unicode_literals, print_function
+from future.builtins import str as text
 import os
 import requests
 import threadpool

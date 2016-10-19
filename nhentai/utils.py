@@ -1,4 +1,6 @@
 # coding: utf-8
+from __future__ import unicode_literals, print_function
+
 
 class _Singleton(type):
     """ A metaclass that creates a Singleton base class when called. """
@@ -10,7 +12,7 @@ class _Singleton(type):
         return cls._instances[cls]
 
 
-class Singleton(_Singleton('SingletonMeta', (object,), {})):
+class Singleton(_Singleton(str('SingletonMeta'), (object,), {})):
     pass
 
 
