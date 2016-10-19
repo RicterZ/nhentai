@@ -11,6 +11,9 @@ import nhentai.constant as constant
 from nhentai.utils import urlparse
 from nhentai.logger import logger
 
+reload(sys)
+sys.setdefaultencoding(sys.stdin.encoding)
+
 
 def banner():
     logger.info('''nHentai: あなたも変態。 いいね?
@@ -41,9 +44,11 @@ def cmd_parser():
                       help='use proxy, example: http://127.0.0.1:1080')
 
     try:
-        sys.argv = list(map(lambda x: unicode(x.decode('utf-8')), sys.argv))
+        sys.argv = list(map(lambda x: unicode(x.decode(sys.stdin.encoding)), sys.argv))
     except (NameError, TypeError):
         pass
+    except UnicodeDecodeError:
+        exit(0)
 
     args, _ = parser.parse_args(sys.argv[1:])
 
