@@ -14,7 +14,7 @@ def request(method, url, **kwargs):
     if not hasattr(requests, method):
         raise AttributeError('\'requests\' object has no attribute \'{0}\''.format(method))
 
-    return requests.__dict__[method](url, proxies=constant.PROXY, **kwargs)
+    return requests.__dict__[method](url, proxies=constant.PROXY, verify=False, **kwargs)
 
 
 def doujinshi_parser(id_):
