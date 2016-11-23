@@ -30,10 +30,10 @@ def banner():
 
 
 def cmd_parser():
-    parser = OptionParser('\nnhentai --search [keyword] --download'
-                          '\nNHENTAI=http://h.loli.club nhentai --id [ID ...]'
+    parser = OptionParser('\n  nhentai --search [keyword] --download'
+                          '\n  NHENTAI=http://h.loli.club nhentai --id [ID ...]'
                           '\n\nEnvironment Variable:\n'
-                          'NHENTAI                 nhentai mirror url')
+                          '  NHENTAI                 nhentai mirror url')
     parser.add_option('--download', dest='is_download', action='store_true', help='download doujinshi (for search result)')
     parser.add_option('--show-info', dest='is_show', action='store_true', help='just show the doujinshi information')
     parser.add_option('--id', type='string', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
@@ -79,8 +79,8 @@ def cmd_parser():
     if args.threads <= 0:
         args.threads = 1
 
-    elif args.threads > 10:
-        logger.critical('Maximum number of used threads is 10')
+    elif args.threads > 15:
+        logger.critical('Maximum number of used threads is 15')
         exit(0)
 
     if args.proxy:

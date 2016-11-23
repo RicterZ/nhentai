@@ -14,17 +14,21 @@ from nhentai.parser import request
 from nhentai.utils import Singleton
 
 
+class NhentaiImageNotExistException(Exception):
+    pass
+
+
 class Downloader(Singleton):
 
     def __init__(self, path='', thread=1, timeout=30):
-        if not isinstance(thread, (int, )) or thread < 1 or thread > 10:
+        if not isinstance(thread, (int, )) or thread < 1 or thread > 15:
             raise ValueError('Invalid threads count')
         self.path = str(path)
         self.thread_count = thread
         self.threads = []
         self.timeout = timeout
 
-    def _download(self, url, folder='', filename='', retried=False):
+    def _download(self, url, folder='', filename='', retried=0):
         logger.info('Start downloading: {0} ...'.format(url))
         filename = filename if filename else os.path.basename(urlparse(url).path)
         base_filename, extension = os.path.splitext(filename)
@@ -32,29 +36,40 @@ class Downloader(Singleton):
             with open(os.path.join(folder, base_filename.zfill(3) + extension), "wb") as f:
                 response = request('get', url, stream=True, timeout=self.timeout)
                 if response.status_code != 200:
-                    logger.warning('Warning: url: {} return status code 404'.format(url))
+                    raise NhentaiImageNotExistException
                 length = response.headers.get('content-length')
                 if length is None:
                     f.write(response.content)
                 else:
                     for chunk in response.iter_content(2048):
                         f.write(chunk)
+
         except requests.HTTPError as e:
-            if not retried:
-                logger.error('Error: {0}, retrying'.format(str(e)))
-                return self._download(url=url, folder=folder, filename=filename, retried=True)
+            if retried < 3:
+                logger.warning('Warning: {0}, retrying({1}) ...'.format(str(e), retried))
+                return 0, self._download(url=url, folder=folder, filename=filename, retried=retried+1)
             else:
-                return None
+                return 0, None
+
+        except NhentaiImageNotExistException as e:
+            os.remove(os.path.join(folder, base_filename.zfill(3) + extension))
+            return -1, url
+
         except Exception as e:
             logger.critical(str(e))
-            return None
-        return url
+            return 0, None
+
+        return 1, url
 
     def _download_callback(self, request, result):
-        if not result:
-            logger.critical('Too many errors occurred, quit.')
+        result, data = result
+        if result == 0:
+            logger.critical('fatal errors occurred, quit.')
             exit(1)
-        logger.log(15, '{0} download successfully'.format(result))
+        elif result == -1:
+            logger.warning('url {} return status code 404'.format(data))
+        else:
+            logger.log(15, '{0} download successfully'.format(data))
 
     def download(self, queue, folder=''):
         if not isinstance(folder, (text)):
@@ -68,7 +83,7 @@ class Downloader(Singleton):
             try:
                 os.makedirs(folder)
             except EnvironmentError as e:
-                logger.critical('Error: {0}'.format(str(e)))
+                logger.critical('{0}'.format(str(e)))
                 exit(1)
         else:
             logger.warn('Path \'{0}\' already exist.'.format(folder))
