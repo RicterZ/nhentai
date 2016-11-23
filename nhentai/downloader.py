@@ -31,6 +31,8 @@ class Downloader(Singleton):
         try:
             with open(os.path.join(folder, base_filename.zfill(3) + extension), "wb") as f:
                 response = request('get', url, stream=True, timeout=self.timeout)
+                if response.status_code != 200:
+                    logger.warning('Warning: url: {} return status code 404'.format(url))
                 length = response.headers.get('content-length')
                 if length is None:
                     f.write(response.content)

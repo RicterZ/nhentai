@@ -30,9 +30,12 @@ def banner():
 
 
 def cmd_parser():
-    parser = OptionParser()
-    parser.add_option('--download', dest='is_download', action='store_true', help='download doujinshi or not')
-    parser.add_option('--show-info', dest='is_show', action='store_true', help='just show the doujinshi information.')
+    parser = OptionParser('\nnhentai --search [keyword] --download'
+                          '\nNHENTAI=http://h.loli.club nhentai --id [ID ...]'
+                          '\n\nEnvironment Variable:\n'
+                          'NHENTAI                 nhentai mirror url')
+    parser.add_option('--download', dest='is_download', action='store_true', help='download doujinshi (for search result)')
+    parser.add_option('--show-info', dest='is_show', action='store_true', help='just show the doujinshi information')
     parser.add_option('--id', type='string', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
     parser.add_option('--search', type='string', dest='keyword', action='store', help='search doujinshi by keyword')
     parser.add_option('--page', type='int', dest='page', action='store', default=1,
