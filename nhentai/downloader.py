@@ -44,7 +44,7 @@ class Downloader(Singleton):
                     for chunk in response.iter_content(2048):
                         f.write(chunk)
 
-        except requests.HTTPError as e:
+        except (requests.HTTPError, requests.Timeout) as e:
             if retried < 3:
                 logger.warning('Warning: {0}, retrying({1}) ...'.format(str(e), retried))
                 return 0, self._download(url=url, folder=folder, filename=filename, retried=retried+1)
