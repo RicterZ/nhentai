@@ -4,4 +4,4 @@ build
 dist/
 *.egg-info
 .python-version
-
+.DS_Store
