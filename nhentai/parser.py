@@ -41,7 +41,7 @@ def doujinshi_parser(id_):
     doujinshi['subtitle'] = subtitle.text if subtitle else ''
 
     doujinshi_cover = html.find('div', attrs={'id': 'cover'})
-    img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png)$', doujinshi_cover.a.img['src'])
+    img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png)$', doujinshi_cover.a.img['data-src'])
     if not img_id:
         logger.critical('Tried yo get image id failed')
         exit(1)
