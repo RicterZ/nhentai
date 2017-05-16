@@ -1,4 +1,4 @@
-SCHEMA = 'http://'
+SCHEMA = 'https://'
 BASE_URL = 'nhentai.net'
 # BASE_URL = 'nhentai.ricterz.me'
 URL = '%s%s' % (SCHEMA, BASE_URL)
