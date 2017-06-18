@@ -14,6 +14,9 @@ from nhentai.parser import request
 from nhentai.utils import Singleton
 
 
+requests.packages.urllib3.disable_warnings()
+
+
 class NhentaiImageNotExistException(Exception):
     pass
 

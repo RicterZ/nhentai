@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.7
 # coding: utf-8
 from __future__ import unicode_literals, print_function
+import os
 import signal
 import platform
 
@@ -42,6 +43,30 @@ def main():
         for doujinshi in doujinshi_list:
             doujinshi.downloader = downloader
             doujinshi.download()
+
+            image_html = ''
+            previous = ''
+
+            doujinshi_dir = os.path.join(options.output_dir, str(doujinshi.id))
+            file_list = os.listdir(doujinshi_dir)
+            for index, image in enumerate(file_list):
+                try:
+                    next_ = file_list[file_list.index(image) + 1]
+                except IndexError:
+                    next_ = ''
+
+                image_html += '<img src="{0}" class="image-item {1}" attr-prev="{2}" attr-next="{3}">\n'\
+                    .format(image, 'current' if index == 0 else '', previous, next_)
+                previous = image
+
+            with open(os.path.join(os.path.dirname(__file__), 'doujinshi.html'), 'r') as template:
+                html = template.read()
+
+            data = html.format(TITLE=doujinshi.name, IMAGES=image_html)
+            with open(os.path.join(doujinshi_dir, 'index.html'), 'w') as f:
+                f.write(data)
+
+            logger.log(15, 'HTML Viewer has been write to \'{0}\''.format(os.path.join(doujinshi_dir, 'index.html')))
 
         if not platform.system() == 'Windows':
             logger.log(15, '🍺 All done.')
