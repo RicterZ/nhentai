@@ -47,6 +47,7 @@ nhentai
 
 ![](./images/search.png)  
 ![](./images/download.png)  
+![](./images/viewer.png)  
 
 ### License  
 MIT
