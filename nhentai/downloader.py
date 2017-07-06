@@ -67,8 +67,8 @@ class Downloader(Singleton):
     def _download_callback(self, request, result):
         result, data = result
         if result == 0:
-            logger.critical('fatal errors occurred, quit.')
-            exit(1)
+            logger.warning('fatal errors occurred, ignored')
+            # exit(1)
         elif result == -1:
             logger.warning('url {} return status code 404'.format(data))
         else:
