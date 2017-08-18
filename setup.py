@@ -9,7 +9,7 @@ with open('requirements.txt') as f:
 
 
 def long_description():
-    with codecs.open('README.md', 'rb') as f:
+    with codecs.open('README.md', 'r') as f:
         return str(f.read())
 
 setup(

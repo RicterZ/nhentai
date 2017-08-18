@@ -49,6 +49,8 @@ def main():
 
             doujinshi_dir = os.path.join(options.output_dir, str(doujinshi.id))
             file_list = os.listdir(doujinshi_dir)
+            file_list.sort()
+
             for index, image in enumerate(file_list):
                 try:
                     next_ = file_list[file_list.index(image) + 1]
