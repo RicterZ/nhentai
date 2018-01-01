@@ -8,7 +8,7 @@ except ImportError:
     pass
 
 import nhentai.constant as constant
-from nhentai.utils import urlparse
+from nhentai.utils import urlparse, generate_html
 from nhentai.logger import logger
 
 try:
@@ -49,6 +49,7 @@ def cmd_parser():
                       help='timeout of download doujinshi')
     parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
                       help='use proxy, example: http://127.0.0.1:1080')
+    parser.add_option('--html', dest='html_viewer', action='store_true', help='generate a html viewer at current directory')
 
     try:
         sys.argv = list(map(lambda x: unicode(x.decode(sys.stdin.encoding)), sys.argv))
@@ -58,6 +59,10 @@ def cmd_parser():
         exit(0)
 
     args, _ = parser.parse_args(sys.argv[1:])
+
+    if args.html_viewer:
+        generate_html()
+        exit(0)
 
     if args.tags:
         logger.warning('`--tags` is under construction')
