@@ -44,7 +44,7 @@ def main():
         for doujinshi in doujinshi_list:
             doujinshi.downloader = downloader
             doujinshi.download()
-            generate_html(doujinshi, output_dir)
+            generate_html(options.output_dir, doujinshi)
 
         if not platform.system() == 'Windows':
             logger.log(15, '🍺 All done.')
