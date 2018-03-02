@@ -18,6 +18,11 @@ nhentai
     cd nhentai
     python setup.py install
     
+### Gentoo
+
+    layman -fa glicOne
+    sudo emerge net-misc/nhentai
+    
 
 ### 用法
 + 下载指定 id 列表的本子：
