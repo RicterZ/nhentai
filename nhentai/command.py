@@ -1,12 +1,11 @@
 #!/usr/bin/env python2.7
 # coding: utf-8
 from __future__ import unicode_literals, print_function
-import os
 import signal
 import platform
 
 from nhentai.cmdline import cmd_parser, banner
-from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi
+from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, login_parser
 from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
@@ -22,6 +21,12 @@ def main():
     doujinshi_ids = []
     doujinshi_list = []
 
+    if options.login:
+        username, password = options.login.split(':', 1)
+        logger.info('Login to nhentai use credential \'%s:%s\'' % (username, '*' * len(password)))
+        for doujinshi_info in login_parser(username=username, password=password):
+            doujinshi_list.append(Doujinshi(**doujinshi_info))
+
     if options.keyword:
         doujinshis = search_parser(options.keyword, options.page)
         print_doujinshi(doujinshis)
@@ -31,11 +36,9 @@ def main():
         doujinshi_ids = options.id
 
     if doujinshi_ids:
-        for id in doujinshi_ids:
-            doujinshi_info = doujinshi_parser(id)
+        for id_ in doujinshi_ids:
+            doujinshi_info = doujinshi_parser(id_)
             doujinshi_list.append(Doujinshi(**doujinshi_info))
-    else:
-        exit(0)
 
     if not options.is_show:
         downloader = Downloader(path=options.output_dir,

@@ -1,9 +1,11 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
 
-from bs4 import BeautifulSoup
+import os
 import re
+import threadpool
 import requests
+from bs4 import BeautifulSoup
 from tabulate import tabulate
 
 import nhentai.constant as constant
@@ -15,6 +17,66 @@ def request(method, url, **kwargs):
         raise AttributeError('\'requests\' object has no attribute \'{0}\''.format(method))
 
     return requests.__dict__[method](url, proxies=constant.PROXY, verify=False, **kwargs)
+
+
+def login_parser(username, password):
+    s = requests.Session()
+    s.proxies = constant.PROXY
+    s.verify = False
+    s.headers.update({'Referer': constant.LOGIN_URL})
+
+    s.get(constant.LOGIN_URL)
+    content = s.get(constant.LOGIN_URL).content
+    html = BeautifulSoup(content, 'html.parser')
+    csrf_token_elem = html.find('input', attrs={'name': 'csrfmiddlewaretoken'})
+
+    if not csrf_token_elem:
+        raise Exception('Cannot find csrf token to login')
+    csrf_token = csrf_token_elem.attrs['value']
+
+    login_dict = {
+        'csrfmiddlewaretoken': csrf_token,
+        'username_or_email': username,
+        'password': password,
+    }
+    resp = s.post(constant.LOGIN_URL, data=login_dict)
+    if 'Invalid username (or email) or password' in resp.text:
+        logger.error('Login failed, please check your username and password')
+        exit(1)
+
+    html = BeautifulSoup(s.get(constant.FAV_URL).content, 'html.parser')
+    count = html.find('span', attrs={'class': 'count'})
+    if not count:
+        logger.error('Cannot get count of your favorites, maybe login failed.')
+
+    count = int(count.text.strip('(').strip(')'))
+    pages = count / 25
+    pages += 1 if count % (25 * pages) else 0
+    logger.info('Your have %d favorites in %d pages.' % (count, pages))
+
+    if os.getenv('DEBUG'):
+        pages = 1
+
+    ret = []
+    doujinshi_id = re.compile('data-id="([\d]+)"')
+
+    def _callback(request, result):
+        ret.append(result)
+
+    thread_pool = threadpool.ThreadPool(5)
+
+    for page in range(1, pages+1):
+        try:
+            logger.info('Getting doujinshi id of page %d' % page)
+            resp = s.get(constant.FAV_URL + '?page=%d' % page).content
+            ids = doujinshi_id.findall(resp)
+            requests_ = threadpool.makeRequests(doujinshi_parser, ids, _callback)
+            [thread_pool.putRequest(req) for req in requests_]
+            thread_pool.wait()
+        except Exception as e:
+            logger.error('Error: %s, continue', str(e))
+
+    return ret
 
 
 def doujinshi_parser(id_):
@@ -103,6 +165,7 @@ def print_doujinshi(doujinshi_list):
     headers = ['id', 'doujinshi']
     logger.info('Search Result\n' +
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
+
 
 if __name__ == '__main__':
     print(doujinshi_parser("32271"))
