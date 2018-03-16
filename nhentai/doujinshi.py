@@ -5,6 +5,7 @@ from future.builtins import range
 
 from nhentai.constant import DETAIL_URL, IMAGE_URL
 from nhentai.logger import logger
+from nhentai.utils import format_filename
 
 
 class DoujinshiInfo(dict):
@@ -51,7 +52,7 @@ class Doujinshi(object):
             download_queue = []
             for i in range(1, self.pages + 1):
                 download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext))
-            self.downloader.download(download_queue, self.id)
+            self.downloader.download(download_queue, format_filename('%s-%s' % (self.id, self.name[:200])))
         else:
             logger.critical('Downloader has not be loaded')
 
