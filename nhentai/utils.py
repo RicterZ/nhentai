@@ -34,7 +34,7 @@ def generate_html(output_dir='.', doujinshi_obj=None):
     previous = ''
 
     if doujinshi_obj is not None:
-        doujinshi_dir = os.path.join(output_dir, str(doujinshi_obj.id))
+        doujinshi_dir = os.path.join(output_dir, str(doujinshi_obj.name))
     else:
         doujinshi_dir = '.'
 
