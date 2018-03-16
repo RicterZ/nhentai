@@ -4,6 +4,7 @@ from __future__ import unicode_literals, print_function
 import os
 import string
 from nhentai.logger import logger
+from nhentai.utils import format_filename
 
 
 class _Singleton(type):
@@ -34,7 +35,8 @@ def generate_html(output_dir='.', doujinshi_obj=None):
     previous = ''
 
     if doujinshi_obj is not None:
-        doujinshi_dir = os.path.join(output_dir, str(doujinshi_obj.name))
+        doujinshi_dir = os.path.join(output_dir, format_filename('%s-%s' % (doujinshi_obj.id,
+                                                                            doujinshi_obj.name[:200])))
     else:
         doujinshi_dir = '.'
 
