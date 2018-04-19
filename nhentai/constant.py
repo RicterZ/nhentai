@@ -5,8 +5,8 @@ from nhentai.utils import urlparse
 
 BASE_URL = os.getenv('NHENTAI', 'https://nhentai.net')
 
-DETAIL_URL = '%s/g' % BASE_URL
-SEARCH_URL = '%s/search/' % BASE_URL
+DETAIL_URL = '%s/api/gallery' % BASE_URL
+SEARCH_URL = '%s/api/galleries/search' % BASE_URL
 LOGIN_URL = '%s/login/' % BASE_URL
 FAV_URL = '%s/favorites/' % BASE_URL
 

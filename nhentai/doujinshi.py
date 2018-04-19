@@ -8,6 +8,12 @@ from nhentai.logger import logger
 from nhentai.utils import format_filename
 
 
+EXT_MAP = {
+    'j': 'jpg',
+    'p': 'png',
+}
+
+
 class DoujinshiInfo(dict):
     def __init__(self, **kwargs):
         super(DoujinshiInfo, self).__init__(**kwargs)
@@ -20,7 +26,7 @@ class DoujinshiInfo(dict):
 
 
 class Doujinshi(object):
-    def __init__(self, name=None, id=None, img_id=None, ext='jpg', pages=0, **kwargs):
+    def __init__(self, name=None, id=None, img_id=None, ext='', pages=0, **kwargs):
         self.name = name
         self.id = id
         self.img_id = img_id
@@ -50,8 +56,9 @@ class Doujinshi(object):
         logger.info('Start download doujinshi: %s' % self.name)
         if self.downloader:
             download_queue = []
-            for i in range(1, self.pages + 1):
-                download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext))
+            for i in range(len(self.ext)):
+                download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i+1, EXT_MAP[self.ext[i]]))
+
             self.downloader.download(download_queue, format_filename('%s-%s' % (self.id, self.name[:200])))
         else:
             logger.critical('Downloader has not be loaded')

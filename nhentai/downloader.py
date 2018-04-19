@@ -36,6 +36,11 @@ class Downloader(Singleton):
         filename = filename if filename else os.path.basename(urlparse(url).path)
         base_filename, extension = os.path.splitext(filename)
         try:
+            if os.path.exists(os.path.join(folder, base_filename.zfill(3) + extension)):
+                logger.warning('File: {0} existed, ignore.'.format(os.path.join(folder, base_filename.zfill(3) +
+                                                                                extension)))
+                return 1, url
+
             with open(os.path.join(folder, base_filename.zfill(3) + extension), "wb") as f:
                 response = request('get', url, stream=True, timeout=self.timeout)
                 if response.status_code != 200:
@@ -75,7 +80,7 @@ class Downloader(Singleton):
             logger.log(15, '{0} download successfully'.format(data))
 
     def download(self, queue, folder=''):
-        if not isinstance(folder, (text)):
+        if not isinstance(folder, text):
             folder = str(folder)
 
         if self.path:
