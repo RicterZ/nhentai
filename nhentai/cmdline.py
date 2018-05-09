@@ -56,6 +56,12 @@ def cmd_parser():
     parser.add_option('--login', '-l', type='str', dest='login', action='store',
                       help='username:password pair of nhentai account')
 
+    parser.add_option('--nohtml', dest='is_nohtml', action='store_true',
+                      help='Don\'t generate HTML')
+
+    parser.add_option('--cbz', dest='is_cbz', action='store_true',
+                      help='Generate ComicBook CBZ File')                      
+                      
     try:
         sys.argv = list(map(lambda x: unicode(x.decode(sys.stdin.encoding)), sys.argv))
     except (NameError, TypeError):

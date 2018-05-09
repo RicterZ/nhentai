@@ -10,7 +10,7 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html
+from nhentai.utils import generate_html, generate_cbz
 
 
 def main():
@@ -47,10 +47,13 @@ def main():
         for doujinshi in doujinshi_list:
             doujinshi.downloader = downloader
             doujinshi.download()
+            if not options.is_nohtml and not options.is_cbz:
             generate_html(options.output_dir, doujinshi)
+            elif options.is_cbz:
+                generate_cbz(options.output_dir, doujinshi)
 
         if not platform.system() == 'Windows':
-            logger.log(15, '🍺 All done.')
+            logger.log(15, '? All done.')
         else:
             logger.log(15, 'All done.')
 
