@@ -60,7 +60,7 @@ def cmd_parser():
                       help='Don\'t generate HTML')
 
     parser.add_option('--cbz', dest='is_cbz', action='store_true',
-                      help='Generate ComicBook CBZ File')                      
+                      help='Generate Comic Book CBZ File')                      
                       
     try:
         sys.argv = list(map(lambda x: unicode(x.decode(sys.stdin.encoding)), sys.argv))
