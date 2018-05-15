@@ -3,6 +3,8 @@ from __future__ import unicode_literals, print_function
 
 import os
 import string
+import zipfile
+import shutil
 from nhentai.logger import logger
 
 
@@ -35,7 +37,7 @@ def generate_html(output_dir='.', doujinshi_obj=None):
 
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, format_filename('%s-%s' % (doujinshi_obj.id,
-                                                                            doujinshi_obj.name[:200])))
+                                                                            str(doujinshi_obj.name[:200]))))
     else:
         doujinshi_dir = '.'
 
@@ -68,6 +70,33 @@ def generate_html(output_dir='.', doujinshi_obj=None):
         f.write(data)
 
     logger.log(15, 'HTML Viewer has been write to \'{0}\''.format(os.path.join(doujinshi_dir, 'index.html')))
+
+
+def generate_cbz(output_dir='.', doujinshi_obj=None):
+    if doujinshi_obj is not None:
+        doujinshi_dir = os.path.join(output_dir, format_filename('%s-%s' % (doujinshi_obj.id,
+                                                                            str(doujinshi_obj.name[:200]))))    
+        cbz_filename = os.path.join(output_dir, format_filename('%s-%s.cbz' % (doujinshi_obj.id,
+                                                                            str(doujinshi_obj.name[:200]))))
+    else:
+        cbz_filename = './doujinshi.cbz'
+        doujinshi_dir = '.'
+
+    file_list = os.listdir(doujinshi_dir)
+    file_list.sort()
+    
+    with zipfile.ZipFile(cbz_filename, 'w') as cbz_pf:
+        for image in file_list:
+            image_path = os.path.join(doujinshi_dir, image)
+            cbz_pf.write(image_path, image)
+            
+    shutil.rmtree(doujinshi_dir, ignore_errors=True)
+    logger.log(15, 'Comic Book CBZ file has been write to \'{0}\''.format(doujinshi_dir))
+
+
+
+
+
 
 
 def format_filename(s):
