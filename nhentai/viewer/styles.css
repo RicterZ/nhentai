@@ -1,0 +1,69 @@
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+img {
+    vertical-align: middle;
+}
+
+html, body {
+    display: flex;
+    background-color: #e8e6e6;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+#list {
+    height: 100%;
+    overflow: auto;
+    width: 260px;
+    text-align: center;
+}
+
+#list img {
+    width: 200px;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 15px 0;
+    cursor: pointer;
+}
+
+#list img.current {
+    background: #0003;
+}
+
+#image-container {
+    flex: auto;
+    height: 100vh;
+    background: #222;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    position: relative;
+}
+
+#image-container #dest {
+    height: 100%;
+    width: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#image-container #page-num {
+    position: absolute;
+    font-size: 18pt;
+    left: 10px;
+    bottom: 5px;
+    font-weight: bold;
+    opacity: 0.75;
+    text-shadow: /* Duplicate the same shadow to make it very strong */
+        0 0 2px #222,
+        0 0 2px #222,
+        0 0 2px #222;
+}

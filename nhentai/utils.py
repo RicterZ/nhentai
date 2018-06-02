@@ -30,10 +30,14 @@ def urlparse(url):
 
     return urlparse(url)
 
+def readfile(path):
+    loc = os.path.dirname(__file__)
+
+    with open(os.path.join(loc, path), 'r') as file:
+        return file.read()
 
 def generate_html(output_dir='.', doujinshi_obj=None):
     image_html = ''
-    previous = ''
 
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, format_filename('%s-%s' % (doujinshi_obj.id,
@@ -44,28 +48,23 @@ def generate_html(output_dir='.', doujinshi_obj=None):
     file_list = os.listdir(doujinshi_dir)
     file_list.sort()
 
-    for index, image in enumerate(file_list):
+    for image in file_list:
         if not os.path.splitext(image)[1] in ('.jpg', '.png'):
             continue
 
-        try:
-            next_ = file_list[file_list.index(image) + 1]
-        except IndexError:
-            next_ = ''
+        image_html += '<img src="{0}" class="image-item"/>\n'\
+            .format(image)
 
-        image_html += '<img src="{0}" class="image-item {1}" attr-prev="{2}" attr-next="{3}">\n'\
-            .format(image, 'current' if index == 0 else '', previous, next_)
-        previous = image
-
-    with open(os.path.join(os.path.dirname(__file__), 'doujinshi.html'), 'r') as template:
-        html = template.read()
+    html = readfile('viewer/index.html')
+    css = readfile('viewer/styles.css')
+    js = readfile('viewer/scripts.js')
 
     if doujinshi_obj is not None:
         title = doujinshi_obj.name
     else:
         title = 'nHentai HTML Viewer'
 
-    data = html.format(TITLE=title, IMAGES=image_html)
+    data = html.format(TITLE=title, IMAGES=image_html, SCRIPTS=js, STYLES=css)
     with open(os.path.join(doujinshi_dir, 'index.html'), 'w') as f:
         f.write(data)
 
