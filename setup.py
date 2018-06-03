@@ -19,6 +19,9 @@ setup(
     name='nhentai',
     version=__version__,
     packages=find_packages(),
+    package_data={
+        'nhentai': ['viewer/**']
+    },
 
     author=__author__,
     author_email=__email__,
