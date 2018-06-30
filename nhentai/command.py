@@ -53,7 +53,7 @@ def main():
                 generate_cbz(options.output_dir, doujinshi)
 
         if not platform.system() == 'Windows':
-            logger.log(15, '? All done.')
+            logger.log(15, '🍻 All done.')
         else:
             logger.log(15, 'All done.')
 

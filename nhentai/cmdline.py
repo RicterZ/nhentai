@@ -2,6 +2,7 @@
 from __future__ import print_function
 import sys
 from optparse import OptionParser
+from nhentai import __version__
 try:
     from itertools import ifilter as filter
 except ImportError:
@@ -20,13 +21,13 @@ except NameError:
 
 
 def banner():
-    logger.info(u'''nHentai: あなたも変態。 いいね?
+    logger.info(u'''nHentai ver %s: あなたも変態。 いいね?
        _   _            _        _
  _ __ | | | | ___ _ __ | |_ __ _(_)
 | '_ \| |_| |/ _ \ '_ \| __/ _` | |
 | | | |  _  |  __/ | | | || (_| | |
 |_| |_|_| |_|\___|_| |_|\__\__,_|_|
-''')
+''' % __version__)
 
 
 def cmd_parser():
