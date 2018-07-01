@@ -95,7 +95,7 @@ def doujinshi_parser(id_):
         logger.critical(str(e))
         exit(1)
 
-    doujinshi['name'] = str(response['title']['english'].encode('utf-8'))[2:]
+    doujinshi['name'] = response['title']['english']
     doujinshi['subtitle'] = response['title']['japanese']
     doujinshi['img_id'] = response['media_id']
     doujinshi['ext'] = ''.join(map(lambda s: s['t'], response['images']['pages']))
