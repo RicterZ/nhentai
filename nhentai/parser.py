@@ -27,7 +27,7 @@ def login_parser(username, password):
 
     s.get(constant.LOGIN_URL)
     content = s.get(constant.LOGIN_URL).content
-    html = BeautifulSoup(content, 'html.parser')
+    html = BeautifulSoup(content, 'html.parser').encode("ascii")
     csrf_token_elem = html.find('input', attrs={'name': 'csrfmiddlewaretoken'})
 
     if not csrf_token_elem:
@@ -44,7 +44,7 @@ def login_parser(username, password):
         logger.error('Login failed, please check your username and password')
         exit(1)
 
-    html = BeautifulSoup(s.get(constant.FAV_URL).content, 'html.parser')
+    html = BeautifulSoup(s.get(constant.FAV_URL).content, 'html.parser').encode("ascii")
     count = html.find('span', attrs={'class': 'count'})
     if not count:
         logger.error('Cannot get count of your favorites, maybe login failed.')

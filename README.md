@@ -47,6 +47,8 @@ nhentai --login "username:password" --download
 `--timeout`：指定下载图片的超时时间，默认为 30 秒。  
 `--proxy`：指定下载的代理，例如: http://127.0.0.1:8080/
 `--login`：nhentai 账号的“用户名:密码”组合
+`--nohtml`：nhentai Don't generate HTML
+`--cbz`：nhentai Generate Comic Book CBZ file
 
 ### nHentai Mirror
 如果想用自建镜像下载 nhentai 的本子，需要搭建 nhentai.net 和 i.nhentai.net 的反向代理。  

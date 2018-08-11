@@ -1,3 +1,5 @@
 include README.md
 include requirements.txt
-include nhentai/doujinshi.html
+include nhentai/viewer/index.html
+include nhentai/viewer/styles.css
+include nhentai/viewer/scripts.js
