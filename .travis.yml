@@ -5,9 +5,8 @@ language: python
 python:
     - 2.7
     - 2.6
-    - 3.3
-    - 3.4
-    - 3.5.2
+    - 3.6
+    - 3.7
 
 install:
     - python setup.py install
@@ -15,3 +14,4 @@ install:
 script:
     - NHENTAI=https://nhentai.net nhentai --search umaru
     - NHENTAI=https://nhentai.net nhentai --id=152503,146134 -t 10 --output=/tmp/
+    - NHENTAI=https://nhentai.net nhentai -l nhentai_test:nhentai --output=/tmp/
