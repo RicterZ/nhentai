@@ -2,4 +2,4 @@ requests>=2.5.0
 BeautifulSoup4>=4.0.0
 threadpool>=1.2.7
 tabulate>=0.7.5
-future>=0.15.2
+future>=0.15.2threadpool==1.3.2

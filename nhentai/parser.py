@@ -50,8 +50,16 @@ def login_parser(username, password):
         logger.error('Cannot get count of your favorites, maybe login failed.')
 
     count = int(count.text.strip('(').strip(')'))
-    pages = count / 25
-    pages += 1 if count % (25 * pages) else 0
+    if count == 0:
+        logger.warning('No favorites found')
+        return []
+    pages = int(count / 25)
+
+    if pages:
+        pages += 1 if count % (25 * pages) else 0
+    else:
+        pages = 1
+
     logger.info('Your have %d favorites in %d pages.' % (count, pages))
 
     if os.getenv('DEBUG'):
@@ -68,7 +76,7 @@ def login_parser(username, password):
     for page in range(1, pages+1):
         try:
             logger.info('Getting doujinshi id of page %d' % page)
-            resp = s.get(constant.FAV_URL + '?page=%d' % page).content
+            resp = s.get(constant.FAV_URL + '?page=%d' % page).text
             ids = doujinshi_id.findall(resp)
             requests_ = threadpool.makeRequests(doujinshi_parser, ids, _callback)
             [thread_pool.putRequest(req) for req in requests_]
