@@ -44,7 +44,7 @@ def generate_html(output_dir='.', doujinshi_obj=None):
 
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, format_filename('%s-%s' % (doujinshi_obj.id,
-                                                                            str(doujinshi_obj.name[:200]))))
+                                                                            doujinshi_obj.name)))
     else:
         doujinshi_dir = '.'
 
@@ -64,6 +64,8 @@ def generate_html(output_dir='.', doujinshi_obj=None):
 
     if doujinshi_obj is not None:
         title = doujinshi_obj.name
+        if sys.version_info < (3, 0):
+            title = title.encode('utf-8')
     else:
         title = 'nHentai HTML Viewer'
 
