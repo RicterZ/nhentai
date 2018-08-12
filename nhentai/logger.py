@@ -104,7 +104,10 @@ class ColorizingStreamHandler(logging.StreamHandler):
                 text = parts.pop(0)
 
                 if text:
-                    write(text)
+                    if sys.version_info < (3, 0, 0):
+                        write(text.encode('utf-8'))
+                    else:
+                        write(text)
 
                 if parts:
                     params = parts.pop(0)

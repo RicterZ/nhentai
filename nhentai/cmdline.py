@@ -13,8 +13,12 @@ from nhentai.utils import urlparse, generate_html
 from nhentai.logger import logger
 
 try:
-    reload(sys)
-    sys.setdefaultencoding(sys.stdin.encoding)
+    if sys.version_info < (3, 0, 0):
+        import codecs
+        import locale
+        sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
+        sys.stderr = codecs.getwriter(locale.getpreferredencoding())(sys.stderr)
+
 except NameError:
     # python3
     pass

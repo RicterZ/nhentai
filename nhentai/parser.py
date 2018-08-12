@@ -157,8 +157,8 @@ def print_doujinshi(doujinshi_list):
         return
     doujinshi_list = [(i['id'], i['title']) for i in doujinshi_list]
     headers = ['id', 'doujinshi']
-    logger.info('Search Result\n' +
-                tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
+    data = tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst')
+    logger.info('Search Result\n{}'.format(data))
 
 
 def tag_parser(tag_id):
