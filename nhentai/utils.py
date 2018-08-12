@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
 
+import sys
 import os
 import string
 import zipfile
@@ -30,11 +31,13 @@ def urlparse(url):
 
     return urlparse(url)
 
+
 def readfile(path):
     loc = os.path.dirname(__file__)
 
     with open(os.path.join(loc, path), 'r') as file:
         return file.read()
+
 
 def generate_html(output_dir='.', doujinshi_obj=None):
     image_html = ''
@@ -65,10 +68,17 @@ def generate_html(output_dir='.', doujinshi_obj=None):
         title = 'nHentai HTML Viewer'
 
     data = html.format(TITLE=title, IMAGES=image_html, SCRIPTS=js, STYLES=css)
-    with open(os.path.join(doujinshi_dir, 'index.html'), 'w') as f:
-        f.write(data)
+    try:
+        if sys.version_info < (3, 0):
+            with open(os.path.join(doujinshi_dir, 'index.html'), 'w') as f:
+                f.write(data)
+        else:
+            with open(os.path.join(doujinshi_dir, 'index.html'), 'wb') as f:
+                f.write(data.encode('utf-8'))
 
-    logger.log(15, 'HTML Viewer has been write to \'{0}\''.format(os.path.join(doujinshi_dir, 'index.html')))
+        logger.log(15, 'HTML Viewer has been write to \'{0}\''.format(os.path.join(doujinshi_dir, 'index.html')))
+    except Exception as e:
+        logger.warning('Writen HTML Viewer failed ({})'.format(str(e)))
 
 
 def generate_cbz(output_dir='.', doujinshi_obj=None):
