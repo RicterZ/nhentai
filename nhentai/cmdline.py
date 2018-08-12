@@ -42,7 +42,7 @@ def cmd_parser():
     parser.add_option('--search', type='string', dest='keyword', action='store', help='search doujinshi by keyword')
     parser.add_option('--page', type='int', dest='page', action='store', default=1,
                       help='page number of search result')
-    parser.add_option('--tags', type='string', dest='tags', action='store', help='download doujinshi by tags')
+    parser.add_option('--tag', type='string', dest='tag', action='store', help='download doujinshi by tag')
     parser.add_option('--output', type='string', dest='output_dir', action='store', default='',
                       help='output dir')
     parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=5,
@@ -86,20 +86,17 @@ def cmd_parser():
         if not args.is_download:
             logger.warning('YOU DO NOT SPECIFY `--download` OPTION !!!')
 
-    if args.tags:
-        logger.warning('`--tags` is under construction')
-        exit(1)
-
     if args.id:
         _ = map(lambda id: id.strip(), args.id.split(','))
         args.id = set(map(int, filter(lambda id_: id_.isdigit(), _)))
 
-    if (args.is_download or args.is_show) and not args.id and not args.keyword and not args.login:
+    if (args.is_download or args.is_show) and not args.id and not args.keyword and \
+            not args.login and not args.tag:
         logger.critical('Doujinshi id(s) are required for downloading')
         parser.print_help()
         exit(1)
 
-    if not args.keyword and not args.id and not args.login:
+    if not args.keyword and not args.id and not args.login and not args.tag:
         parser.print_help()
         exit(1)
 

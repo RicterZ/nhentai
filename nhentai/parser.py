@@ -110,11 +110,18 @@ def doujinshi_parser(id_):
     doujinshi['pages'] = len(response['images']['pages'])
 
     # gain information of the doujinshi
-    needed_fields = ['character', 'artist', 'language']
+    needed_fields = ['character', 'artist', 'language', 'tag']
     for tag in response['tags']:
         tag_type = tag['type']
         if tag_type in needed_fields:
-            if tag_type not in doujinshi:
+            if tag_type == 'tag':
+                if tag_type not in doujinshi:
+                    doujinshi[tag_type] = {}
+
+                tag['name'] = tag['name'].replace(' ', '-')
+                tag['name'] = tag['name'].lower()
+                doujinshi[tag_type][tag['name']] = tag['id']
+            elif tag_type not in doujinshi:
                 doujinshi[tag_type] = tag['name']
             else:
                 doujinshi[tag_type] += tag['name']
@@ -152,6 +159,49 @@ def print_doujinshi(doujinshi_list):
     headers = ['id', 'doujinshi']
     logger.info('Search Result\n' +
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
+
+
+def tag_parser(tag_id):
+    logger.info('Get doujinshi of tag id: {0}'.format(tag_id))
+    result = []
+    response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+
+    for row in response['result']:
+        title = row['title']['english']
+        title = title[:85] + '..' if len(title) > 85 else title
+        result.append({'id': row['id'], 'title': title})
+
+    if not result:
+        logger.warn('Not found anything of tag id {}'.format(tag_id))
+
+    return result
+
+
+def tag_guessing(tag_name):
+    tag_name = tag_name.lower()
+    tag_name = tag_name.replace(' ', '-')
+    logger.info('Trying to get tag_id of tag \'{0}\''.format(tag_name))
+    response = request('get', url='%s/%s' % (constant.TAG_URL, tag_name)).content
+    html = BeautifulSoup(response, 'html.parser')
+    first_item = html.find('div', attrs={'class': 'gallery'})
+    if not first_item:
+        logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
+        return
+
+    doujinshi_id = re.findall('(\d+)', first_item.a.attrs['href'])
+    if not doujinshi_id:
+        logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
+        return
+
+    ret = doujinshi_parser(doujinshi_id[0])
+    if 'tag' in ret and tag_name in ret['tag']:
+        tag_id = ret['tag'][tag_name]
+        logger.info('Tag id of tag \'{0}\' is {1}'.format(tag_name, tag_id))
+    else:
+        logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
+        return
+
+    return tag_id
 
 
 if __name__ == '__main__':

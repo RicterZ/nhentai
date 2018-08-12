@@ -7,6 +7,8 @@ BASE_URL = os.getenv('NHENTAI', 'https://nhentai.net')
 
 DETAIL_URL = '%s/api/gallery' % BASE_URL
 SEARCH_URL = '%s/api/galleries/search' % BASE_URL
+TAG_URL = '%s/tag' % BASE_URL
+TAG_API_URL = '%s/api/galleries/tagged' % BASE_URL
 LOGIN_URL = '%s/login/' % BASE_URL
 FAV_URL = '%s/favorites/' % BASE_URL
 
