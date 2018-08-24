@@ -30,7 +30,7 @@ def main():
     if options.tag:
         tag_id = tag_guessing(options.tag)
         if tag_id:
-            doujinshis = tag_parser(tag_id)
+            doujinshis = tag_parser(tag_id, max_page=options.max_page)
             print_doujinshi(doujinshis)
             if options.is_download:
                 doujinshi_ids = map(lambda d: d['id'], doujinshis)

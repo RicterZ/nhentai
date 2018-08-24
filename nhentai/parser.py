@@ -161,15 +161,22 @@ def print_doujinshi(doujinshi_list):
     logger.info('Search Result\n{}'.format(data))
 
 
-def tag_parser(tag_id):
+def tag_parser(tag_id, max_page=1):
     logger.info('Get doujinshi of tag id: {0}'.format(tag_id))
     result = []
     response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+    page = max_page if max_page <= response['num_pages'] else int(response['num_pages'])
 
-    for row in response['result']:
-        title = row['title']['english']
-        title = title[:85] + '..' if len(title) > 85 else title
-        result.append({'id': row['id'], 'title': title})
+    for i in range(1, page+1):
+        logger.info('Get page {} ...'.format(i))
+
+        if page != 1:
+            response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+
+        for row in response['result']:
+            title = row['title']['english']
+            title = title[:85] + '..' if len(title) > 85 else title
+            result.append({'id': row['id'], 'title': title})
 
     if not result:
         logger.warn('Not found anything of tag id {}'.format(tag_id))
