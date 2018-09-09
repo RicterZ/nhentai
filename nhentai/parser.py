@@ -61,7 +61,7 @@ def login_parser(username, password):
     else:
         pages = 1
 
-    logger.info('Your have %d favorites in %d pages.' % (count, pages))
+    logger.info('You have %d favorites in %d pages.' % (count, pages))
 
     if os.getenv('DEBUG'):
         pages = 1

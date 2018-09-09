@@ -11,6 +11,7 @@ from nhentai.utils import format_filename
 EXT_MAP = {
     'j': 'jpg',
     'p': 'png',
+    'g': 'gif',
 }
 
 
