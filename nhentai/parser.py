@@ -138,14 +138,21 @@ def doujinshi_parser(id_):
 def search_parser(keyword, page):
     logger.debug('Searching doujinshis using keywords {0}'.format(keyword))
     result = []
-    try:
-        response = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page}).json()
-        if 'result' not in response:
-            raise Exception('No result in response')
-    except requests.ConnectionError as e:
-        logger.critical(e)
-        logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
-        exit(1)
+    i=0
+    while i<5:
+        try:
+            response = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page}).json()
+        except Exception as e:
+            i+=1
+            if not i<5:
+                logger.critical(str(e))
+                logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
+                exit(1)
+            continue
+        break
+
+    if 'result' not in response:
+        raise Exception('No result in response')
 
     for row in response['result']:
         title = row['title']['english']
@@ -167,11 +174,37 @@ def print_doujinshi(doujinshi_list):
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
-def tag_parser(tag_id):
+def tag_parser(tag_id, max_page=1):
     logger.info('Searching for doujinshi with tag id {0}'.format(tag_id))
     result = []
-    response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+    i=0
+    while i<5:
+        try:
+            response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+        except Exception as e:
+            i+=1
+            if not i<5:
+                logger.critical(str(e))
+                exit(1)
+            continue
+        break
+    page = max_page if max_page <= response['num_pages'] else int(response['num_pages'])
 
+    for i in range(1, page+1):
+        logger.info('Getting page {} ...'.format(i))
+
+        if page != 1:
+            i=0
+            while i<5:
+                try:
+                    response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+                except Exception as e:
+                    i+=1
+                    if not i<5:
+                        logger.critical(str(e))
+                        exit(1)
+                    continue
+                break
     for row in response['result']:
         title = row['title']['english']
         title = title[:85] + '..' if len(title) > 85 else title
@@ -179,7 +212,7 @@ def tag_parser(tag_id):
 
     if not result:
         logger.warn('No results for tag id {}'.format(tag_id))
-
+    
     return result
 
 
@@ -187,7 +220,18 @@ def tag_guessing(tag_name):
     tag_name = tag_name.lower()
     tag_name = tag_name.replace(' ', '-')
     logger.info('Trying to get tag_id of tag \'{0}\''.format(tag_name))
-    response = request('get', url='%s/%s' % (constant.TAG_URL, tag_name)).content
+    i=0
+    while i<5:
+        try:
+            response = request('get', url='%s/%s' % (constant.TAG_URL, tag_name)).content
+        except Exception as e:
+            i+=1
+            if not i<5:
+                logger.critical(str(e))
+                exit(1)
+            continue
+        break
+
     html = BeautifulSoup(response, 'html.parser')
     first_item = html.find('div', attrs={'class': 'gallery'})
     if not first_item:

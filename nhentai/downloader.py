@@ -87,7 +87,7 @@ class Downloader(Singleton):
         elif result == -1:
             logger.warning('url {} return status code 404'.format(data))
         else:
-            logger.log(15, '{0} downloadede successfully'.format(data))
+            logger.log(15, '{0} downloaded successfully'.format(data))
 
     def download(self, queue, folder=''):
         if not isinstance(folder, text):
