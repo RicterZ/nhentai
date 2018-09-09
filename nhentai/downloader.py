@@ -32,17 +32,27 @@ class Downloader(Singleton):
         self.timeout = timeout
 
     def _download(self, url, folder='', filename='', retried=0):
-        logger.info('Start downloading: {0} ...'.format(url))
+        logger.info('Starting to download {0} ...'.format(url))
         filename = filename if filename else os.path.basename(urlparse(url).path)
         base_filename, extension = os.path.splitext(filename)
         try:
             if os.path.exists(os.path.join(folder, base_filename.zfill(3) + extension)):
-                logger.warning('File: {0} existed, ignore.'.format(os.path.join(folder, base_filename.zfill(3) +
+                logger.warning('File: {0} exists, ignoring'.format(os.path.join(folder, base_filename.zfill(3) +
                                                                                 extension)))
                 return 1, url
 
             with open(os.path.join(folder, base_filename.zfill(3) + extension), "wb") as f:
-                response = request('get', url, stream=True, timeout=self.timeout)
+                i=0
+                while i<10:
+                    try:
+                        response = request('get', url, stream=True, timeout=self.timeout)
+                    except Exception as e:
+                        i+=1
+                        if not i<10:
+                            logger.critical(str(e))
+                            return 0, None
+                        continue
+                    break
                 if response.status_code != 200:
                     raise NhentaiImageNotExistException
                 length = response.headers.get('content-length')
@@ -77,7 +87,7 @@ class Downloader(Singleton):
         elif result == -1:
             logger.warning('url {} return status code 404'.format(data))
         else:
-            logger.log(15, '{0} download successfully'.format(data))
+            logger.log(15, '{0} downloadede successfully'.format(data))
 
     def download(self, queue, folder=''):
         if not isinstance(folder, text):
@@ -87,7 +97,7 @@ class Downloader(Singleton):
             folder = os.path.join(self.path, folder)
 
         if not os.path.exists(folder):
-            logger.warn('Path \'{0}\' not exist.'.format(folder))
+            logger.warn('Path \'{0}\' does not exist, creating.'.format(folder))
             try:
                 os.makedirs(folder)
             except EnvironmentError as e:

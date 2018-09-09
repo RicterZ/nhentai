@@ -40,23 +40,23 @@ def cmd_parser():
                           '\n\nEnvironment Variable:\n'
                           '  NHENTAI                 nhentai mirror url')
     parser.add_option('--download', dest='is_download', action='store_true',
-                      help='download doujinshi (for search result)')
+                      help='download doujinshi (for search results)')
     parser.add_option('--show-info', dest='is_show', action='store_true', help='just show the doujinshi information')
     parser.add_option('--id', type='string', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
     parser.add_option('--search', type='string', dest='keyword', action='store', help='search doujinshi by keyword')
     parser.add_option('--page', type='int', dest='page', action='store', default=1,
-                      help='page number of search result')
+                      help='page number of search results')
     parser.add_option('--tag', type='string', dest='tag', action='store', help='download doujinshi by tag')
     parser.add_option('--max-page', type='int', dest='max_page', action='store', default=1,
                       help='The max page when recursive download tagged doujinshi')
     parser.add_option('--output', type='string', dest='output_dir', action='store', default='',
                       help='output dir')
     parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=5,
-                      help='thread count of download doujinshi')
+                      help='thread count for downloading doujinshi')
     parser.add_option('--timeout', type='int', dest='timeout', action='store', default=30,
-                      help='timeout of download doujinshi')
+                      help='timeout for downloading doujinshi')
     parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
-                      help='use proxy, example: http://127.0.0.1:1080')
+                      help='uses a proxy, for example: http://127.0.0.1:1080')
     parser.add_option('--html', dest='html_viewer', action='store_true',
                       help='generate a html viewer at current directory')
 
