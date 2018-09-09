@@ -48,8 +48,7 @@ def login_parser(username, password):
     html = BeautifulSoup(s.get(constant.FAV_URL).content, 'html.parser')
     count = html.find('span', attrs={'class': 'count'})
     if not count:
-        logger.error("Can't get your number of favorited doujins. Did the login 
-        failed?")
+        logger.error("Can't get your number of favorited doujins. Did the login failed?")
 
     count = int(count.text.strip('(').strip(')'))
     if count == 0:
