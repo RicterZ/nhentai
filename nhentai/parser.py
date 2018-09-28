@@ -5,6 +5,7 @@ import os
 import re
 import threadpool
 import requests
+import time
 from bs4 import BeautifulSoup
 from tabulate import tabulate
 
@@ -40,14 +41,14 @@ def login_parser(username, password):
         'password': password,
     }
     resp = s.post(constant.LOGIN_URL, data=login_dict)
-    if 'Invalid username (or email) or password' in resp.text:
+    if 'Invalid username/email or password' in resp.text:
         logger.error('Login failed, please check your username and password')
         exit(1)
 
     html = BeautifulSoup(s.get(constant.FAV_URL).content, 'html.parser')
     count = html.find('span', attrs={'class': 'count'})
     if not count:
-        logger.error('Cannot get count of your favorites, maybe login failed.')
+        logger.error("Can't get your number of favorited doujins. Did the login failed?")
 
     count = int(count.text.strip('(').strip(')'))
     if count == 0:
@@ -60,7 +61,7 @@ def login_parser(username, password):
     else:
         pages = 1
 
-    logger.info('Your have %d favorites in %d pages.' % (count, pages))
+    logger.info('You have %d favorites in %d pages.' % (count, pages))
 
     if os.getenv('DEBUG'):
         pages = 1
@@ -75,7 +76,7 @@ def login_parser(username, password):
 
     for page in range(1, pages+1):
         try:
-            logger.info('Getting doujinshi id of page %d' % page)
+            logger.info('Getting doujinshi ids of page %d' % page)
             resp = s.get(constant.FAV_URL + '?page=%d' % page).text
             ids = doujinshi_id.findall(resp)
             requests_ = threadpool.makeRequests(doujinshi_parser, ids, _callback)
@@ -92,16 +93,21 @@ def doujinshi_parser(id_):
         raise Exception('Doujinshi id({0}) is not valid'.format(id_))
 
     id_ = int(id_)
-    logger.log(15, 'Fetching doujinshi information of id {0}'.format(id_))
+    logger.log(15, 'Fetching information of doujinshi id {0}'.format(id_))
     doujinshi = dict()
     doujinshi['id'] = id_
     url = '{0}/{1}'.format(constant.DETAIL_URL, id_)
-
-    try:
-        response = request('get', url).json()
-    except Exception as e:
-        logger.critical(str(e))
-        exit(1)
+    i=0
+    while i<5:
+        try:
+            response = request('get', url).json()
+        except Exception as e:
+            i+=1
+            if not i<5:
+                logger.critical(str(e))
+                exit(1)
+            continue
+        break
 
     doujinshi['name'] = response['title']['english']
     doujinshi['subtitle'] = response['title']['japanese']
@@ -130,16 +136,23 @@ def doujinshi_parser(id_):
 
 
 def search_parser(keyword, page):
-    logger.debug('Searching doujinshis of keyword {0}'.format(keyword))
+    logger.debug('Searching doujinshis using keywords {0}'.format(keyword))
     result = []
-    try:
-        response = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page}).json()
-        if 'result' not in response:
-            raise Exception('No result in response')
-    except requests.ConnectionError as e:
-        logger.critical(e)
-        logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
-        exit(1)
+    i=0
+    while i<5:
+        try:
+            response = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page}).json()
+        except Exception as e:
+            i+=1
+            if not i<5:
+                logger.critical(str(e))
+                logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
+                exit(1)
+            continue
+        break
+
+    if 'result' not in response:
+        raise Exception('No result in response')
 
     for row in response['result']:
         title = row['title']['english']
@@ -147,7 +160,7 @@ def search_parser(keyword, page):
         result.append({'id': row['id'], 'title': title})
 
     if not result:
-        logger.warn('Not found anything of keyword {}'.format(keyword))
+        logger.warn('No results for keywords {}'.format(keyword))
 
     return result
 
@@ -157,30 +170,49 @@ def print_doujinshi(doujinshi_list):
         return
     doujinshi_list = [(i['id'], i['title']) for i in doujinshi_list]
     headers = ['id', 'doujinshi']
-    data = tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst')
-    logger.info('Search Result\n{}'.format(data))
+    logger.info('Search Result\n' +
+                tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
 def tag_parser(tag_id, max_page=1):
-    logger.info('Get doujinshi of tag id: {0}'.format(tag_id))
+    logger.info('Searching for doujinshi with tag id {0}'.format(tag_id))
     result = []
-    response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+    i=0
+    while i<5:
+        try:
+            response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+        except Exception as e:
+            i+=1
+            if not i<5:
+                logger.critical(str(e))
+                exit(1)
+            continue
+        break
     page = max_page if max_page <= response['num_pages'] else int(response['num_pages'])
 
     for i in range(1, page+1):
-        logger.info('Get page {} ...'.format(i))
+        logger.info('Getting page {} ...'.format(i))
 
         if page != 1:
-            response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
-
-        for row in response['result']:
-            title = row['title']['english']
-            title = title[:85] + '..' if len(title) > 85 else title
-            result.append({'id': row['id'], 'title': title})
+            i=0
+            while i<5:
+                try:
+                    response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+                except Exception as e:
+                    i+=1
+                    if not i<5:
+                        logger.critical(str(e))
+                        exit(1)
+                    continue
+                break
+    for row in response['result']:
+        title = row['title']['english']
+        title = title[:85] + '..' if len(title) > 85 else title
+        result.append({'id': row['id'], 'title': title})
 
     if not result:
-        logger.warn('Not found anything of tag id {}'.format(tag_id))
-
+        logger.warn('No results for tag id {}'.format(tag_id))
+    
     return result
 
 
@@ -188,7 +220,18 @@ def tag_guessing(tag_name):
     tag_name = tag_name.lower()
     tag_name = tag_name.replace(' ', '-')
     logger.info('Trying to get tag_id of tag \'{0}\''.format(tag_name))
-    response = request('get', url='%s/%s' % (constant.TAG_URL, tag_name)).content
+    i=0
+    while i<5:
+        try:
+            response = request('get', url='%s/%s' % (constant.TAG_URL, tag_name)).content
+        except Exception as e:
+            i+=1
+            if not i<5:
+                logger.critical(str(e))
+                exit(1)
+            continue
+        break
+
     html = BeautifulSoup(response, 'html.parser')
     first_item = html.find('div', attrs={'class': 'gallery'})
     if not first_item:

@@ -11,6 +11,7 @@ from nhentai.utils import format_filename
 EXT_MAP = {
     'j': 'jpg',
     'p': 'png',
+    'g': 'gif',
 }
 
 
@@ -53,7 +54,7 @@ class Doujinshi(object):
         logger.info(u'Print doujinshi information of {0}\n{1}'.format(self.id, tabulate(table)))
 
     def download(self):
-        logger.info('Start download doujinshi: %s' % self.name)
+        logger.info('Starting to download doujinshi: %s' % self.name)
         if self.downloader:
             download_queue = []
             for i in range(len(self.ext)):
@@ -61,7 +62,7 @@ class Doujinshi(object):
 
             self.downloader.download(download_queue, format_filename('%s-%s' % (self.id, self.name[:200])))
         else:
-            logger.critical('Downloader has not be loaded')
+            logger.critical('Downloader has not been loaded')
 
 
 if __name__ == '__main__':

@@ -23,7 +23,7 @@ def main():
 
     if options.login:
         username, password = options.login.split(':', 1)
-        logger.info('Login to nhentai use credential \'%s:%s\'' % (username, '*' * len(password)))
+        logger.info('Logging in to nhentai using credential pair \'%s:%s\'' % (username, '*' * len(password)))
         for doujinshi_info in login_parser(username=username, password=password):
             doujinshi_list.append(Doujinshi(**doujinshi_info))
 
@@ -68,7 +68,7 @@ def main():
 
 
 def signal_handler(signal, frame):
-    logger.error('Ctrl-C signal received. Quit.')
+    logger.error('Ctrl-C signal received. Stopping...')
     exit(1)
 
 
