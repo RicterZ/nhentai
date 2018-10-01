@@ -21,8 +21,6 @@ def main():
     doujinshi_ids = []
     doujinshi_list = []
 
-    import pdb; pdb.set_trace()
-
     if options.login:
         username, password = options.login.split(':', 1)
         logger.info('Logging in to nhentai using credential pair \'%s:%s\'' % (username, '*' * len(password)))
