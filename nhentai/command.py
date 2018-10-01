@@ -21,6 +21,8 @@ def main():
     doujinshi_ids = []
     doujinshi_list = []
 
+    import pdb; pdb.set_trace()
+
     if options.login:
         username, password = options.login.split(':', 1)
         logger.info('Logging in to nhentai using credential pair \'%s:%s\'' % (username, '*' * len(password)))
@@ -40,6 +42,9 @@ def main():
         print_doujinshi(doujinshis)
         if options.is_download:
             doujinshi_ids = map(lambda d: d['id'], doujinshis)
+
+    if not doujinshi_ids:
+        doujinshi_ids = options.id
 
     if doujinshi_ids:
         for id_ in doujinshi_ids:
