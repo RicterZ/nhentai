@@ -50,7 +50,7 @@ def login_parser(username, password):
     if not count:
         logger.error("Can't get your number of favorited doujins. Did the login failed?")
 
-    count = int(count.text.strip('(').strip(')'))
+    count = int(count.text.strip('(').strip(')').replace(',', ''))
     if count == 0:
         logger.warning('No favorites found')
         return []
