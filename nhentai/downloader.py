@@ -103,9 +103,6 @@ class Downloader(Singleton):
         if self.path:
             folder = os.path.join(self.path, folder)
 
-        if len(folder) > 100:
-            folder = folder[:100]
-
         if not os.path.exists(folder):
             logger.warn('Path \'{0}\' does not exist, creating.'.format(folder))
             try:

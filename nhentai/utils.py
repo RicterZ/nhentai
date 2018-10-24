@@ -86,9 +86,9 @@ def generate_html(output_dir='.', doujinshi_obj=None):
 def generate_cbz(output_dir='.', doujinshi_obj=None):
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, format_filename('%s-%s' % (doujinshi_obj.id,
-                                                                            str(doujinshi_obj.name[:200]))))    
+                                                                            doujinshi_obj.name)))
         cbz_filename = os.path.join(output_dir, format_filename('%s-%s.cbz' % (doujinshi_obj.id,
-                                                                            str(doujinshi_obj.name[:200]))))
+                                                                               doujinshi_obj.name)))
     else:
         cbz_filename = './doujinshi.cbz'
         doujinshi_dir = '.'
@@ -105,11 +105,6 @@ def generate_cbz(output_dir='.', doujinshi_obj=None):
     logger.log(15, 'Comic Book CBZ file has been write to \'{0}\''.format(doujinshi_dir))
 
 
-
-
-
-
-
 def format_filename(s):
     """Take a string and return a valid filename constructed from the string.
 Uses a whitelist approach: any characters not present in valid_chars are
@@ -124,4 +119,6 @@ an invalid filename.
     valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
     filename = ''.join(c for c in s if c in valid_chars)
     filename = filename.replace(' ', '_')  # I don't like spaces in filenames.
+    if len(filename) > 100:
+        filename = filename[:100]
     return filename
