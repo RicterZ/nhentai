@@ -41,20 +41,27 @@ class Downloader(Singleton):
                                                                                 extension)))
                 return 1, url
 
+            response = None
             with open(os.path.join(folder, base_filename.zfill(3) + extension), "wb") as f:
-                i=0
-                while i<10:
+                i = 0
+                while i < 10:
                     try:
                         response = request('get', url, stream=True, timeout=self.timeout)
+                        if response.status_code != 200:
+                            raise NhentaiImageNotExistException
+
+                    except NhentaiImageNotExistException as e:
+                        raise e
+
                     except Exception as e:
-                        i+=1
-                        if not i<10:
+                        i += 1
+                        if not i < 10:
                             logger.critical(str(e))
                             return 0, None
                         continue
+
                     break
-                if response.status_code != 200:
-                    raise NhentaiImageNotExistException
+
                 length = response.headers.get('content-length')
                 if length is None:
                     f.write(response.content)
@@ -95,6 +102,9 @@ class Downloader(Singleton):
 
         if self.path:
             folder = os.path.join(self.path, folder)
+
+        if len(folder) > 100:
+            folder = folder[:100]
 
         if not os.path.exists(folder):
             logger.warn('Path \'{0}\' does not exist, creating.'.format(folder))
