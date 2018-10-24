@@ -83,25 +83,27 @@ def generate_html(output_dir='.', doujinshi_obj=None):
         logger.warning('Writen HTML Viewer failed ({})'.format(str(e)))
 
 
-def generate_cbz(output_dir='.', doujinshi_obj=None):
+def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, format_filename('%s-%s' % (doujinshi_obj.id,
                                                                             doujinshi_obj.name)))
-        cbz_filename = os.path.join(output_dir, format_filename('%s-%s.cbz' % (doujinshi_obj.id,
-                                                                               doujinshi_obj.name)))
+        cbz_filename = os.path.join(os.path.join(doujinshi_dir, '..'), '%s.cbz' % doujinshi_obj.id)
     else:
         cbz_filename = './doujinshi.cbz'
         doujinshi_dir = '.'
 
     file_list = os.listdir(doujinshi_dir)
     file_list.sort()
-    
+
+    logger.info('Writing CBZ file to path: {}'.format(cbz_filename))
     with zipfile.ZipFile(cbz_filename, 'w') as cbz_pf:
         for image in file_list:
             image_path = os.path.join(doujinshi_dir, image)
             cbz_pf.write(image_path, image)
-            
-    shutil.rmtree(doujinshi_dir, ignore_errors=True)
+
+    if rm_origin_dir:
+        shutil.rmtree(doujinshi_dir, ignore_errors=True)
+
     logger.log(15, 'Comic Book CBZ file has been write to \'{0}\''.format(doujinshi_dir))
 
 

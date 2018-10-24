@@ -59,7 +59,7 @@ def main():
             if not options.is_nohtml and not options.is_cbz:
                 generate_html(options.output_dir, doujinshi)
             elif options.is_cbz:
-                generate_cbz(options.output_dir, doujinshi)
+                generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir)
 
         if not platform.system() == 'Windows':
             logger.log(15, '🍻 All done.')
