@@ -43,8 +43,7 @@ def generate_html(output_dir='.', doujinshi_obj=None):
     image_html = ''
 
     if doujinshi_obj is not None:
-        doujinshi_dir = os.path.join(output_dir, format_filename('%s-%s' % (doujinshi_obj.id,
-                                                                            doujinshi_obj.name)))
+        doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
     else:
         doujinshi_dir = '.'
 
@@ -85,8 +84,7 @@ def generate_html(output_dir='.', doujinshi_obj=None):
 
 def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
     if doujinshi_obj is not None:
-        doujinshi_dir = os.path.join(output_dir, format_filename('%s-%s' % (doujinshi_obj.id,
-                                                                            doujinshi_obj.name)))
+        doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
         cbz_filename = os.path.join(os.path.join(doujinshi_dir, '..'), '%s.cbz' % doujinshi_obj.id)
     else:
         cbz_filename = './doujinshi.cbz'
@@ -118,9 +116,9 @@ and append a file extension like '.txt', so I avoid the potential of using
 an invalid filename.
 
 """
-    valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+    valid_chars = "-_.()[] %s%s" % (string.ascii_letters, string.digits)
     filename = ''.join(c for c in s if c in valid_chars)
     filename = filename.replace(' ', '_')  # I don't like spaces in filenames.
     if len(filename) > 100:
-        filename = filename[:100]
+        filename = filename[:100] + '...]'
     return filename

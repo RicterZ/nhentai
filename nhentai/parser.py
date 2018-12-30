@@ -130,7 +130,7 @@ def doujinshi_parser(id_):
             elif tag_type not in doujinshi:
                 doujinshi[tag_type] = tag['name']
             else:
-                doujinshi[tag_type] += tag['name']
+                doujinshi[tag_type] += ', ' + tag['name']
 
     return doujinshi
 

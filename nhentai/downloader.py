@@ -29,6 +29,7 @@ class Downloader(Singleton):
         self.path = str(path)
         self.thread_count = thread
         self.threads = []
+        self.thread_pool = None
         self.timeout = timeout
 
     def _download(self, url, folder='', filename='', retried=0):

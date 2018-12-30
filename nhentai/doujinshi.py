@@ -17,6 +17,7 @@ EXT_MAP = {
 
 class DoujinshiInfo(dict):
     def __init__(self, **kwargs):
+        print(kwargs)
         super(DoujinshiInfo, self).__init__(**kwargs)
 
     def __getattr__(self, item):
@@ -36,6 +37,7 @@ class Doujinshi(object):
         self.downloader = None
         self.url = '%s/%d' % (DETAIL_URL, self.id)
         self.info = DoujinshiInfo(**kwargs)
+        self.filename = format_filename('[%s][%s][%s]' % (self.id, self.info.artist, self.name))
 
     def __repr__(self):
         return '<Doujinshi: {0}>'.format(self.name)
@@ -44,10 +46,10 @@ class Doujinshi(object):
         table = [
             ["Doujinshi", self.name],
             ["Subtitle", self.info.subtitle],
-            ["Characters", self.info.characters],
-            ["Authors", self.info.artists],
+            ["Characters", self.info.character],
+            ["Authors", self.info.artist],
             ["Language", self.info.language],
-            ["Tags", self.info.tags],
+            ["Tags", ', '.join(self.info.tag.keys())],
             ["URL", self.url],
             ["Pages", self.pages],
         ]
@@ -59,8 +61,7 @@ class Doujinshi(object):
             download_queue = []
             for i in range(len(self.ext)):
                 download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i+1, EXT_MAP[self.ext[i]]))
-
-            self.downloader.download(download_queue, format_filename('%s-%s' % (self.id, self.name[:200])))
+                self.downloader.download(download_queue, self.filename)
         else:
             logger.critical('Downloader has not been loaded')
 
