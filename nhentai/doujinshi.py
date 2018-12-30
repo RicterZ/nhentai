@@ -17,7 +17,6 @@ EXT_MAP = {
 
 class DoujinshiInfo(dict):
     def __init__(self, **kwargs):
-        print(kwargs)
         super(DoujinshiInfo, self).__init__(**kwargs)
 
     def __getattr__(self, item):
