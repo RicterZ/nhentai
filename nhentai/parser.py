@@ -281,20 +281,21 @@ def tag_parser(tag_name, max_page=1):
     tag_name = tag_name.lower()
     tag_name = tag_name.replace(' ', '-')
 
-    logger.info('Searching for doujinshi with tag \'{0}\''.format(tag_name))
-    response = request('get', url='%s/%s' % (constant.TAG_URL, tag_name)).content
+    for p in range(1, max_page + 1):
+        logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, tag_name))
+        response = request('get', url='%s/%s?page=%d' % (constant.TAG_URL, tag_name, p)).content
 
-    html = BeautifulSoup(response, 'html.parser')
-    doujinshi_items = html.find_all('div', attrs={'class': 'gallery'})
-    if not doujinshi_items:
-        logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
-        return
+        html = BeautifulSoup(response, 'html.parser')
+        doujinshi_items = html.find_all('div', attrs={'class': 'gallery'})
+        if not doujinshi_items:
+            logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
+            return
 
-    for i in doujinshi_items[:2]:
-        doujinshi_id = i.a.attrs['href'].strip('/g')
-        doujinshi_title = i.a.text.strip()
-        doujinshi_title = doujinshi_title if len(doujinshi_title) < 85 else doujinshi_title[:82] + '...'
-        result.append({'title': doujinshi_title, 'id': doujinshi_id})
+        for i in doujinshi_items:
+            doujinshi_id = i.a.attrs['href'].strip('/g')
+            doujinshi_title = i.a.text.strip()
+            doujinshi_title = doujinshi_title if len(doujinshi_title) < 85 else doujinshi_title[:82] + '...'
+            result.append({'title': doujinshi_title, 'id': doujinshi_id})
 
     if not result:
         logger.warn('No results for tag \'{}\''.format(tag_name))
