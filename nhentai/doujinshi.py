@@ -58,9 +58,17 @@ class Doujinshi(object):
         logger.info('Starting to download doujinshi: %s' % self.name)
         if self.downloader:
             download_queue = []
+
+            for i in range(1, self.pages + 1):
+                download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext))
+
+            self.downloader.download(download_queue, self.filename)
+
+            '''
             for i in range(len(self.ext)):
                 download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i+1, EXT_MAP[self.ext[i]]))
-                self.downloader.download(download_queue, self.filename)
+            '''
+
         else:
             logger.critical('Downloader has not been loaded')
 

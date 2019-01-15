@@ -121,4 +121,7 @@ an invalid filename.
     filename = filename.replace(' ', '_')  # I don't like spaces in filenames.
     if len(filename) > 100:
         filename = filename[:100] + '...]'
+
+    # Remove [] from filename
+    filename = filename.replace('[]', '')
     return filename
