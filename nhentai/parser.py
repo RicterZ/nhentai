@@ -74,7 +74,7 @@ def login_parser(username, password):
 
     thread_pool = threadpool.ThreadPool(5)
 
-    for page in range(1, pages+1):
+    for page in range(1, pages + 1):
         try:
             logger.info('Getting doujinshi ids of page %d' % page)
             resp = s.get(constant.FAV_URL + '?page=%d' % page).text
@@ -93,17 +93,96 @@ def doujinshi_parser(id_):
         raise Exception('Doujinshi id({0}) is not valid'.format(id_))
 
     id_ = int(id_)
+    logger.log(15, 'Fetching doujinshi information of id {0}'.format(id_))
+    doujinshi = dict()
+    doujinshi['id'] = id_
+    url = '{0}/{1}/'.format(constant.DETAIL_URL, id_)
+
+    try:
+        response = request('get', url).content
+    except Exception as e:
+        logger.critical(str(e))
+        raise SystemExit
+
+    html = BeautifulSoup(response, 'html.parser')
+    doujinshi_info = html.find('div', attrs={'id': 'info'})
+
+    title = doujinshi_info.find('h1').text
+    subtitle = doujinshi_info.find('h2')
+
+    doujinshi['name'] = title
+    doujinshi['subtitle'] = subtitle.text if subtitle else ''
+
+    doujinshi_cover = html.find('div', attrs={'id': 'cover'})
+    img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png)$', doujinshi_cover.a.img.attrs['data-src'])
+    if not img_id:
+        logger.critical('Tried yo get image id failed')
+        exit(1)
+
+    doujinshi['img_id'] = img_id.group(1)
+    doujinshi['ext'] = img_id.group(2)
+
+    pages = 0
+    for _ in doujinshi_info.find_all('div', class_=''):
+        pages = re.search('([\d]+) pages', _.text)
+        if pages:
+            pages = pages.group(1)
+            break
+    doujinshi['pages'] = int(pages)
+
+    # gain information of the doujinshi
+    information_fields = doujinshi_info.find_all('div', attrs={'class': 'field-name'})
+    needed_fields = ['Characters', 'Artists', 'Language', 'Tags']
+    for field in information_fields:
+        field_name = field.contents[0].strip().strip(':')
+        if field_name in needed_fields:
+            data = [sub_field.contents[0].strip() for sub_field in
+                    field.find_all('a', attrs={'class': 'tag'})]
+            doujinshi[field_name.lower()] = ', '.join(data)
+
+    return doujinshi
+
+
+def search_parser(keyword, page):
+    logger.debug('Searching doujinshis of keyword {0}'.format(keyword))
+    result = []
+    try:
+        response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page}).content
+    except requests.ConnectionError as e:
+        logger.critical(e)
+        logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
+        raise SystemExit
+
+    html = BeautifulSoup(response, 'html.parser')
+    doujinshi_search_result = html.find_all('div', attrs={'class': 'gallery'})
+    for doujinshi in doujinshi_search_result:
+        doujinshi_container = doujinshi.find('div', attrs={'class': 'caption'})
+        title = doujinshi_container.text.strip()
+        title = (title[:85] + '..') if len(title) > 85 else title
+        id_ = re.search('/g/(\d+)/', doujinshi.a['href']).group(1)
+        result.append({'id': id_, 'title': title})
+    if not result:
+        logger.warn('Not found anything of keyword {}'.format(keyword))
+
+    return result
+
+
+def __api_suspended_doujinshi_parser(id_):
+    if not isinstance(id_, (int,)) and (isinstance(id_, (str,)) and not id_.isdigit()):
+        raise Exception('Doujinshi id({0}) is not valid'.format(id_))
+
+    id_ = int(id_)
     logger.log(15, 'Fetching information of doujinshi id {0}'.format(id_))
     doujinshi = dict()
     doujinshi['id'] = id_
     url = '{0}/{1}'.format(constant.DETAIL_URL, id_)
-    i=0
-    while i<5:
+    i = 0
+    while 5 > i:
         try:
             response = request('get', url).json()
         except Exception as e:
-            i+=1
-            if not i<5:
+            i += 1
+            if not i < 5:
                 logger.critical(str(e))
                 exit(1)
             continue
@@ -135,16 +214,16 @@ def doujinshi_parser(id_):
     return doujinshi
 
 
-def search_parser(keyword, page):
+def __api_suspended_search_parser(keyword, page):
     logger.debug('Searching doujinshis using keywords {0}'.format(keyword))
     result = []
-    i=0
-    while i<5:
+    i = 0
+    while i < 5:
         try:
             response = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page}).json()
         except Exception as e:
-            i+=1
-            if not i<5:
+            i += 1
+            if not i < 5:
                 logger.critical(str(e))
                 logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
                 exit(1)
@@ -177,30 +256,31 @@ def print_doujinshi(doujinshi_list):
 def tag_parser(tag_id, max_page=1):
     logger.info('Searching for doujinshi with tag id {0}'.format(tag_id))
     result = []
-    i=0
-    while i<5:
+    i = 0
+    while i < 5:
         try:
             response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
         except Exception as e:
-            i+=1
-            if not i<5:
+            i += 1
+            if not i < 5:
                 logger.critical(str(e))
                 exit(1)
             continue
         break
     page = max_page if max_page <= response['num_pages'] else int(response['num_pages'])
 
-    for i in range(1, page+1):
+    for i in range(1, page + 1):
         logger.info('Getting page {} ...'.format(i))
 
         if page != 1:
-            i=0
-            while i<5:
+            i = 0
+            while i < 5:
                 try:
-                    response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+                    response = request('get', url=constant.TAG_API_URL,
+                                       params={'sort': 'popular', 'tag_id': tag_id}).json()
                 except Exception as e:
-                    i+=1
-                    if not i<5:
+                    i += 1
+                    if not i < 5:
                         logger.critical(str(e))
                         exit(1)
                     continue
@@ -212,7 +292,7 @@ def tag_parser(tag_id, max_page=1):
 
     if not result:
         logger.warn('No results for tag id {}'.format(tag_id))
-    
+
     return result
 
 
@@ -220,13 +300,13 @@ def tag_guessing(tag_name):
     tag_name = tag_name.lower()
     tag_name = tag_name.replace(' ', '-')
     logger.info('Trying to get tag_id of tag \'{0}\''.format(tag_name))
-    i=0
-    while i<5:
+    i = 0
+    while i < 5:
         try:
             response = request('get', url='%s/%s' % (constant.TAG_URL, tag_name)).content
         except Exception as e:
-            i+=1
-            if not i<5:
+            i += 1
+            if not i < 5:
                 logger.critical(str(e))
                 exit(1)
             continue
