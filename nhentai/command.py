@@ -5,7 +5,7 @@ import signal
 import platform
 
 from nhentai.cmdline import cmd_parser, banner
-from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, login_parser, tag_guessing, tag_parser
+from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, login_parser, tag_parser
 from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
@@ -28,12 +28,10 @@ def main():
             doujinshi_list.append(Doujinshi(**doujinshi_info))
 
     if options.tag:
-        tag_id = tag_guessing(options.tag)
-        if tag_id:
-            doujinshis = tag_parser(tag_id, max_page=options.max_page)
-            print_doujinshi(doujinshis)
-            if options.is_download:
-                doujinshi_ids = map(lambda d: d['id'], doujinshis)
+        doujinshis = tag_parser(options.tag, max_page=options.max_page)
+        print_doujinshi(doujinshis)
+        if options.is_download:
+            doujinshi_ids = map(lambda d: d['id'], doujinshis)
 
     if options.keyword:
         doujinshis = search_parser(options.keyword, options.page)
