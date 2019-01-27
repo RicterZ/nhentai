@@ -115,12 +115,18 @@ def doujinshi_parser(id_):
 
     doujinshi_cover = html.find('div', attrs={'id': 'cover'})
     img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png)$', doujinshi_cover.a.img.attrs['data-src'])
+
+    ext = []
+    for i in html.find_all('div', attrs={'class': 'thumb-container'}):
+        _, ext_name = os.path.basename(i.img.attrs['data-src']).rsplit('.', 1)
+        ext.append(ext_name)
+
     if not img_id:
         logger.critical('Tried yo get image id failed')
         exit(1)
 
     doujinshi['img_id'] = img_id.group(1)
-    doujinshi['ext'] = img_id.group(2)
+    doujinshi['ext'] = ext
 
     pages = 0
     for _ in doujinshi_info.find_all('div', class_=''):

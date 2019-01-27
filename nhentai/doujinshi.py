@@ -59,8 +59,11 @@ class Doujinshi(object):
         if self.downloader:
             download_queue = []
 
-            for i in range(1, self.pages + 1):
-                download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext))
+            if len(self.ext) != self.pages:
+                logger.warning('Page count and ext count do not equal')
+
+            for i in range(1, min(self.pages, len(self.ext)) + 1):
+                download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext[i-1]))
 
             self.downloader.download(download_queue, self.filename)
 
