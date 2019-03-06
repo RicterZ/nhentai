@@ -37,6 +37,7 @@ def banner():
 def cmd_parser():
     parser = OptionParser('\n  nhentai --search [keyword] --download'
                           '\n  NHENTAI=http://h.loli.club nhentai --id [ID ...]'
+                          '\n  nhentai --file [filename]'    
                           '\n\nEnvironment Variable:\n'
                           '  NHENTAI                 nhentai mirror url')
     parser.add_option('--download', dest='is_download', action='store_true',
@@ -70,7 +71,8 @@ def cmd_parser():
                       help='Generate Comic Book CBZ File')
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
                       help='Remove downloaded doujinshi dir when generated CBZ file.')
-                      
+    parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='Read gallery IDs from file.')
+
     try:
         sys.argv = list(map(lambda x: unicode(x.decode(sys.stdin.encoding)), sys.argv))
     except (NameError, TypeError):
@@ -97,6 +99,11 @@ def cmd_parser():
     if args.id:
         _ = map(lambda id: id.strip(), args.id.split(','))
         args.id = set(map(int, filter(lambda id_: id_.isdigit(), _)))
+
+    if args.file:
+        with open(args.file, 'r') as f:
+            _ = map(lambda id: id.strip(), f.readlines())
+            args.id = set(map(int, filter(lambda id_: id_.isdigit(), _)))
 
     if (args.is_download or args.is_show) and not args.id and not args.keyword and \
             not args.login and not args.tag:
