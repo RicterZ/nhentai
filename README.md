@@ -29,6 +29,11 @@ Download specified doujinshi:
 nhentai --id=123855,123866
 ```
 
+Download doujinshi with ids specified in a file:
+```bash
+nhentai --file=doujinshi.txt
+```
+
 Search a keyword and download the first page:
 ```bash
 nhentai --search="tomori" --page=1 --download
