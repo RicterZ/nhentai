@@ -37,7 +37,7 @@ def _get_csrf_token(content):
 
 
 def login(username, password):
-    csrf_token = _get_csrf_token(request('get', url=constant.LOGIN_URL).content)
+    csrf_token = _get_csrf_token(request('get', url=constant.LOGIN_URL).text)
     if os.getenv('DEBUG'):
         logger.info('Getting CSRF token ...')
 
@@ -51,15 +51,15 @@ def login(username, password):
     }
     resp = request('post', url=constant.LOGIN_URL, data=login_dict)
 
-    if 'You\'re loading pages way too quickly.' in resp.content:
-        csrf_token = _get_csrf_token(resp.content)
+    if 'You\'re loading pages way too quickly.' in resp.text:
+        csrf_token = _get_csrf_token(resp.text)
         resp = request('post', url=resp.url, data={'csrfmiddlewaretoken': csrf_token, 'next': '/'})
 
-    if 'Invalid username/email or password' in resp.content:
+    if 'Invalid username/email or password' in resp.text:
         logger.error('Login failed, please check your username and password')
         exit(1)
 
-    if 'You\'re loading pages way too quickly.' in resp.content:
+    if 'You\'re loading pages way too quickly.' in resp.text:
         logger.error('You meet challenge again, please submit a issue at https://github.com/RicterZ/nhentai/issues')
         exit(2)
 
