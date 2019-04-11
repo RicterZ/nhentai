@@ -14,6 +14,7 @@ SEARCH_URL = '%s/search/' % BASE_URL
 TAG_URL = '%s/tag' % BASE_URL
 TAG_API_URL = '%s/api/galleries/tagged' % BASE_URL
 LOGIN_URL = '%s/login/' % BASE_URL
+CHALLENGE_URL = '%s/challenge' % BASE_URL
 FAV_URL = '%s/favorites/' % BASE_URL
 
 u = urlparse(BASE_URL)

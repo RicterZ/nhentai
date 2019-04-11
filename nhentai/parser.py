@@ -5,6 +5,7 @@ import os
 import re
 import threadpool
 import requests
+import time
 from bs4 import BeautifulSoup
 from tabulate import tabulate
 
@@ -13,6 +14,10 @@ from nhentai.logger import logger
 
 
 session = requests.Session()
+session.headers.update({
+    'Referer': constant.LOGIN_URL,
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36',
+})
 
 
 def request(method, url, **kwargs):
@@ -23,17 +28,21 @@ def request(method, url, **kwargs):
     return getattr(session, method)(url, proxies=constant.PROXY, verify=False, **kwargs)
 
 
-def login(username, password):
-    global session
-    request('get', url=constant.LOGIN_URL)
-    session.headers.update({'Referer': constant.LOGIN_URL})
-    content = request('get', url=constant.LOGIN_URL).content
+def _get_csrf_token(content):
     html = BeautifulSoup(content, 'html.parser')
     csrf_token_elem = html.find('input', attrs={'name': 'csrfmiddlewaretoken'})
-
     if not csrf_token_elem:
         raise Exception('Cannot find csrf token to login')
-    csrf_token = csrf_token_elem.attrs['value']
+    return csrf_token_elem.attrs['value']
+
+
+def login(username, password):
+    csrf_token = _get_csrf_token(request('get', url=constant.LOGIN_URL).content)
+    if os.getenv('DEBUG'):
+        logger.info('Getting CSRF token ...')
+
+    if os.getenv('DEBUG'):
+        logger.info('CSRF token is {}'.format(csrf_token))
 
     login_dict = {
         'csrfmiddlewaretoken': csrf_token,
@@ -41,9 +50,18 @@ def login(username, password):
         'password': password,
     }
     resp = request('post', url=constant.LOGIN_URL, data=login_dict)
-    if 'Invalid username/email or password' in resp.text:
+
+    if 'You\'re loading pages way too quickly.' in resp.content:
+        csrf_token = _get_csrf_token(resp.content)
+        resp = request('post', url=resp.url, data={'csrfmiddlewaretoken': csrf_token, 'next': '/'})
+
+    if 'Invalid username/email or password' in resp.content:
         logger.error('Login failed, please check your username and password')
         exit(1)
+
+    if 'You\'re loading pages way too quickly.' in resp.content:
+        logger.error('You meet challenge again, please submit a issue at https://github.com/RicterZ/nhentai/issues')
+        exit(2)
 
 
 def login_parser():
@@ -51,6 +69,7 @@ def login_parser():
     count = html.find('span', attrs={'class': 'count'})
     if not count:
         logger.error("Can't get your number of favorited doujins. Did the login failed?")
+        return
 
     count = int(count.text.strip('(').strip(')').replace(',', ''))
     if count == 0:
