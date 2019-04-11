@@ -16,7 +16,7 @@ from nhentai.logger import logger
 session = requests.Session()
 session.headers.update({
     'Referer': constant.LOGIN_URL,
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36',
+    'User-Agent': 'nhentai command line client (https://github.com/RicterZ/nhentai)',
 })
 
 
