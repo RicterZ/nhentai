@@ -18,12 +18,14 @@ nHentai is a CLI tool for downloading doujinshi from [nhentai.net](http://nhenta
     cd nhentai
     python setup.py install
     
-### Gentoo
+### Installation (Gentoo)
 
     layman -fa glicOne
     sudo emerge net-misc/nhentai
 
 ### Usage
+**IMPORTANT**: To bypass the nhentai frequency limit, you should use `--login` option to log into nhentai.net.
+
 Download specified doujinshi:
 ```bash
 nhentai --id=123855,123866
