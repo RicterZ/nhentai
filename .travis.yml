@@ -12,8 +12,10 @@ install:
     - python setup.py install
 
 script:
+    - echo 268642 > /tmp/test.txt
     - NHENTAI=https://nhentai.net nhentai --search umaru
     - NHENTAI=https://nhentai.net nhentai --id=152503,146134 -t 10 --output=/tmp/
     - NHENTAI=https://nhentai.net nhentai -l nhentai_test:nhentai --download --output=/tmp/
     - NHENTAI=https://nhentai.net nhentai --tag lolicon
     - NHENTAI=https://nhentai.net nhentai --id 92066 --output=/tmp/ --cbz
+    - NHENTAI=https://nhentai.net nhentai --file /tmp/test.txt
