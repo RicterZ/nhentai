@@ -60,7 +60,8 @@ def login(username, password):
         exit(1)
 
     if 'You\'re loading pages way too quickly.' in resp.text:
-        logger.error('You meet challenge again, please submit a issue at https://github.com/RicterZ/nhentai/issues')
+        logger.error('You meet challenge insistently, please submit a issue'
+                     ' at https://github.com/RicterZ/nhentai/issues')
         exit(2)
 
 
