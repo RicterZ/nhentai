@@ -5,7 +5,7 @@ import signal
 import platform
 
 from nhentai.cmdline import cmd_parser, banner
-from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, login_parser, tag_parser
+from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, login_parser, tag_parser, login
 from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
@@ -24,8 +24,11 @@ def main():
     if options.login:
         username, password = options.login.split(':', 1)
         logger.info('Logging in to nhentai using credential pair \'%s:%s\'' % (username, '*' * len(password)))
-        for doujinshi_info in login_parser(username=username, password=password):
-            doujinshi_list.append(Doujinshi(**doujinshi_info))
+        login(username, password)
+
+        if options.is_download:
+            for doujinshi_info in login_parser():
+                doujinshi_list.append(Doujinshi(**doujinshi_info))
 
     if options.tag:
         doujinshis = tag_parser(options.tag, max_page=options.max_page)

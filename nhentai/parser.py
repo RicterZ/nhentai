@@ -5,7 +5,6 @@ import os
 import re
 import threadpool
 import requests
-import time
 from bs4 import BeautifulSoup
 from tabulate import tabulate
 
@@ -13,21 +12,22 @@ import nhentai.constant as constant
 from nhentai.logger import logger
 
 
+session = requests.Session()
+
+
 def request(method, url, **kwargs):
-    if not hasattr(requests, method):
-        raise AttributeError('\'requests\' object has no attribute \'{0}\''.format(method))
+    global session
+    if not hasattr(session, method):
+        raise AttributeError('\'requests.Session\' object has no attribute \'{0}\''.format(method))
 
-    return requests.__dict__[method](url, proxies=constant.PROXY, verify=False, **kwargs)
+    return getattr(session, method)(url, proxies=constant.PROXY, verify=False, **kwargs)
 
 
-def login_parser(username, password):
-    s = requests.Session()
-    s.proxies = constant.PROXY
-    s.verify = False
-    s.headers.update({'Referer': constant.LOGIN_URL})
-
-    s.get(constant.LOGIN_URL)
-    content = s.get(constant.LOGIN_URL).content
+def login(username, password):
+    global session
+    request('get', url=constant.LOGIN_URL)
+    session.headers.update({'Referer': constant.LOGIN_URL})
+    content = request('get', url=constant.LOGIN_URL).content
     html = BeautifulSoup(content, 'html.parser')
     csrf_token_elem = html.find('input', attrs={'name': 'csrfmiddlewaretoken'})
 
@@ -40,12 +40,14 @@ def login_parser(username, password):
         'username_or_email': username,
         'password': password,
     }
-    resp = s.post(constant.LOGIN_URL, data=login_dict)
+    resp = request('post', url=constant.LOGIN_URL, data=login_dict)
     if 'Invalid username/email or password' in resp.text:
         logger.error('Login failed, please check your username and password')
         exit(1)
 
-    html = BeautifulSoup(s.get(constant.FAV_URL).content, 'html.parser')
+
+def login_parser():
+    html = BeautifulSoup(request('get', constant.FAV_URL).content, 'html.parser')
     count = html.find('span', attrs={'class': 'count'})
     if not count:
         logger.error("Can't get your number of favorited doujins. Did the login failed?")
@@ -77,7 +79,7 @@ def login_parser(username, password):
     for page in range(1, pages + 1):
         try:
             logger.info('Getting doujinshi ids of page %d' % page)
-            resp = s.get(constant.FAV_URL + '?page=%d' % page).text
+            resp = request('get', constant.FAV_URL + '?page=%d' % page).text
             ids = doujinshi_id.findall(resp)
             requests_ = threadpool.makeRequests(doujinshi_parser, ids, _callback)
             [thread_pool.putRequest(req) for req in requests_]
