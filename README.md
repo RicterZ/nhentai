@@ -7,7 +7,7 @@ nhentai
     |_| |_|_| |_|\___|_| |_|\__\__,_|_|
 
 あなたも変態。 いいね?  
-[![Build Status](https://travis-ci.org/RicterZ/nhentai.svg?branch=master)](https://travis-ci.org/RicterZ/nhentai) ![nhentai PyPI Downloads](https://pypistats.com/badge/nhentai.svg)  
+[![Build Status](https://travis-ci.org/RicterZ/nhentai.svg?branch=master)](https://travis-ci.org/RicterZ/nhentai) ![nhentai PyPI Downloads](https://img.shields.io/pypi/dm/nhentai.svg)  
 
 
 nHentai is a CLI tool for downloading doujinshi from [nhentai.net](http://nhentai.net).
