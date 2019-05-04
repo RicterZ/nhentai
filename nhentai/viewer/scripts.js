@@ -46,16 +46,32 @@ document.getElementById('image-container').onclick = event => {
 document.onkeypress = event => {
     switch (event.key.toLowerCase()) {
         // Previous Image
-        case 'arrowleft':
         case 'a':
             changePage(currentPage - 1);
             break;
 
         // Next Image
         case ' ':
+        case 'esc': // future close page function
         case 'enter':
-        case 'arrowright':
         case 'd':
+            changePage(currentPage + 1);
+            break;
+    }// remove arrow cause it won't work
+};
+
+document.onkeydown = event =>{
+    switch (event.keyCode) {
+        case 37: //left
+            changePage(currentPage - 1);
+            break;
+        case 38: //up
+            changePage(currentPage - 1);
+            break;
+        case 39: //right
+            changePage(currentPage + 1);
+            break;
+        case 40: //down
             changePage(currentPage + 1);
             break;
     }
