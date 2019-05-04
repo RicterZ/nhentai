@@ -26,9 +26,13 @@ def main():
         logger.info('Logging in to nhentai using credential pair \'%s:%s\'' % (username, '*' * len(password)))
         login(username, password)
 
-        if options.is_download:
+        if options.is_download or options.is_show:
             for doujinshi_info in login_parser():
                 doujinshi_list.append(Doujinshi(**doujinshi_info))
+
+            if options.is_show and not options.is_download:
+                print_doujinshi([{'id': i.id, 'title': i.name} for i in doujinshi_list])
+                exit(0)
 
     if options.tag:
         doujinshis = tag_parser(options.tag, max_page=options.max_page)
@@ -38,6 +42,7 @@ def main():
 
     if options.keyword:
         doujinshis = search_parser(options.keyword, options.page)
+        print(doujinshis)
         print_doujinshi(doujinshis)
         if options.is_download:
             doujinshi_ids = map(lambda d: d['id'], doujinshis)

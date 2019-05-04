@@ -48,7 +48,7 @@ class Doujinshi(object):
             ["Characters", self.info.character],
             ["Authors", self.info.artist],
             ["Language", self.info.language],
-            ["Tags", ', '.join(self.info.tag.keys())],
+            ["Tags", self.info.tags],
             ["URL", self.url],
             ["Pages", self.pages],
         ]

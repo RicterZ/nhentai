@@ -95,7 +95,7 @@ def login_parser():
         ret.append(result)
 
     # TODO: reduce threads number ...
-    thread_pool = threadpool.ThreadPool(3)
+    thread_pool = threadpool.ThreadPool(1)
 
     for page in range(1, pages + 1):
         try:
