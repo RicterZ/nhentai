@@ -341,4 +341,3 @@ def tag_parser(tag_name, max_page=1):
 
 if __name__ == '__main__':
     print(doujinshi_parser("32271"))
-    eval
