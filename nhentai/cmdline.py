@@ -97,7 +97,7 @@ def cmd_parser():
             logger.warning('YOU DO NOT SPECIFY `--download` OPTION !!!')
 
     if args.id:
-        _ = map(lambda id: id.strip(), args.id.split(','))
+        _ = map(lambda id_: id_.strip(), args.id.split(','))
         args.id = set(map(int, filter(lambda id_: id_.isdigit(), _)))
 
     if args.file:

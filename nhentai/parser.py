@@ -70,7 +70,7 @@ def login_parser():
     count = html.find('span', attrs={'class': 'count'})
     if not count:
         logger.error("Can't get your number of favorited doujins. Did the login failed?")
-        return
+        return []
 
     count = int(count.text.strip('(').strip(')').replace(',', ''))
     if count == 0:
@@ -94,7 +94,8 @@ def login_parser():
     def _callback(request, result):
         ret.append(result)
 
-    thread_pool = threadpool.ThreadPool(5)
+    # TODO: reduce threads number ...
+    thread_pool = threadpool.ThreadPool(3)
 
     for page in range(1, pages + 1):
         try:
@@ -121,7 +122,14 @@ def doujinshi_parser(id_):
     url = '{0}/{1}/'.format(constant.DETAIL_URL, id_)
 
     try:
-        response = request('get', url).content
+        response = request('get', url)
+        if response.status_code in (200, ):
+            response = response.content
+        else:
+            logger.debug('Slow down and retry ({}) ...'.format(id_))
+            time.sleep(1)
+            return doujinshi_parser(str(id_))
+
     except Exception as e:
         logger.critical(str(e))
         raise SystemExit
@@ -333,3 +341,4 @@ def tag_parser(tag_name, max_page=1):
 
 if __name__ == '__main__':
     print(doujinshi_parser("32271"))
+    eval
