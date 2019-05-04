@@ -7,7 +7,7 @@ nhentai
     |_| |_|_| |_|\___|_| |_|\__\__,_|_|
 
 あなたも変態。 いいね?  
-[![Build Status](https://travis-ci.org/RicterZ/nhentai.svg?branch=master)](https://travis-ci.org/RicterZ/nhentai) ![nhentai PyPI Downloads](https://img.shields.io/pypi/dm/nhentai.svg)  
+[![Build Status](https://travis-ci.org/RicterZ/nhentai.svg?branch=master)](https://travis-ci.org/RicterZ/nhentai) ![nhentai PyPI Downloads](https://img.shields.io/pypi/dm/nhentai.svg) ![![license](https://opensource.org/licenses/MIT)](https://img.shields.io/cocoapods/l/AFNetworking.svg)
 
 
 nHentai is a CLI tool for downloading doujinshi from [nhentai.net](http://nhentai.net).
@@ -25,6 +25,8 @@ nHentai is a CLI tool for downloading doujinshi from [nhentai.net](http://nhenta
 
 ### Usage
 **IMPORTANT**: To bypass the nhentai frequency limit, you should use `--login` option to log into nhentai.net.
+
+*The default download folder will be the path where you run the command (CLI path).*
 
 Download specified doujinshi:
 ```bash
@@ -77,9 +79,6 @@ NHENTAI=http://h.loli.club nhentai --id 123456
 ![](./images/search.png)  
 ![](./images/download.png)  
 ![](./images/viewer.png)  
-
-### License  
-MIT
 
 ### あなたも変態
 ![](./images/image.jpg)
