@@ -57,7 +57,7 @@ def cmd_parser():
     parser.add_option('--timeout', type='int', dest='timeout', action='store', default=30,
                       help='timeout for downloading doujinshi')
     parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
-                      help='uses a proxy, for example: http://127.0.0.1:1080')
+                      help='uses a proxy, for example: --proxy "http://127.0.0.1:1080" or its alias "default"')
     parser.add_option('--html', dest='html_viewer', action='store_true',
                       help='generate a html viewer at current directory')
 
@@ -124,7 +124,12 @@ def cmd_parser():
 
     if args.proxy:
         proxy_url = urlparse(args.proxy)
-        if proxy_url.scheme not in ('http', 'https'):
+        if args.proxy == 'default' or 'd':
+            constant.PROXY = {
+                'http': "http://127.0.0.1:1080",
+                'https': "http://127.0.0.1:1080"
+            }
+        elif proxy_url.scheme not in ('http', 'https'):
             logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
         else:
             constant.PROXY = {'http': args.proxy, 'https': args.proxy}
