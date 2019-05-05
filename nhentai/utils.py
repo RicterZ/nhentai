@@ -81,6 +81,12 @@ def generate_html(output_dir='.', doujinshi_obj=None):
     except Exception as e:
         logger.warning('Writen HTML Viewer failed ({})'.format(str(e)))
 
+def generate_main_html(output_dir='.'):
+    """Generete a main html to show all the contain doujinshi.
+    With a link to thier `index.html`. 
+    Default output folder will be the CLI path.
+    """
+    pass
 
 def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
     if doujinshi_obj is not None:

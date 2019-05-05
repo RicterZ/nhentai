@@ -9,7 +9,7 @@ except ImportError:
     pass
 
 import nhentai.constant as constant
-from nhentai.utils import urlparse, generate_html
+from nhentai.utils import urlparse, generate_html, generate_main_html
 from nhentai.logger import logger
 
 try:
@@ -60,6 +60,8 @@ def cmd_parser():
                       help='uses a proxy, for example: --proxy "http://127.0.0.1:1080" or its alias "default"')
     parser.add_option('--html', dest='html_viewer', action='store_true',
                       help='generate a html viewer at current directory')
+    parser.add_option('--gen-main', dest='main_viewer', action='store_true',
+                      help='generate a main viewer contain all the doujin in the folder')
 
     parser.add_option('--login', '-l', type='str', dest='login', action='store',
                       help='username:password pair of nhentai account')
@@ -84,6 +86,10 @@ def cmd_parser():
 
     if args.html_viewer:
         generate_html()
+        exit(0)
+
+    if args.main_viewer:
+        generate_main_html()
         exit(0)
 
     if args.login:
