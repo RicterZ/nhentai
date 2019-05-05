@@ -100,7 +100,11 @@ def generate_main_html(output_dir='.'):
                 </div>\n\
             </div>\n'
     
-    os.chdir(output_dir) # switch to given dir
+    if output_dir == '':
+        os.chdir('.')
+    else:
+        os.chdir(output_dir) 
+    # switch to given dir
     doujinshi_dirs = next(os.walk('.'))[1] 
     # https://stackoverflow.com/questions/141291/how-to-list-only-top-level-directories-in-python
 

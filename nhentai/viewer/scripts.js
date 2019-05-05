@@ -50,6 +50,7 @@ document.onkeypress = event => {
         case 'a':
             changePage(currentPage - 1);
             break;
+        // Return to previous page
         case 'q':
             window.history.go(-1);
             break;
