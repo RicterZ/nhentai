@@ -122,17 +122,6 @@ Download your favorites with delay:
       # nHentai options
       --cookie=COOKIE       set cookie of nhentai to bypass Google recaptcha
 
-=======
-Options
-=======
-+ `-t, --thread`: Download threads, max: 10  
-+ `--output`:Output dir of saving doujinshi  
-+ `--tag`:Download by tag name  
-+ `--timeout`: Timeout of downloading each image   
-+ `--proxy`: Use proxy, example: http://127.0.0.1:8080/  
-+ `--login`: username:password pair of your nhentai account  
-+ `--nohtml`: Do not generate HTML  
-+ `--cbz`: Generate Comic Book CBZ File  
 
 ==============
 nHentai Mirror
