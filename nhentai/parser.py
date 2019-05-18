@@ -97,9 +97,7 @@ def favorites_parser():
             logger.info('Getting doujinshi ids of page %d' % page)
             resp = request('get', constant.FAV_URL + '?page=%d' % page).text
             ids = doujinshi_id.findall(resp)
-
-            for i in ids:
-                ret.append(doujinshi_parser(i))
+            ret.extend(ids)
 
         except Exception as e:
             logger.error('Error: %s, continue', str(e))

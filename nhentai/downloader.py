@@ -4,6 +4,8 @@ from future.builtins import str as text
 import os
 import requests
 import threadpool
+import time
+
 try:
     from urllib.parse import urlparse
 except ImportError:
@@ -23,7 +25,7 @@ class NhentaiImageNotExistException(Exception):
 
 class Downloader(Singleton):
 
-    def __init__(self, path='', thread=1, timeout=30):
+    def __init__(self, path='', thread=1, timeout=30, delay=0):
         if not isinstance(thread, (int, )) or thread < 1 or thread > 15:
             raise ValueError('Invalid threads count')
         self.path = str(path)
@@ -31,8 +33,11 @@ class Downloader(Singleton):
         self.threads = []
         self.thread_pool = None
         self.timeout = timeout
+        self.delay = delay
 
     def _download(self, url, folder='', filename='', retried=0):
+        if self.delay:
+            time.sleep(self.delay)
         logger.info('Starting to download {0} ...'.format(url))
         filename = filename if filename else os.path.basename(urlparse(url).path)
         base_filename, extension = os.path.splitext(filename)

@@ -38,11 +38,11 @@ Installation (Gentoo)
 =====
 Usage
 =====
-**IMPORTANT**: To bypass the nhentai frequency limit, you should use `--login` option to log into nhentai.net.
+**IMPORTANT**: To bypass the nhentai frequency limit, you should use `--cookie` option to store your cookie.
 *The default download folder will be the path where you run the command (CLI path).*
 
 
-Set your nhentai cookie aginest captcha:
+Set your nhentai cookie against captcha:
 
 .. code-block:: bash
 
@@ -54,7 +54,7 @@ Download specified doujinshi:
 
     nhentai --id=123855,123866
 
-Download doujinshi with ids specified in a file:
+Download doujinshi with ids specified in a file (doujinshi ids split by line):
 
 .. code-block:: bash
 
@@ -70,13 +70,13 @@ Download by tag name:
 
 .. code-block:: bash
 
-    nhentai --tag lolicon --download
+    nhentai --tag lolicon --download --page=2
 
-Download your favorites:
+Download your favorites with delay:
 
 .. code-block:: bash
 
-    nhentai --favorites --download
+    nhentai --favorites --download --delay 1
 
 =======
 Options

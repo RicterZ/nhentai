@@ -3,6 +3,7 @@
 from __future__ import unicode_literals, print_function
 import signal
 import platform
+import time
 
 from nhentai.cmdline import cmd_parser, banner
 from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, favorites_parser, tag_parser, login
@@ -25,36 +26,33 @@ def main():
         if not options.is_download:
             logger.warning('You do not specify --download option')
 
-        for doujinshi_info in favorites_parser():
-            doujinshi_list.append(Doujinshi(**doujinshi_info))
+        doujinshi_ids = favorites_parser()
 
-        if not options.is_download:
-            print_doujinshi([{'id': i.id, 'title': i.name} for i in doujinshi_list])
-            exit(0)
-
-    if options.tag:
+    elif options.tag:
         doujinshis = tag_parser(options.tag, max_page=options.max_page)
         print_doujinshi(doujinshis)
         if options.is_download and doujinshis:
             doujinshi_ids = map(lambda d: d['id'], doujinshis)
 
-    if options.keyword:
+    elif options.keyword:
         doujinshis = search_parser(options.keyword, options.page)
         print_doujinshi(doujinshis)
         if options.is_download:
             doujinshi_ids = map(lambda d: d['id'], doujinshis)
 
-    if not doujinshi_ids:
+    elif not doujinshi_ids:
         doujinshi_ids = options.id
 
     if doujinshi_ids:
         for id_ in doujinshi_ids:
+            if options.delay:
+                time.sleep(options.delay)
             doujinshi_info = doujinshi_parser(id_)
             doujinshi_list.append(Doujinshi(**doujinshi_info))
 
     if not options.is_show:
         downloader = Downloader(path=options.output_dir,
-                                thread=options.threads, timeout=options.timeout)
+                                thread=options.threads, timeout=options.timeout, delay=options.delay)
 
         for doujinshi in doujinshi_list:
             doujinshi.downloader = downloader

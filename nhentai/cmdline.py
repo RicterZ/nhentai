@@ -66,15 +66,19 @@ def cmd_parser():
                       help='thread count for downloading doujinshi')
     parser.add_option('--timeout', type='int', dest='timeout', action='store', default=30,
                       help='timeout for downloading doujinshi')
+    parser.add_option('--delay', type='int', dest='delay', action='store', default=0,
+                      help='slow down between downloading every doujinshi')
     parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
                       help='uses a proxy, for example: http://127.0.0.1:1080')
     parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
+    parser.add_option('--format', '-F', type='string', dest='name_format', action='store',
+                      help='format the saved folder name', default='[%i][%n]')
 
     # generate options
     parser.add_option('--html', dest='html_viewer', action='store_true',
                       help='generate a html viewer at current directory')
-    parser.add_option('--nohtml', dest='is_nohtml', action='store_true',
-                      help='don\'t generate HTML')
+    parser.add_option('--no-html', dest='is_nohtml', action='store_true',
+                      help='don\'t generate HTML after downloading')
     parser.add_option('--cbz', dest='is_cbz', action='store_true',
                       help='generate Comic Book CBZ File')
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
