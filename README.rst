@@ -40,6 +40,7 @@ Installation (Gentoo)
 Usage
 =====
 **IMPORTANT**: To bypass the nhentai frequency limit, you should use `--cookie` option to store your cookie.
+
 *The default download folder will be the path where you run the command (CLI path).*
 
 
