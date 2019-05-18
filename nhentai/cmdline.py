@@ -42,13 +42,13 @@ def cmd_parser():
                           '\n\nEnvironment Variable:\n'
                           '  NHENTAI                 nhentai mirror url')
     # operation options
-    parser.add_option('--download', dest='is_download', action='store_true',
+    parser.add_option('--download', '-D', dest='is_download', action='store_true',
                       help='download doujinshi (for search results)')
-    parser.add_option('--show', dest='is_show', action='store_true', help='just show the doujinshi information')
+    parser.add_option('--show', '-S', dest='is_show', action='store_true', help='just show the doujinshi information')
 
     # doujinshi options
     parser.add_option('--id', type='string', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
-    parser.add_option('--search', type='string', dest='keyword', action='store', help='search doujinshi by keyword')
+    parser.add_option('--search', '-s', type='string', dest='keyword', action='store', help='search doujinshi by keyword')
     parser.add_option('--tag', type='string', dest='tag', action='store', help='download doujinshi by tag')
     parser.add_option('--favorites', '-F', action='store_true', dest='favorites',
                       help='list or download your favorites.')
@@ -60,15 +60,15 @@ def cmd_parser():
                       help='The max page when recursive download tagged doujinshi')
 
     # download options
-    parser.add_option('--output', type='string', dest='output_dir', action='store', default='',
+    parser.add_option('--output', '-o', type='string', dest='output_dir', action='store', default='',
                       help='output dir')
     parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=5,
                       help='thread count for downloading doujinshi')
-    parser.add_option('--timeout', type='int', dest='timeout', action='store', default=30,
+    parser.add_option('--timeout', '-T', type='int', dest='timeout', action='store', default=30,
                       help='timeout for downloading doujinshi')
-    parser.add_option('--delay', type='int', dest='delay', action='store', default=0,
+    parser.add_option('--delay', '-d', type='int', dest='delay', action='store', default=0,
                       help='slow down between downloading every doujinshi')
-    parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
+    parser.add_option('--proxy', '-p', type='string', dest='proxy', action='store', default='',
                       help='uses a proxy, for example: http://127.0.0.1:1080')
     parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
@@ -79,7 +79,7 @@ def cmd_parser():
                       help='generate a html viewer at current directory')
     parser.add_option('--no-html', dest='is_nohtml', action='store_true',
                       help='don\'t generate HTML after downloading')
-    parser.add_option('--cbz', dest='is_cbz', action='store_true',
+    parser.add_option('--cbz', '-C', dest='is_cbz', action='store_true',
                       help='generate Comic Book CBZ File')
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
                       help='remove downloaded doujinshi dir when generated CBZ file.')
