@@ -78,6 +78,50 @@ Download your favorites with delay:
 
     nhentai --favorites --download --delay 1
 
+
+.. code-block::
+
+    Options:
+      # Operation options
+      -h, --help            show this help message and exit
+      -D, --download        download doujinshi (for search results)
+      -S, --show            just show the doujinshi information
+
+      # Doujinshi options
+      --id=ID               doujinshi ids set, e.g. 1,2,3
+      -s KEYWORD, --search=KEYWORD
+                            search doujinshi by keyword
+      --tag=TAG             download doujinshi by tag
+      -F, --favorites       list or download your favorites.
+
+      # Multi-page options
+      --page=PAGE           page number of search results
+      --max-page=MAX_PAGE   The max page when recursive download tagged doujinshi
+
+      # Download options
+      -o OUTPUT_DIR, --output=OUTPUT_DIR
+                            output dir
+      -t THREADS, --threads=THREADS
+                            thread count for downloading doujinshi
+      -T TIMEOUT, --timeout=TIMEOUT
+                            timeout for downloading doujinshi
+      -d DELAY, --delay=DELAY
+                            slow down between downloading every doujinshi
+      -p PROXY, --proxy=PROXY
+                            uses a proxy, for example: http://127.0.0.1:1080
+      -f FILE, --file=FILE  read gallery IDs from file.
+      --format=NAME_FORMAT  format the saved folder name
+
+      # Generating options
+      --html                generate a html viewer at current directory
+      --no-html             don't generate HTML after downloading
+      -C, --cbz             generate Comic Book CBZ File
+      --rm-origin-dir       remove downloaded doujinshi dir when generated CBZ
+                            file.
+
+      # nHentai options
+      --cookie=COOKIE       set cookie of nhentai to bypass Google recaptcha
+
 =======
 Options
 =======
