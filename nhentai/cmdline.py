@@ -1,14 +1,15 @@
 # coding: utf-8
 from __future__ import print_function
+import os
 import sys
 from optparse import OptionParser
-from nhentai import __version__
 try:
     from itertools import ifilter as filter
 except ImportError:
     pass
 
 import nhentai.constant as constant
+from nhentai import __version__
 from nhentai.utils import urlparse, generate_html
 from nhentai.logger import logger
 
@@ -40,16 +41,25 @@ def cmd_parser():
                           '\n  nhentai --file [filename]'    
                           '\n\nEnvironment Variable:\n'
                           '  NHENTAI                 nhentai mirror url')
+    # operation options
     parser.add_option('--download', dest='is_download', action='store_true',
                       help='download doujinshi (for search results)')
-    parser.add_option('--show-info', dest='is_show', action='store_true', help='just show the doujinshi information')
+    parser.add_option('--show', dest='is_show', action='store_true', help='just show the doujinshi information')
+
+    # doujinshi options
     parser.add_option('--id', type='string', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
     parser.add_option('--search', type='string', dest='keyword', action='store', help='search doujinshi by keyword')
+    parser.add_option('--tag', type='string', dest='tag', action='store', help='download doujinshi by tag')
+    parser.add_option('--favorites', '-F', action='store_true', dest='favorites',
+                      help='list or download your favorites.')
+
+    # page options
     parser.add_option('--page', type='int', dest='page', action='store', default=1,
                       help='page number of search results')
-    parser.add_option('--tag', type='string', dest='tag', action='store', help='download doujinshi by tag')
     parser.add_option('--max-page', type='int', dest='max_page', action='store', default=1,
                       help='The max page when recursive download tagged doujinshi')
+
+    # download options
     parser.add_option('--output', type='string', dest='output_dir', action='store', default='',
                       help='output dir')
     parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=5,
@@ -58,20 +68,21 @@ def cmd_parser():
                       help='timeout for downloading doujinshi')
     parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
                       help='uses a proxy, for example: http://127.0.0.1:1080')
+    parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
+
+    # generate options
     parser.add_option('--html', dest='html_viewer', action='store_true',
                       help='generate a html viewer at current directory')
-
-    parser.add_option('--login', '-l', type='str', dest='login', action='store',
-                      help='username:password pair of nhentai account')
-
     parser.add_option('--nohtml', dest='is_nohtml', action='store_true',
-                      help='Don\'t generate HTML')
-
+                      help='don\'t generate HTML')
     parser.add_option('--cbz', dest='is_cbz', action='store_true',
-                      help='Generate Comic Book CBZ File')
+                      help='generate Comic Book CBZ File')
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
-                      help='Remove downloaded doujinshi dir when generated CBZ file.')
-    parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='Read gallery IDs from file.')
+                      help='remove downloaded doujinshi dir when generated CBZ file.')
+
+    # nhentai options
+    parser.add_option('--cookie', type='str', dest='cookie', action='store',
+                      help='set cookie of nhentai to bypass Google recaptcha')
 
     try:
         sys.argv = list(map(lambda x: unicode(x.decode(sys.stdin.encoding)), sys.argv))
@@ -86,6 +97,25 @@ def cmd_parser():
         generate_html()
         exit(0)
 
+    if os.path.exists(os.path.join(constant.NHENTAI_HOME, 'cookie')):
+        with open(os.path.join(constant.NHENTAI_HOME, 'cookie'), 'r') as f:
+            constant.COOKIE = f.read()
+
+    if args.cookie:
+        try:
+            if not os.path.exists(constant.NHENTAI_HOME):
+                os.mkdir(constant.NHENTAI_HOME)
+
+            with open(os.path.join(constant.NHENTAI_HOME, 'cookie'), 'w') as f:
+                f.write(args.cookie)
+        except Exception as e:
+            logger.error('Cannot create NHENTAI_HOME: {}'.format(str(e)))
+            exit(1)
+
+        logger.info('Cookie saved.')
+        exit(0)
+
+    '''
     if args.login:
         try:
             _, _ = args.login.split(':', 1)
@@ -95,6 +125,12 @@ def cmd_parser():
 
         if not args.is_download:
             logger.warning('YOU DO NOT SPECIFY `--download` OPTION !!!')
+    '''
+
+    if args.favorites:
+        if not constant.COOKIE:
+            logger.warning('Cookie has not been set, please use `nhentai --cookie \'COOKIE\'` to set it.')
+            exit(1)
 
     if args.id:
         _ = map(lambda id_: id_.strip(), args.id.split(','))
@@ -106,12 +142,12 @@ def cmd_parser():
             args.id = set(map(int, filter(lambda id_: id_.isdigit(), _)))
 
     if (args.is_download or args.is_show) and not args.id and not args.keyword and \
-            not args.login and not args.tag:
+            not args.tag and not args.favorites:
         logger.critical('Doujinshi id(s) are required for downloading')
         parser.print_help()
         exit(1)
 
-    if not args.keyword and not args.id and not args.login and not args.tag:
+    if not args.keyword and not args.id and not args.tag and not args.favorites:
         parser.print_help()
         exit(1)
 
