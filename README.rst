@@ -82,8 +82,8 @@ Download your favorites with delay:
 Format output doujinshi folder name:
 
 .. code-block:: bash
-    nhentai --id 261100 --format '[%i]%s'
 
+    nhentai --id 261100 --format '[%i]%s'
 
 Supported doujinshi folder formatter:
 
