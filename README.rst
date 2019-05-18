@@ -14,7 +14,7 @@ nhentai
 |travis|
 |pypi|
 |license|
-[![license](https://img.shields.io/cocoapods/l/AFNetworking.svg)](https://github.com/RicterZ/nhentai/blob/master/LICENSE)
+
 
 nHentai is a CLI tool for downloading doujinshi from [nhentai.net](http://nhentai.net).
 
