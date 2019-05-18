@@ -41,12 +41,14 @@ Usage
 **IMPORTANT**: To bypass the nhentai frequency limit, you should use `--login` option to log into nhentai.net.
 *The default download folder will be the path where you run the command (CLI path).*
 
-Download specified doujinshi:
 
 Set your nhentai cookie aginest captcha:
+
 .. code-block:: bash
 
     nhentai --cookie 'YOUR COOKIE FROM nhentai.net'
+
+Download specified doujinshi:
 
 .. code-block:: bash
 
