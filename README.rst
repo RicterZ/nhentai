@@ -118,9 +118,9 @@ Set `NHENTAI` env var to your nhentai mirror.
     :alt: nhentai
     :align: center
 
-===========
+============
 あなたも変態
-===========
+============
 .. image:: ./images/image.jpg?raw=true
     :alt: nhentai
     :align: center
