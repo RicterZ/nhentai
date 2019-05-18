@@ -16,7 +16,7 @@ nhentai
 |license|
 
 
-nHentai is a CLI tool for downloading doujinshi from [nhentai.net](http://nhentai.net).
+nHentai is a CLI tool for downloading doujinshi from <http://nhentai.net>
 
 ============
 Installation
@@ -120,4 +120,4 @@ Set `NHENTAI` env var to your nhentai mirror.
    :target: https://pypi.org/project/nhentai/
 
 .. |license| image:: https://img.shields.io/github/license/ricterz/nhentai.svg
-   :target: https://github.com/RicterZ/nhentai/blob/master/LICENS
+   :target: https://github.com/RicterZ/nhentai/blob/master/LICENSE
