@@ -80,6 +80,7 @@ Download your favorites with delay:
 
 
 Other options:
+
 .. code-block::
 
     Options:
