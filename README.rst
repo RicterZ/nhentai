@@ -15,7 +15,9 @@ nhentai
 
 nHentai is a CLI tool for downloading doujinshi from [nhentai.net](http://nhentai.net).
 
-### Installation
+============
+Installation
+============
 
 .. code-block::
 
@@ -23,14 +25,18 @@ nHentai is a CLI tool for downloading doujinshi from [nhentai.net](http://nhenta
     cd nhentai
     python setup.py install
     
-### Installation (Gentoo)
+=====================
+Installation (Gentoo)
+=====================
 
 .. code-block::
 
     layman -fa glicOne
     sudo emerge net-misc/nhentai
 
-### Usage
+=====
+Usage
+=====
 **IMPORTANT**: To bypass the nhentai frequency limit, you should use `--login` option to log into nhentai.net.
 
 *The default download folder will be the path where you run the command (CLI path).*
@@ -65,7 +71,9 @@ Download by tag name:
 
     nhentai --tag lolicon --download
 
-### Options
+=======
+Options
+=======
 
 + `-t, --thread`: Download threads, max: 10  
 + `--output`:Output dir of saving doujinshi  
@@ -76,7 +84,10 @@ Download by tag name:
 + `--nohtml`: Do not generate HTML  
 + `--cbz`: Generate Comic Book CBZ File  
 
-### nHentai Mirror
+==============
+nHentai Mirror
+==============
+
 If you want to use a mirror, you should set up a reverse proxy of `nhentai.net` and `i.nhentai.net`.
 For example:
 
