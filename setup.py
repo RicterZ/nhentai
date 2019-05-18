@@ -11,8 +11,10 @@ with open('requirements.txt') as f:
 
 
 def long_description():
-    with codecs.open('README.rst', 'r') as f:
-        return str(f.read())
+    with codecs.open('README.rst', 'rb') as readme:
+        if not sys.version_info < (3, 0, 0):
+            return readme.read().decode('utf-8')
+
 
 setup(
     name='nhentai',
