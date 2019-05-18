@@ -96,6 +96,8 @@ nHentai Mirror
 If you want to use a mirror, you should set up a reverse proxy of `nhentai.net` and `i.nhentai.net`.
 For example:
 
+.. code-block:: 
+
     i.h.loli.club -> i.nhentai.net
     h.loli.club -> nhentai.net
 
@@ -105,14 +107,24 @@ Set `NHENTAI` env var to your nhentai mirror.
 
     NHENTAI=http://h.loli.club nhentai --id 123456
 
-![](./images/search.png)  
-![](./images/download.png)  
-![](./images/viewer.png)  
+
+.. image:: ./images/search.png?raw=true
+    :alt: nhentai
+    :align: center
+.. image:: ./images/download.png?raw=true
+    :alt: nhentai
+    :align: center
+.. image:: ./images/viewer.png?raw=true
+    :alt: nhentai
+    :align: center
 
 ===========
 あなたも変態
 ===========
-![](./images/image.jpg)
+.. image:: ./images/image.jpg?raw=true
+    :alt: nhentai
+    :align: center
+
 
 
 .. |travis| image:: https://travis-ci.org/RicterZ/nhentai.svg?branch=master
