@@ -71,7 +71,7 @@ def cmd_parser():
     parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
                       help='uses a proxy, for example: http://127.0.0.1:1080')
     parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
-    parser.add_option('--format', '-F', type='string', dest='name_format', action='store',
+    parser.add_option('--format', type='string', dest='name_format', action='store',
                       help='format the saved folder name', default='[%i][%n]')
 
     # generate options
