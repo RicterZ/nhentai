@@ -17,11 +17,15 @@ nHentai is a CLI tool for downloading doujinshi from [nhentai.net](http://nhenta
 
 ### Installation
 
+.. code-block::
+
     git clone https://github.com/RicterZ/nhentai
     cd nhentai
     python setup.py install
     
 ### Installation (Gentoo)
+
+.. code-block::
 
     layman -fa glicOne
     sudo emerge net-misc/nhentai
@@ -34,26 +38,31 @@ nHentai is a CLI tool for downloading doujinshi from [nhentai.net](http://nhenta
 Download specified doujinshi:
 
 .. code-block:: bash
+
     nhentai --id=123855,123866
 
 Download doujinshi with ids specified in a file:
 
 .. code-block:: bash
+
     nhentai --file=doujinshi.txt
 
 Search a keyword and download the first page:
 
 .. code-block:: bash
+
     nhentai --search="tomori" --page=1 --download
 
 Download your favourite doujinshi (login required):
 
 .. code-block:: bash
+
     nhentai --login "username:password" --download
 
 Download by tag name:
 
 .. code-block:: bash
+
     nhentai --tag lolicon --download
 
 ### Options
@@ -77,6 +86,7 @@ For example:
 Set `NHENTAI` env var to your nhentai mirror.
 
 .. code-block:: bash
+
     NHENTAI=http://h.loli.club nhentai --id 123456
 
 ![](./images/search.png)  
