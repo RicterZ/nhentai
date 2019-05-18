@@ -79,6 +79,19 @@ Download your favorites with delay:
 
     nhentai --favorites --download --delay 1
 
+Format output doujinshi folder name:
+
+.. code-block:: bash
+    nhentai --id 261100 --format '[%i]%s'
+
+
+Supported doujinshi folder formatter:
+
+- %i: Doujinshi id
+- %t: Doujinshi name
+- %s: Doujinshi subtitle (translated name)
+- %a: Doujinshi authors' name
+
 
 Other options:
 

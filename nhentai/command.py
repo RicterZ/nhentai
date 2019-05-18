@@ -48,7 +48,7 @@ def main():
             if options.delay:
                 time.sleep(options.delay)
             doujinshi_info = doujinshi_parser(id_)
-            doujinshi_list.append(Doujinshi(**doujinshi_info))
+            doujinshi_list.append(Doujinshi(name_format=options.name_format, **doujinshi_info))
 
     if not options.is_show:
         downloader = Downloader(path=options.output_dir,

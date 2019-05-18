@@ -27,7 +27,7 @@ class DoujinshiInfo(dict):
 
 
 class Doujinshi(object):
-    def __init__(self, name=None, id=None, img_id=None, ext='', pages=0, **kwargs):
+    def __init__(self, name=None, id=None, img_id=None, ext='', pages=0, name_format='[%i][%a][%t]', **kwargs):
         self.name = name
         self.id = id
         self.img_id = img_id
@@ -36,7 +36,12 @@ class Doujinshi(object):
         self.downloader = None
         self.url = '%s/%d' % (DETAIL_URL, self.id)
         self.info = DoujinshiInfo(**kwargs)
-        self.filename = format_filename('[%s][%s][%s]' % (self.id, self.info.artist, self.name))
+
+        name_format = name_format.replace('%i', str(self.id))
+        name_format = name_format.replace('%a', self.info.artists)
+        name_format = name_format.replace('%t', self.name)
+        name_format = name_format.replace('%s', self.info.subtitle)
+        self.filename = name_format
 
     def __repr__(self):
         return '<Doujinshi: {0}>'.format(self.name)
@@ -46,7 +51,7 @@ class Doujinshi(object):
             ["Doujinshi", self.name],
             ["Subtitle", self.info.subtitle],
             ["Characters", self.info.character],
-            ["Authors", self.info.artist],
+            ["Authors", self.info.artists],
             ["Language", self.info.language],
             ["Tags", self.info.tags],
             ["URL", self.url],
