@@ -79,6 +79,7 @@ Download your favorites with delay:
     nhentai --favorites --download --delay 1
 
 
+Other options:
 .. code-block::
 
     Options:
