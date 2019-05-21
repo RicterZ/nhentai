@@ -119,14 +119,14 @@ def generate_main_html(output_dir='.'):
         image = files[0] # 001.jpg or 001.png
         if folder is not None:
             title = folder.replace('_', ' ')
-            if sys.version_info > (3, 0):
-                title = title.encode('utf-8')
+            # if sys.version_info > (3, 0):
+            #     title = title.encode('utf-8')
         else:
             title = 'nHentai HTML Viewer'
         image_html += element.format(FOLDER=folder, IMAGE=image, TITLE=title)
 
-    data = main.format(STYLES=css, COUNT=count, PICTURE=image_html)
     try:
+        data = main.format(STYLES=css, COUNT=count, PICTURE=image_html)
         if sys.version_info < (3, 0):
             with open('./main.html', 'w') as f:
                 f.write(data)
