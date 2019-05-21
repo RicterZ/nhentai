@@ -25,6 +25,7 @@ def request(method, url, **kwargs):
     if not hasattr(session, method):
         raise AttributeError('\'requests.Session\' object has no attribute \'{0}\''.format(method))
 
+    session.headers.update({'Cookie': constant.COOKIE})
     return getattr(session, method)(url, proxies=constant.PROXY, verify=False, **kwargs)
 
 
@@ -37,6 +38,7 @@ def _get_csrf_token(content):
 
 
 def login(username, password):
+    logger.warning('This feature is deprecated, please use --cookie to set your cookie.')
     csrf_token = _get_csrf_token(request('get', url=constant.LOGIN_URL).text)
     if os.getenv('DEBUG'):
         logger.info('Getting CSRF token ...')
@@ -51,7 +53,7 @@ def login(username, password):
     }
     resp = request('post', url=constant.LOGIN_URL, data=login_dict)
 
-    if 'You\'re loading pages way too quickly.' in resp.text:
+    if 'You\'re loading pages way too quickly.' in resp.text or 'Really, slow down' in resp.text:
         csrf_token = _get_csrf_token(resp.text)
         resp = request('post', url=resp.url, data={'csrfmiddlewaretoken': csrf_token, 'next': '/'})
 
@@ -59,13 +61,12 @@ def login(username, password):
         logger.error('Login failed, please check your username and password')
         exit(1)
 
-    if 'You\'re loading pages way too quickly.' in resp.text:
-        logger.error('You meet challenge insistently, please submit a issue'
-                     ' at https://github.com/RicterZ/nhentai/issues')
+    if 'You\'re loading pages way too quickly.' in resp.text or 'Really, slow down' in resp.text:
+        logger.error('Using nhentai --cookie \'YOUR_COOKIE_HERE\' to save your Cookie.')
         exit(2)
 
 
-def login_parser():
+def favorites_parser():
     html = BeautifulSoup(request('get', constant.FAV_URL).content, 'html.parser')
     count = html.find('span', attrs={'class': 'count'})
     if not count:
@@ -91,20 +92,13 @@ def login_parser():
     ret = []
     doujinshi_id = re.compile('data-id="([\d]+)"')
 
-    def _callback(request, result):
-        ret.append(result)
-
-    # TODO: reduce threads number ...
-    thread_pool = threadpool.ThreadPool(1)
-
     for page in range(1, pages + 1):
         try:
             logger.info('Getting doujinshi ids of page %d' % page)
             resp = request('get', constant.FAV_URL + '?page=%d' % page).text
             ids = doujinshi_id.findall(resp)
-            requests_ = threadpool.makeRequests(doujinshi_parser, ids, _callback)
-            [thread_pool.putRequest(req) for req in requests_]
-            thread_pool.wait()
+            ret.extend(ids)
+
         except Exception as e:
             logger.error('Error: %s, continue', str(e))
 
