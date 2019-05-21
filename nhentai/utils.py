@@ -119,7 +119,7 @@ def generate_main_html(output_dir='.'):
         image = files[0] # 001.jpg or 001.png
         if folder is not None:
             title = folder.replace('_', ' ')
-            if sys.version_info < (3, 0):
+            if sys.version_info > (3, 0):
                 title = title.encode('utf-8')
         else:
             title = 'nHentai HTML Viewer'
