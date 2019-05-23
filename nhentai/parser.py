@@ -8,6 +8,7 @@ import requests
 import time
 from bs4 import BeautifulSoup
 from tabulate import tabulate
+from datetime import datetime
 
 import nhentai.constant as constant
 from nhentai.logger import logger
@@ -162,13 +163,20 @@ def doujinshi_parser(id_):
 
     # gain information of the doujinshi
     information_fields = doujinshi_info.find_all('div', attrs={'class': 'field-name'})
-    needed_fields = ['Characters', 'Artists', 'Languages', 'Tags']
+    needed_fields = ['Characters', 'Artists', 'Languages', 'Tags', 'Parodies']
     for field in information_fields:
         field_name = field.contents[0].strip().strip(':')
         if field_name in needed_fields:
             data = [sub_field.contents[0].strip() for sub_field in
                     field.find_all('a', attrs={'class': 'tag'})]
             doujinshi[field_name.lower()] = ', '.join(data)
+
+    time_field = doujinshi_info.find('time')
+    if time_field.has_attr('datetime'):
+        d = time_field['datetime']
+        if ":" == d[-3:-2]: #Hacky parsing for ISO date parsing
+            d = d[:-3]+d[-2:]
+        doujinshi['date'] = datetime.strptime(d, '%Y-%m-%dT%H:%M:%S.%f%z')
 
     return doujinshi
 
@@ -225,7 +233,7 @@ def __api_suspended_doujinshi_parser(id_):
     doujinshi['pages'] = len(response['images']['pages'])
 
     # gain information of the doujinshi
-    needed_fields = ['character', 'artist', 'language', 'tag']
+    needed_fields = ['character', 'artist', 'language', 'tag', 'parody']
     for tag in response['tags']:
         tag_type = tag['type']
         if tag_type in needed_fields:
