@@ -162,7 +162,7 @@ def doujinshi_parser(id_):
 
     # gain information of the doujinshi
     information_fields = doujinshi_info.find_all('div', attrs={'class': 'field-name'})
-    needed_fields = ['Characters', 'Artists', 'Language', 'Tags']
+    needed_fields = ['Characters', 'Artists', 'Languages', 'Tags']
     for field in information_fields:
         field_name = field.contents[0].strip().strip(':')
         if field_name in needed_fields:
