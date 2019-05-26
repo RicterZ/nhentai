@@ -109,6 +109,8 @@ def generate_main_html(output_dir='.'):
     # https://stackoverflow.com/questions/141291/how-to-list-only-top-level-directories-in-python
 
     for folder in doujinshi_dirs:
+        if folder[0] is not '[':
+            continue
         files = os.listdir(folder)
         if 'index.html' in files:
             count += 1
@@ -125,6 +127,9 @@ def generate_main_html(output_dir='.'):
             title = 'nHentai HTML Viewer'
         image_html += element.format(FOLDER=folder, IMAGE=image, TITLE=title)
 
+    if image_html == '':
+        logger.warning('None index.html found, --gen-main paused.')
+        return
     try:
         data = main.format(STYLES=css, COUNT=count, PICTURE=image_html)
         if sys.version_info < (3, 0):
@@ -133,7 +138,7 @@ def generate_main_html(output_dir='.'):
         else:
             with open('./main.html', 'wb') as f:
                 f.write(data.encode('utf-8'))
-        logger.log(15, 'Main Viewer has been write to \'{0}\''.format('./main.html'))
+        logger.log(15, 'Main Viewer has been write to \'{0}/main.html\''.format(output_dir))
     except Exception as e:
         logger.warning('Writen Main Viewer failed ({})'.format(str(e)))
     logger.info('==>Process finished.')
