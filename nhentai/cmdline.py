@@ -69,7 +69,7 @@ def cmd_parser():
     parser.add_option('--delay', '-d', type='int', dest='delay', action='store', default=0,
                       help='slow down between downloading every doujinshi')
     parser.add_option('--proxy', '-p', type='string', dest='proxy', action='store', default='',
-                      help='uses a proxy, for example: http://127.0.0.1:1080')
+                      help='store a proxy, for example: -p \'http://127.0.0.1:1080\'')
     parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
                       help='format the saved folder name', default='[%i][%a][%t]')
@@ -125,6 +125,29 @@ def cmd_parser():
         logger.info('Cookie saved.')
         exit(0)
 
+    if os.path.exists(os.path.join(constant.NHENTAI_HOME, 'proxy')):
+        with open(os.path.join(constant.NHENTAI_HOME, 'proxy'), 'r') as f:
+            link = f.read()
+            constant.PROXY = {'http': link, 'https': link}
+
+    if args.proxy:
+        try:
+            if not os.path.exists(constant.NHENTAI_HOME):
+                os.mkdir(constant.NHENTAI_HOME)
+
+            proxy_url = urlparse(args.proxy)
+            if proxy_url.scheme not in ('http', 'https'):
+                logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
+            else:
+                with open(os.path.join(constant.NHENTAI_HOME, 'proxy'), 'w') as f:
+                    f.write(args.proxy)
+        except Exception as e:
+            logger.error('Cannot create NHENTAI_HOME: {}'.format(str(e)))
+            exit(1)
+
+        logger.info('Proxy \'{0}\' saved.'.format(args.proxy))
+        exit(0)
+
     '''
     if args.login:
         try:
@@ -167,17 +190,5 @@ def cmd_parser():
     elif args.threads > 15:
         logger.critical('Maximum number of used threads is 15')
         exit(1)
-
-    if args.proxy:
-        proxy_url = urlparse(args.proxy)
-        if args.proxy == 'default' or 'd':
-            constant.PROXY = {
-                'http': "http://127.0.0.1:1080",
-                'https': "http://127.0.0.1:1080"
-            }
-        elif proxy_url.scheme not in ('http', 'https'):
-            logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
-        else:
-            constant.PROXY = {'http': args.proxy, 'https': args.proxy}
 
     return args
