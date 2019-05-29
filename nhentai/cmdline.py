@@ -103,7 +103,7 @@ def cmd_parser():
         generate_html()
         exit(0)
 
-    if args.main_viewer:
+    if args.main_viewer and not args.favorites and args.id is None and not args.is_download:
         generate_main_html()
         exit(0)
 

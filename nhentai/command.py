@@ -16,8 +16,13 @@ from nhentai.utils import generate_html, generate_cbz, generate_main_html
 
 def main():
     banner()
-    logger.info('Using mirror: {0}'.format(BASE_URL))
     options = cmd_parser()
+    logger.info('Using mirror: {0}'.format(BASE_URL))
+
+    from nhentai.constant import PROXY 
+    # constant.PROXY will be changed after cmd_parser()
+    if PROXY != {}:
+        logger.info('Using proxy: {0}'.format(PROXY))
 
     doujinshi_ids = []
     doujinshi_list = []
