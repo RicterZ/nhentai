@@ -11,13 +11,18 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_cbz
+from nhentai.utils import generate_html, generate_cbz, generate_main_html
 
 
 def main():
     banner()
-    logger.info('Using mirror: {0}'.format(BASE_URL))
     options = cmd_parser()
+    logger.info('Using mirror: {0}'.format(BASE_URL))
+
+    from nhentai.constant import PROXY 
+    # constant.PROXY will be changed after cmd_parser()
+    if PROXY != {}:
+        logger.info('Using proxy: {0}'.format(PROXY))
 
     doujinshi_ids = []
     doujinshi_list = []
@@ -61,7 +66,8 @@ def main():
                 generate_html(options.output_dir, doujinshi)
             elif options.is_cbz:
                 generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir)
-
+        if options.main_viewer:
+            generate_main_html(options.output_dir)
         if not platform.system() == 'Windows':
             logger.log(15, '🍻 All done.')
         else:

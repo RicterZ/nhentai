@@ -81,6 +81,66 @@ def generate_html(output_dir='.', doujinshi_obj=None):
     except Exception as e:
         logger.warning('Writen HTML Viewer failed ({})'.format(str(e)))
 
+def generate_main_html(output_dir='.'):
+    """Generete a main html to show all the contain doujinshi.
+    With a link to thier `index.html`. 
+    Default output folder will be the CLI path."""
+    count = 0
+    image_html = ''
+    main = readfile('viewer/main.html')
+    css = readfile('viewer/main.css')
+    element = '\n\
+            <div class="gallery-favorite">\n\
+                <div class="gallery">\n\
+                    <a href="./{FOLDER}/index.html" class="cover" style="padding:0 0 141.6% 0"><img\n\
+                            src="./{FOLDER}/{IMAGE}" />\n\
+                        <div class="caption">{TITLE}</div>\n\
+                    </a>\n\
+                </div>\n\
+            </div>\n'
+
+    if output_dir == '':
+        os.chdir('.')
+    else:
+        os.chdir(output_dir)
+    # switch to given dir
+    doujinshi_dirs = next(os.walk('.'))[1]
+    # https://stackoverflow.com/questions/141291/how-to-list-only-top-level-directories-in-python
+
+    for folder in doujinshi_dirs:
+        if folder[0] is not '[':
+            continue
+        files = os.listdir(folder)
+        if 'index.html' in files:
+            count += 1
+        else:
+            logger.warning('{} folder does not have index.html (try use --html arg first).'
+                           .format(folder))
+            continue
+        image = files[0]  # 001.jpg or 001.png
+        if folder is not None:
+            title = folder.replace('_', ' ')
+            # if sys.version_info > (3, 0):
+            #     title = title.encode('utf-8')
+        else:
+            title = 'nHentai HTML Viewer'
+        image_html += element.format(FOLDER=folder, IMAGE=image, TITLE=title)
+
+    if image_html == '':
+        logger.warning('None index.html found, --gen-main paused.')
+        return
+    try:
+        data = main.format(STYLES=css, COUNT=count, PICTURE=image_html)
+        if sys.version_info < (3, 0):
+            with open('./main.html', 'w') as f:
+                f.write(data)
+        else:
+            with open('./main.html', 'wb') as f:
+                f.write(data.encode('utf-8'))
+        logger.log(
+            15, 'Main Viewer has been write to \'{0}main.html\''.format(output_dir))
+    except Exception as e:
+        logger.warning('Writen Main Viewer failed ({})'.format(str(e)))
 
 def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
     if doujinshi_obj is not None:
