@@ -19,3 +19,4 @@ script:
     - NHENTAI=https://nhentai.net nhentai --tag lolicon
     - NHENTAI=https://nhentai.net nhentai -F
     - NHENTAI=https://nhentai.net nhentai --file /tmp/test.txt
+    - nhentai --id=152503,146134 --gen-main --output=/tmp/

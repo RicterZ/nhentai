@@ -138,7 +138,7 @@ def generate_main_html(output_dir='.'):
             with open('./main.html', 'wb') as f:
                 f.write(data.encode('utf-8'))
         logger.log(
-            15, 'Main Viewer has been write to \'{0}/main.html\''.format(output_dir))
+            15, 'Main Viewer has been write to \'{0}main.html\''.format(output_dir))
     except Exception as e:
         logger.warning('Writen Main Viewer failed ({})'.format(str(e)))
 
