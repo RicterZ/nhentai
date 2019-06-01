@@ -50,9 +50,9 @@ class Doujinshi(object):
         table = [
             ["Doujinshi", self.name],
             ["Subtitle", self.info.subtitle],
-            ["Characters", self.info.character],
+            ["Characters", self.info.characters],
             ["Authors", self.info.artists],
-            ["Language", self.info.language],
+            ["Languages", self.info.languages],
             ["Tags", self.info.tags],
             ["URL", self.url],
             ["Pages", self.pages],
