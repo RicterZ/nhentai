@@ -178,7 +178,6 @@ an invalid filename.
 """
     valid_chars = "-_.()[] %s%s" % (string.ascii_letters, string.digits)
     filename = ''.join(c for c in s if c in valid_chars)
-    filename = filename.replace(' ', '_')  # I don't like spaces in filenames.
     if len(filename) > 100:
         filename = filename[:100] + '...]'
 

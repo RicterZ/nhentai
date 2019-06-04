@@ -41,7 +41,7 @@ class Doujinshi(object):
         name_format = name_format.replace('%a', self.info.artists)
         name_format = name_format.replace('%t', self.name)
         name_format = name_format.replace('%s', self.info.subtitle)
-        self.filename = name_format
+        self.filename = format_filename(name_format)
 
     def __repr__(self):
         return '<Doujinshi: {0}>'.format(self.name)
