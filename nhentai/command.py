@@ -11,7 +11,7 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_cbz, generate_main_html
+from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie
 
 
 def main():
@@ -23,6 +23,9 @@ def main():
     # constant.PROXY will be changed after cmd_parser()
     if PROXY != {}:
         logger.info('Using proxy: {0}'.format(PROXY))
+
+    # check your cookie
+    check_cookie()
 
     doujinshi_ids = []
     doujinshi_list = []

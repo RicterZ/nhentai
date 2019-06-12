@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, print_function
 
 import sys
+import re
 import os
 import string
 import zipfile
@@ -20,6 +21,15 @@ def request(method, url, **kwargs):
         'Cookie': constant.COOKIE
     })
     return getattr(session, method)(url, proxies=constant.PROXY, verify=False, **kwargs)
+
+
+def check_cookie():
+    response = request('get', constant.BASE_URL).text
+    username = re.findall('"/users/\d+/(.*?)"', response)
+    if not username:
+        logger.error('Cannot get your username, please check your cookie or use `nhentai --cookie` to set your cookie')
+    else:
+        logger.info('Login successfully! Your username: {}'.format(username[0]))
 
 
 class _Singleton(type):
