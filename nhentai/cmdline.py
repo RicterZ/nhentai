@@ -149,18 +149,6 @@ def cmd_parser():
         logger.info('Proxy \'{0}\' saved.'.format(args.proxy))
         exit(0)
 
-    '''
-    if args.login:
-        try:
-            _, _ = args.login.split(':', 1)
-        except ValueError:
-            logger.error('Invalid `username:password` pair.')
-            exit(1)
-
-        if not args.is_download:
-            logger.warning('YOU DO NOT SPECIFY `--download` OPTION !!!')
-    '''
-
     if args.favorites:
         if not constant.COOKIE:
             logger.warning('Cookie has not been set, please use `nhentai --cookie \'COOKIE\'` to set it.')

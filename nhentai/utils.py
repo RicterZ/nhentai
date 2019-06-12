@@ -6,7 +6,20 @@ import os
 import string
 import zipfile
 import shutil
+import requests
+
+from nhentai import constant
 from nhentai.logger import logger
+
+
+def request(method, url, **kwargs):
+    session = requests.Session()
+    session.headers.update({
+        'Referer': constant.LOGIN_URL,
+        'User-Agent': 'nhentai command line client (https://github.com/RicterZ/nhentai)',
+        'Cookie': constant.COOKIE
+    })
+    return getattr(session, method)(url, proxies=constant.PROXY, verify=False, **kwargs)
 
 
 class _Singleton(type):

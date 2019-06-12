@@ -31,7 +31,10 @@ def main():
         if not options.is_download:
             logger.warning('You do not specify --download option')
 
-        doujinshi_ids = favorites_parser()
+        doujinshis = favorites_parser()
+        print_doujinshi(doujinshis)
+        if options.is_download and doujinshis:
+            doujinshi_ids = map(lambda d: d['id'], doujinshis)
 
     elif options.tag:
         doujinshis = tag_parser(options.tag, max_page=options.max_page)
