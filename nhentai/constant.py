@@ -2,7 +2,12 @@
 from __future__ import unicode_literals, print_function
 import os
 import tempfile
-from nhentai.utils import urlparse
+
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
+
 
 BASE_URL = os.getenv('NHENTAI', 'https://nhentai.net')
 
