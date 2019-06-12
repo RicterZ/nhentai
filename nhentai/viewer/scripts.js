@@ -46,14 +46,17 @@ document.getElementById('image-container').onclick = event => {
 document.onkeypress = event => {
     switch (event.key.toLowerCase()) {
         // Previous Image
+        case 'w':
         case 'a':
             changePage(currentPage - 1);
             break;
-
+        // Return to previous page
+        case 'q':
+            window.history.go(-1);
+            break;
         // Next Image
         case ' ':
-        case 'esc': // future close page function
-        case 'enter':
+        case 's':
         case 'd':
             changePage(currentPage + 1);
             break;

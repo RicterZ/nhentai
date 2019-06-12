@@ -10,7 +10,7 @@ except ImportError:
 
 import nhentai.constant as constant
 from nhentai import __version__
-from nhentai.utils import urlparse, generate_html
+from nhentai.utils import urlparse, generate_html, generate_main_html
 from nhentai.logger import logger
 
 try:
@@ -69,7 +69,7 @@ def cmd_parser():
     parser.add_option('--delay', '-d', type='int', dest='delay', action='store', default=0,
                       help='slow down between downloading every doujinshi')
     parser.add_option('--proxy', '-p', type='string', dest='proxy', action='store', default='',
-                      help='uses a proxy, for example: http://127.0.0.1:1080')
+                      help='store a proxy, for example: -p \'http://127.0.0.1:1080\'')
     parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
                       help='format the saved folder name', default='[%i][%a][%t]')
@@ -79,6 +79,8 @@ def cmd_parser():
                       help='generate a html viewer at current directory')
     parser.add_option('--no-html', dest='is_nohtml', action='store_true',
                       help='don\'t generate HTML after downloading')
+    parser.add_option('--gen-main', dest='main_viewer', action='store_true',
+                      help='generate a main viewer contain all the doujin in the folder')
     parser.add_option('--cbz', '-C', dest='is_cbz', action='store_true',
                       help='generate Comic Book CBZ File')
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
@@ -101,6 +103,11 @@ def cmd_parser():
         generate_html()
         exit(0)
 
+    if args.main_viewer and not args.id and not args.keyword and \
+            not args.tag and not args.favorites:
+        generate_main_html()
+        exit(0)
+
     if os.path.exists(os.path.join(constant.NHENTAI_HOME, 'cookie')):
         with open(os.path.join(constant.NHENTAI_HOME, 'cookie'), 'r') as f:
             constant.COOKIE = f.read()
@@ -119,17 +126,28 @@ def cmd_parser():
         logger.info('Cookie saved.')
         exit(0)
 
-    '''
-    if args.login:
+    if os.path.exists(os.path.join(constant.NHENTAI_HOME, 'proxy')):
+        with open(os.path.join(constant.NHENTAI_HOME, 'proxy'), 'r') as f:
+            link = f.read()
+            constant.PROXY = {'http': link, 'https': link}
+
+    if args.proxy:
         try:
-            _, _ = args.login.split(':', 1)
-        except ValueError:
-            logger.error('Invalid `username:password` pair.')
+            if not os.path.exists(constant.NHENTAI_HOME):
+                os.mkdir(constant.NHENTAI_HOME)
+
+            proxy_url = urlparse(args.proxy)
+            if proxy_url.scheme not in ('http', 'https'):
+                logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
+            else:
+                with open(os.path.join(constant.NHENTAI_HOME, 'proxy'), 'w') as f:
+                    f.write(args.proxy)
+        except Exception as e:
+            logger.error('Cannot create NHENTAI_HOME: {}'.format(str(e)))
             exit(1)
 
-        if not args.is_download:
-            logger.warning('YOU DO NOT SPECIFY `--download` OPTION !!!')
-    '''
+        logger.info('Proxy \'{0}\' saved.'.format(args.proxy))
+        exit(0)
 
     if args.favorites:
         if not constant.COOKIE:
@@ -161,12 +179,5 @@ def cmd_parser():
     elif args.threads > 15:
         logger.critical('Maximum number of used threads is 15')
         exit(1)
-
-    if args.proxy:
-        proxy_url = urlparse(args.proxy)
-        if proxy_url.scheme not in ('http', 'https'):
-            logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
-        else:
-            constant.PROXY = {'http': args.proxy, 'https': args.proxy}
 
     return args

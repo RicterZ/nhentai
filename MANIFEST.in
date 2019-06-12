@@ -3,3 +3,5 @@ include requirements.txt
 include nhentai/viewer/index.html
 include nhentai/viewer/styles.css
 include nhentai/viewer/scripts.js
+include nhentai/viewer/main.html
+include nhentai/viewer/main.css

@@ -11,13 +11,21 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_cbz
+from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie
 
 
 def main():
     banner()
-    logger.info('Using mirror: {0}'.format(BASE_URL))
     options = cmd_parser()
+    logger.info('Using mirror: {0}'.format(BASE_URL))
+
+    from nhentai.constant import PROXY 
+    # constant.PROXY will be changed after cmd_parser()
+    if PROXY != {}:
+        logger.info('Using proxy: {0}'.format(PROXY))
+
+    # check your cookie
+    check_cookie()
 
     doujinshi_ids = []
     doujinshi_list = []
@@ -26,7 +34,10 @@ def main():
         if not options.is_download:
             logger.warning('You do not specify --download option')
 
-        doujinshi_ids = favorites_parser()
+        doujinshis = favorites_parser()
+        print_doujinshi(doujinshis)
+        if options.is_download and doujinshis:
+            doujinshi_ids = map(lambda d: d['id'], doujinshis)
 
     elif options.tag:
         doujinshis = tag_parser(options.tag, max_page=options.max_page)
@@ -61,7 +72,8 @@ def main():
                 generate_html(options.output_dir, doujinshi)
             elif options.is_cbz:
                 generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir)
-
+        if options.main_viewer:
+            generate_main_html(options.output_dir)
         if not platform.system() == 'Windows':
             logger.log(15, '🍻 All done.')
         else:

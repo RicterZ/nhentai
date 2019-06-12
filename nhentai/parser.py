@@ -10,23 +10,8 @@ from bs4 import BeautifulSoup
 from tabulate import tabulate
 
 import nhentai.constant as constant
+from nhentai.utils import request
 from nhentai.logger import logger
-
-
-session = requests.Session()
-session.headers.update({
-    'Referer': constant.LOGIN_URL,
-    'User-Agent': 'nhentai command line client (https://github.com/RicterZ/nhentai)',
-})
-
-
-def request(method, url, **kwargs):
-    global session
-    if not hasattr(session, method):
-        raise AttributeError('\'requests.Session\' object has no attribute \'{0}\''.format(method))
-
-    session.headers.update({'Cookie': constant.COOKIE})
-    return getattr(session, method)(url, proxies=constant.PROXY, verify=False, **kwargs)
 
 
 def _get_csrf_token(content):
@@ -66,7 +51,22 @@ def login(username, password):
         exit(2)
 
 
+def _get_title_and_id(response):
+    result = []
+    html = BeautifulSoup(response, 'html.parser')
+    doujinshi_search_result = html.find_all('div', attrs={'class': 'gallery'})
+    for doujinshi in doujinshi_search_result:
+        doujinshi_container = doujinshi.find('div', attrs={'class': 'caption'})
+        title = doujinshi_container.text.strip()
+        title = title if len(title) < 85 else title[:82] + '...'
+        id_ = re.search('/g/(\d+)/', doujinshi.a['href']).group(1)
+        result.append({'id': id_, 'title': title})
+
+    return result
+
+
 def favorites_parser():
+    result = []
     html = BeautifulSoup(request('get', constant.FAV_URL).content, 'html.parser')
     count = html.find('span', attrs={'class': 'count'})
     if not count:
@@ -89,20 +89,16 @@ def favorites_parser():
     if os.getenv('DEBUG'):
         pages = 1
 
-    ret = []
-    doujinshi_id = re.compile('data-id="([\d]+)"')
-
     for page in range(1, pages + 1):
         try:
             logger.info('Getting doujinshi ids of page %d' % page)
-            resp = request('get', constant.FAV_URL + '?page=%d' % page).text
-            ids = doujinshi_id.findall(resp)
-            ret.extend(ids)
+            resp = request('get', constant.FAV_URL + '?page=%d' % page).content
 
+            result.extend(_get_title_and_id(resp))
         except Exception as e:
             logger.error('Error: %s, continue', str(e))
 
-    return ret
+    return result
 
 
 def doujinshi_parser(id_):
@@ -162,7 +158,7 @@ def doujinshi_parser(id_):
 
     # gain information of the doujinshi
     information_fields = doujinshi_info.find_all('div', attrs={'class': 'field-name'})
-    needed_fields = ['Characters', 'Artists', 'Language', 'Tags']
+    needed_fields = ['Characters', 'Artists', 'Languages', 'Tags']
     for field in information_fields:
         field_name = field.contents[0].strip().strip(':')
         if field_name in needed_fields:
@@ -175,7 +171,6 @@ def doujinshi_parser(id_):
 
 def search_parser(keyword, page):
     logger.debug('Searching doujinshis of keyword {0}'.format(keyword))
-    result = []
     try:
         response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page}).content
     except requests.ConnectionError as e:
@@ -183,16 +178,91 @@ def search_parser(keyword, page):
         logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
         raise SystemExit
 
-    html = BeautifulSoup(response, 'html.parser')
-    doujinshi_search_result = html.find_all('div', attrs={'class': 'gallery'})
-    for doujinshi in doujinshi_search_result:
-        doujinshi_container = doujinshi.find('div', attrs={'class': 'caption'})
-        title = doujinshi_container.text.strip()
-        title = title if len(title) < 85 else title[:82] + '...'
-        id_ = re.search('/g/(\d+)/', doujinshi.a['href']).group(1)
-        result.append({'id': id_, 'title': title})
+    result = _get_title_and_id(response)
     if not result:
         logger.warn('Not found anything of keyword {}'.format(keyword))
+
+    return result
+
+
+def print_doujinshi(doujinshi_list):
+    if not doujinshi_list:
+        return
+    doujinshi_list = [(i['id'], i['title']) for i in doujinshi_list]
+    headers = ['id', 'doujinshi']
+    logger.info('Search Result\n' +
+                tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
+
+
+def tag_parser(tag_name, max_page=1):
+    result = []
+    tag_name = tag_name.lower()
+    tag_name = tag_name.replace(' ', '-')
+
+    for p in range(1, max_page + 1):
+        logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, tag_name))
+        response = request('get', url='%s/%s?page=%d' % (constant.TAG_URL, tag_name, p)).content
+
+        result = _get_title_and_id(response)
+        if not result:
+            logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
+            return
+
+    if not result:
+        logger.warn('No results for tag \'{}\''.format(tag_name))
+
+    return result
+
+
+def __api_suspended_search_parser(keyword, page):
+    logger.debug('Searching doujinshis using keywords {0}'.format(keyword))
+    result = []
+    i = 0
+    while i < 5:
+        try:
+            response = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page}).json()
+        except Exception as e:
+            i += 1
+            if not i < 5:
+                logger.critical(str(e))
+                logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
+                exit(1)
+            continue
+        break
+
+    if 'result' not in response:
+        raise Exception('No result in response')
+
+    for row in response['result']:
+        title = row['title']['english']
+        title = title[:85] + '..' if len(title) > 85 else title
+        result.append({'id': row['id'], 'title': title})
+
+    if not result:
+        logger.warn('No results for keywords {}'.format(keyword))
+
+    return result
+
+
+def __api_suspended_tag_parser(tag_id, max_page=1):
+    logger.info('Searching for doujinshi with tag id {0}'.format(tag_id))
+    result = []
+    response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+    page = max_page if max_page <= response['num_pages'] else int(response['num_pages'])
+
+    for i in range(1, page + 1):
+        logger.info('Getting page {} ...'.format(i))
+
+        if page != 1:
+            response = request('get', url=constant.TAG_API_URL,
+                               params={'sort': 'popular', 'tag_id': tag_id}).json()
+    for row in response['result']:
+        title = row['title']['english']
+        title = title[:85] + '..' if len(title) > 85 else title
+        result.append({'id': row['id'], 'title': title})
+
+    if not result:
+        logger.warn('No results for tag id {}'.format(tag_id))
 
     return result
 
@@ -242,95 +312,6 @@ def __api_suspended_doujinshi_parser(id_):
                 doujinshi[tag_type] += ', ' + tag['name']
 
     return doujinshi
-
-
-def __api_suspended_search_parser(keyword, page):
-    logger.debug('Searching doujinshis using keywords {0}'.format(keyword))
-    result = []
-    i = 0
-    while i < 5:
-        try:
-            response = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page}).json()
-        except Exception as e:
-            i += 1
-            if not i < 5:
-                logger.critical(str(e))
-                logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
-                exit(1)
-            continue
-        break
-
-    if 'result' not in response:
-        raise Exception('No result in response')
-
-    for row in response['result']:
-        title = row['title']['english']
-        title = title[:85] + '..' if len(title) > 85 else title
-        result.append({'id': row['id'], 'title': title})
-
-    if not result:
-        logger.warn('No results for keywords {}'.format(keyword))
-
-    return result
-
-
-def print_doujinshi(doujinshi_list):
-    if not doujinshi_list:
-        return
-    doujinshi_list = [(i['id'], i['title']) for i in doujinshi_list]
-    headers = ['id', 'doujinshi']
-    logger.info('Search Result\n' +
-                tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
-
-
-def __api_suspended_tag_parser(tag_id, max_page=1):
-    logger.info('Searching for doujinshi with tag id {0}'.format(tag_id))
-    result = []
-    response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
-    page = max_page if max_page <= response['num_pages'] else int(response['num_pages'])
-
-    for i in range(1, page + 1):
-        logger.info('Getting page {} ...'.format(i))
-
-        if page != 1:
-            response = request('get', url=constant.TAG_API_URL,
-                               params={'sort': 'popular', 'tag_id': tag_id}).json()
-    for row in response['result']:
-        title = row['title']['english']
-        title = title[:85] + '..' if len(title) > 85 else title
-        result.append({'id': row['id'], 'title': title})
-
-    if not result:
-        logger.warn('No results for tag id {}'.format(tag_id))
-
-    return result
-
-
-def tag_parser(tag_name, max_page=1):
-    result = []
-    tag_name = tag_name.lower()
-    tag_name = tag_name.replace(' ', '-')
-
-    for p in range(1, max_page + 1):
-        logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, tag_name))
-        response = request('get', url='%s/%s?page=%d' % (constant.TAG_URL, tag_name, p)).content
-
-        html = BeautifulSoup(response, 'html.parser')
-        doujinshi_items = html.find_all('div', attrs={'class': 'gallery'})
-        if not doujinshi_items:
-            logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
-            return
-
-        for i in doujinshi_items:
-            doujinshi_id = i.a.attrs['href'].strip('/g')
-            doujinshi_title = i.a.text.strip()
-            doujinshi_title = doujinshi_title if len(doujinshi_title) < 85 else doujinshi_title[:82] + '...'
-            result.append({'title': doujinshi_title, 'id': doujinshi_id})
-
-    if not result:
-        logger.warn('No results for tag \'{}\''.format(tag_name))
-
-    return result
 
 
 if __name__ == '__main__':

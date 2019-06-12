@@ -13,9 +13,10 @@ install:
 
 script:
     - echo 268642 > /tmp/test.txt
-    - NHENTAI=https://nhentai.net nhentai --cookie '__cfduid=da09f237ceb0f51c75980b0b3fda3ce571558179357; _ga=GA1.2.2000087053.1558179358; _gid=GA1.2.717818542.1558179358; csrftoken=iSxrTFOjrujJqauhAqWvTTI9dl3sfWnxdEFoMuqgmlBrbMin5Gj9wJW4r61cmH1X; sessionid=ewuaayfewbzpiukrarx9d52oxwlz2esd'
+    - NHENTAI=https://nhentai.net nhentai --cookie '__cfduid=da09f237ceb0f51c75980b0b3fda3ce571558179357; _ga=GA1.2.2000087053.1558179358; _gid=GA1.2.782652201.1560348447; csrftoken=E2O8wfriFkcXUgN1AC41DoLqfRaBbggIUdvy46yC45PKCRCmCHQHQ7YRUy0d7FXZ; sessionid=0rapzxkt6yl1wjhdxm9whtfdc7gvw0iu'
     - NHENTAI=https://nhentai.net nhentai --search umaru
     - NHENTAI=https://nhentai.net nhentai --id=152503,146134 -t 10 --output=/tmp/ --cbz
     - NHENTAI=https://nhentai.net nhentai --tag lolicon
     - NHENTAI=https://nhentai.net nhentai -F
     - NHENTAI=https://nhentai.net nhentai --file /tmp/test.txt
+    - nhentai --id=152503,146134 --gen-main --output=/tmp/

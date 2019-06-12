@@ -1,0 +1,255 @@
+/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
+/* Original from https://static.nhentai.net/css/main_style.9bb9b703e601.css */
+html {
+    font-family: sans-serif;
+    line-height: 1.15;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%
+}
+
+body {
+    margin: 0
+}
+
+h1 {
+    font-size: 2em;
+    margin: .67em 0
+}
+
+a {
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects
+}
+
+a:active,a:hover {
+    outline-width: 0
+}
+
+abbr[title] {
+    border-bottom: none;
+    text-decoration: underline;
+    text-decoration: underline dotted
+}
+
+b,strong {
+    font-weight: inherit
+}
+
+b,strong {
+    font-weight: bolder
+}
+
+code,kbd,samp {
+    font-family: monospace,monospace;
+    font-size: 1em
+}
+
+small {
+    font-size: 80%
+}
+
+sub,sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline
+}
+
+sub {
+    bottom: -.25em
+}
+
+sup {
+    top: -.5em
+}
+
+img {
+    border-style: none
+}
+
+label {
+    display: block;
+    font-weight: 700;
+    text-align: justify;
+    white-space: nowrap
+}
+
+html {
+    box-sizing: border-box
+}
+
+*,:after,:before {
+    box-sizing: inherit
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-weight: 700
+}
+
+body,html {
+    font-family: 'Noto Sans',sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    height: 100%;
+    margin: 0;
+    text-align: center;
+    color: #34495e;
+    background-color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+a {
+    text-decoration: none;
+    color: #34495e
+}
+
+a:hover {
+    text-decoration: none;
+    color: #ed2553
+}
+
+a.count {
+    color: #999
+}
+
+a.bold {
+    font-weight: 700
+}
+
+code {
+    color: #ed2553;
+    border: 1px solid #fbd3dd;
+    background-color: #fef0f3
+}
+
+blockquote {
+    border: 0
+}
+
+.container {
+    display: block;
+    clear: both;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 9px;
+    background-color: #ecf0f1;
+    width: 100%;
+    max-width: 1200px
+}
+
+.gallery,.gallery-favorite,.thumb-container {
+    display: inline-block;
+    vertical-align: top
+}
+
+.gallery img,.gallery-favorite img,.thumb-container img {
+    display: block;
+    max-width: 100%;
+    height: auto
+}
+
+@media screen and (min-width: 980px) {
+    .gallery,.gallery-favorite,.thumb-container {
+        width:19%;
+        margin: 3px;
+        margin-bottom: 8px
+    }
+}
+
+@media screen and (max-width: 979px) {
+    .gallery,.gallery-favorite,.thumb-container {
+        width:24%;
+        margin: 2px
+    }
+}
+
+@media screen and (max-width: 772px) {
+    .gallery,.gallery-favorite,.thumb-container {
+        width:32%;
+        margin: 1.5px
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .gallery,.gallery-favorite,.thumb-container {
+        width:49%;
+        margin: .5px
+    }
+}
+
+.gallery a,.gallery-favorite a {
+    display: block
+}
+
+.gallery a img,.gallery-favorite a img {
+    position: absolute
+}
+
+.caption {
+    line-height: 15px;
+    left: 0;
+    right: 0;
+    top: 100%;
+    position: absolute;
+    z-index: 10;
+    overflow: hidden;
+    width: 100%;
+    max-height: 34px;
+    padding: 3px;
+    background-color: #fff;
+    font-weight: 700;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: #34495e
+}
+
+.gallery {
+    position: relative;
+    margin-bottom: 3em
+}
+
+.gallery:hover .caption {
+    max-height: 100%;
+    box-shadow: 0 10px 20px rgba(100,100,100,.5)
+}
+
+.gallery-favorite .gallery {
+    width: 100%
+}
+
+html.theme-black,html.theme-black body {
+    color: #d9d9d9;
+    background-color: #0d0d0d
+}
+
+html.theme-black #thumbnail-container,html.theme-black .container {
+    background-color: #1f1f1f
+}
+
+html.theme-black #thumbnail-container .lazyload,html.theme-black .lazyload {
+    background-color: #262626
+}
+
+html.theme-black #thumbnail-container .lazyload-loading,html.theme-black .lazyload-loading {
+    background-color: #2e2e2e
+}
+
+html.theme-black .gallery:hover .caption {
+    box-shadow: 0 10px 20px rgba(0,0,0,.5)
+}
+
+html.theme-black .caption {
+    background-color: #404040;
+    color: #d9d9d9
+}
+
+html.theme-black code {
+    color: #ed2553;
+    border: none;
+    background-color: #292929
+}
