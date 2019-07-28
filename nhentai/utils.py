@@ -199,8 +199,9 @@ and append a file extension like '.txt', so I avoid the potential of using
 an invalid filename.
 
 """
-    valid_chars = "-_.()[] %s%s" % (string.ascii_letters, string.digits)
-    filename = ''.join(c for c in s if c in valid_chars)
+    # valid_chars = "-_.()[] %s%s" % (string.ascii_letters, string.digits)
+    # filename = ''.join(c for c in s if c in valid_chars)
+    filename = s
     if len(filename) > 100:
         filename = filename[:100] + '...]'
 
