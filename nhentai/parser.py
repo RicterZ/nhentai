@@ -201,9 +201,9 @@ def tag_parser(tag_name, max_page=1):
 
     for p in range(1, max_page + 1):
         logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, tag_name))
-        response = request('get', url='%s/%s?page=%d' % (constant.TAG_URL, tag_name, p)).content
+        response = request('get', url='%s/%s/?page=%d' % (constant.TAG_URL, tag_name, p)).content
 
-        result = _get_title_and_id(response)
+        result += _get_title_and_id(response)
         if not result:
             logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
             return
