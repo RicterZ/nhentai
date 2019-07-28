@@ -168,7 +168,7 @@ def generate_main_html(output_dir='./'):
 def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
-        cbz_filename = os.path.join(os.path.join(doujinshi_dir, '..'), '%s.cbz' % doujinshi_obj.id)
+        cbz_filename = os.path.join(os.path.join(doujinshi_dir, '..'), '{}.cbz'.format(doujinshi_obj.filename))
     else:
         cbz_filename = './doujinshi.cbz'
         doujinshi_dir = '.'

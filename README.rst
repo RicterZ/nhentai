@@ -48,7 +48,7 @@ Set your nhentai cookie against captcha:
 
 .. code-block:: bash
 
-    # 
+    #
     nhentai --cookie "YOUR COOKIE FROM nhentai.net"
 
 Download specified doujinshi:
