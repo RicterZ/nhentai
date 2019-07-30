@@ -11,7 +11,7 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie
+from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie, signal_handler
 
 
 def main():
@@ -83,12 +83,8 @@ def main():
         [doujinshi.show() for doujinshi in doujinshi_list]
 
 
-def signal_handler(signal, frame):
-    logger.error('Ctrl-C signal received. Stopping...')
-    exit(1)
-
-
 signal.signal(signal.SIGINT, signal_handler)
+
 
 if __name__ == '__main__':
     main()
