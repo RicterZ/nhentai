@@ -40,13 +40,13 @@ def main():
             doujinshi_ids = map(lambda d: d['id'], doujinshis)
 
     elif options.tag:
-        doujinshis = tag_parser(options.tag, max_page=options.max_page)
+        doujinshis = tag_parser(options.tag, options.sorting, max_page=options.max_page)
         print_doujinshi(doujinshis)
         if options.is_download and doujinshis:
             doujinshi_ids = map(lambda d: d['id'], doujinshis)
 
     elif options.keyword:
-        doujinshis = search_parser(options.keyword, options.page)
+        doujinshis = search_parser(options.keyword, options.sorting, options.page)
         print_doujinshi(doujinshis)
         if options.is_download:
             doujinshi_ids = map(lambda d: d['id'], doujinshis)

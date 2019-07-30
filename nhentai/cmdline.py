@@ -58,6 +58,8 @@ def cmd_parser():
                       help='page number of search results')
     parser.add_option('--max-page', type='int', dest='max_page', action='store', default=1,
                       help='The max page when recursive download tagged doujinshi')
+    parser.add_option('--sorting', type='string', dest='sorting', action='store', default='date',
+                      help='sorting of doujinshi, e.g. date/popular')
 
     # download options
     parser.add_option('--output', '-o', type='string', dest='output_dir', action='store', default='',
