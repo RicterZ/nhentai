@@ -48,7 +48,8 @@ def cmd_parser():
 
     # doujinshi options
     parser.add_option('--id', type='string', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
-    parser.add_option('--search', '-s', type='string', dest='keyword', action='store', help='search doujinshi by keyword')
+    parser.add_option('--search', '-s', type='string', dest='keyword', action='store',
+                      help='search doujinshi by keyword')
     parser.add_option('--tag', type='string', dest='tag', action='store', help='download doujinshi by tag')
     parser.add_option('--favorites', '-F', action='store_true', dest='favorites',
                       help='list or download your favorites.')
@@ -58,8 +59,8 @@ def cmd_parser():
                       help='page number of search results')
     parser.add_option('--max-page', type='int', dest='max_page', action='store', default=1,
                       help='The max page when recursive download tagged doujinshi')
-    parser.add_option('--sorting', type='string', dest='sorting', action='store', default='date',
-                      help='sorting of doujinshi, e.g. date/popular')
+    parser.add_option('--sorting', dest='sorting', action='store', default='date',
+                      help='sorting of doujinshi (date / popular)', choices=['date', 'popular'])
 
     # download options
     parser.add_option('--output', '-o', type='string', dest='output_dir', action='store', default='',

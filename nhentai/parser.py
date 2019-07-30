@@ -169,7 +169,7 @@ def doujinshi_parser(id_):
     return doujinshi
 
 
-def search_parser(keyword, sorting, page):
+def search_parser(keyword, sorting='date', page=1):
     logger.debug('Searching doujinshis of keyword {0}'.format(keyword))
     try:
         response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page, 'sort': sorting}).content
@@ -194,7 +194,7 @@ def print_doujinshi(doujinshi_list):
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
-def tag_parser(tag_name, sorting, max_page=1):
+def tag_parser(tag_name, sorting='date', max_page=1):
     result = []
     tag_name = tag_name.lower()
     tag_name = tag_name.replace(' ', '-')
