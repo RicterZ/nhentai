@@ -140,9 +140,7 @@ class Downloader(Singleton):
             pool.apply_async(download_wrapper, args=item, callback=self._download_callback)
 
         pool.close()
-        print(1)
         pool.join()
-        print(2)
 
 
 def download_wrapper(obj, url, folder=''):
