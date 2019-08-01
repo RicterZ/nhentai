@@ -27,6 +27,17 @@ class NHentaiImageNotExistException(Exception):
     pass
 
 
+class Pool(Singleton):
+    pool = None
+
+    def __init__(self, size, init):
+        if self.pool is None:
+            if os.getenv('DEBUG'):
+                logger.info('Process pool created')
+
+            self.pool = mp.Pool(size, initializer=init)
+
+
 class Downloader(Singleton):
 
     def __init__(self, path='', thread=1, timeout=30, delay=0):
@@ -135,7 +146,7 @@ class Downloader(Singleton):
 
         queue = [(self, url, folder) for url in queue]
 
-        pool = mp.Pool(self.thread_count, init_worker)
+        pool = Pool(self.thread_count, init_worker).pool
         for item in queue:
             pool.apply_async(download_wrapper, args=item, callback=self._download_callback)
 
