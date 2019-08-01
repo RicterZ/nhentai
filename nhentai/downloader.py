@@ -1,6 +1,7 @@
 # coding: utf-
 from __future__ import unicode_literals, print_function
 
+import multiprocessing
 import signal
 
 from future.builtins import str as text
@@ -27,26 +28,11 @@ class NHentaiImageNotExistException(Exception):
     pass
 
 
-class Pool(Singleton):
-    pool = None
-
-    def __init__(self, size, init):
-        if self.pool is None:
-            if os.getenv('DEBUG'):
-                logger.info('Process pool created')
-
-            self.pool = mp.Pool(size, initializer=init)
-
-
 class Downloader(Singleton):
 
-    def __init__(self, path='', thread=1, timeout=30, delay=0):
-        if not isinstance(thread, (int, )) or thread < 1 or thread > 15:
-            raise ValueError('Invalid threads count')
-
+    def __init__(self, path='', size=5, timeout=30, delay=0):
+        self.size = size
         self.path = str(path)
-        self.thread_count = thread
-        self.threads = []
         self.timeout = timeout
         self.delay = delay
 
@@ -140,13 +126,14 @@ class Downloader(Singleton):
                 os.makedirs(folder)
             except EnvironmentError as e:
                 logger.critical('{0}'.format(str(e)))
-                exit(1)
+
         else:
             logger.warn('Path \'{0}\' already exist.'.format(folder))
 
         queue = [(self, url, folder) for url in queue]
 
-        pool = Pool(self.thread_count, init_worker).pool
+        pool = multiprocessing.Pool(self.size, init_worker)
+
         for item in queue:
             pool.apply_async(download_wrapper, args=item, callback=self._download_callback)
 

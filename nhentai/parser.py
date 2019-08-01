@@ -121,8 +121,8 @@ def doujinshi_parser(id_):
             return doujinshi_parser(str(id_))
 
     except Exception as e:
-        logger.critical(str(e))
-        raise SystemExit
+        logger.warn('Error: {}, ignored'.format(str(e)))
+        return None
 
     html = BeautifulSoup(response, 'html.parser')
     doujinshi_info = html.find('div', attrs={'id': 'info'})
@@ -171,12 +171,7 @@ def doujinshi_parser(id_):
 
 def search_parser(keyword, sorting='date', page=1):
     logger.debug('Searching doujinshis of keyword {0}'.format(keyword))
-    try:
-        response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page, 'sort': sorting}).content
-    except requests.ConnectionError as e:
-        logger.critical(e)
-        logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
-        raise SystemExit
+    response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page, 'sort': sorting}).content
 
     result = _get_title_and_id(response)
     if not result:
