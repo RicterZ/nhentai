@@ -19,7 +19,7 @@ def main():
     options = cmd_parser()
     logger.info('Using mirror: {0}'.format(BASE_URL))
 
-    from nhentai.constant import PROXY 
+    from nhentai.constant import PROXY
     # constant.PROXY will be changed after cmd_parser()
     if PROXY != {}:
         logger.info('Using proxy: {0}'.format(PROXY))
@@ -41,6 +41,30 @@ def main():
 
     elif options.tag:
         doujinshis = tag_parser(options.tag, max_page=options.max_page)
+        print_doujinshi(doujinshis)
+        if options.is_download and doujinshis:
+            doujinshi_ids = map(lambda d: d['id'], doujinshis)
+
+    elif options.artist:
+        doujinshis = tag_parser(options.artist, max_page=options.max_page, index=1)
+        print_doujinshi(doujinshis)
+        if options.is_download and doujinshis:
+            doujinshi_ids = map(lambda d: d['id'], doujinshis)
+
+    elif options.character:
+        doujinshis = tag_parser(options.character, max_page=options.max_page, index=2)
+        print_doujinshi(doujinshis)
+        if options.is_download and doujinshis:
+            doujinshi_ids = map(lambda d: d['id'], doujinshis)
+
+    elif options.parody:
+        doujinshis = tag_parser(options.parody, max_page=options.max_page, index=3)
+        print_doujinshi(doujinshis)
+        if options.is_download and doujinshis:
+            doujinshi_ids = map(lambda d: d['id'], doujinshis)
+
+    elif options.group:
+        doujinshis = tag_parser(options.group, max_page=options.max_page, index=4)
         print_doujinshi(doujinshis)
         if options.is_download and doujinshis:
             doujinshi_ids = map(lambda d: d['id'], doujinshis)
