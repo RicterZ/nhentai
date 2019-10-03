@@ -194,16 +194,22 @@ def print_doujinshi(doujinshi_list):
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
-def tag_parser(tag_name, max_page=1):
+def tag_parser(tag_name, max_page=1, index=0):
     result = []
     tag_name = tag_name.lower()
     tag_name = tag_name.replace(' ', '-')
+    if ',' in tag_name:
+        tag_name = tag_name.split(',')
 
     for p in range(1, max_page + 1):
         logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, tag_name))
-        response = request('get', url='%s/%s/?page=%d' % (constant.TAG_URL, tag_name, p)).content
-
-        result += _get_title_and_id(response)
+        if isinstance(tag_name, str):
+            response = request('get', url='%s/%s/?page=%d' % (constant.TAG_URL[index], tag_name, p)).content
+            result += _get_title_and_id(response)
+        else:
+            for i in tag_name:
+                response = request('get', url='%s/%s/?page=%d' % (constant.TAG_URL[index], i, p)).content
+                result += _get_title_and_id(response)
         if not result:
             logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
             return
