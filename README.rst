@@ -74,6 +74,30 @@ Download by tag name:
 
     nhentai --tag lolicon --download --page=2
 
+Download by artist name:
+
+.. code-block:: bash
+
+    nhentai --artist henreader --download --page=2
+    
+Download by character name:
+
+.. code-block:: bash
+
+    nhentai --character illyasviel von einzbern
+
+Download by parody name:
+
+.. code-block:: bash
+
+    nhentai --parody shakugan no shana --download
+
+Download by group name:
+
+.. code-block:: bash
+
+    nhentai --group clesta --download
+
 Download your favorites with delay:
 
 .. code-block:: bash
