@@ -197,10 +197,10 @@ def print_doujinshi(doujinshi_list):
 def tag_parser(tag_name, max_page=1, index=0):
     result = []
     tag_name = tag_name.lower()
-    tag_name = tag_name.replace(' ', '-')
     if ',' in tag_name:
-        tag_name = [i.strip() for i in string.split(',')]
-
+        tag_name = [i.strip().replace(' ', '-') for i in tag_name.split(',')]
+    else: tag_name = tag_name.replace(' ', '-')
+        
     for p in range(1, max_page + 1):
         logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, tag_name))
         if isinstance(tag_name, str):
