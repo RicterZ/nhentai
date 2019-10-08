@@ -121,8 +121,8 @@ def doujinshi_parser(id_):
             return doujinshi_parser(str(id_))
 
     except Exception as e:
-        logger.critical(str(e))
-        raise SystemExit
+        logger.warn('Error: {}, ignored'.format(str(e)))
+        return None
 
     html = BeautifulSoup(response, 'html.parser')
     doujinshi_info = html.find('div', attrs={'id': 'info'})
@@ -169,14 +169,9 @@ def doujinshi_parser(id_):
     return doujinshi
 
 
-def search_parser(keyword, page):
+def search_parser(keyword, sorting='date', page=1):
     logger.debug('Searching doujinshis of keyword {0}'.format(keyword))
-    try:
-        response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page}).content
-    except requests.ConnectionError as e:
-        logger.critical(e)
-        logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
-        raise SystemExit
+    response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page, 'sort': sorting}).content
 
     result = _get_title_and_id(response)
     if not result:
@@ -194,22 +189,19 @@ def print_doujinshi(doujinshi_list):
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
-def tag_parser(tag_name, max_page=1, index=0):
+def tag_parser(tag_name, sorting='date', max_page=1):
     result = []
     tag_name = tag_name.lower()
-    if ',' in tag_name:
-        tag_name = [i.strip().replace(' ', '-') for i in tag_name.split(',')]
-    else: tag_name = tag_name.replace(' ', '-')
-        
+    tag_name = tag_name.replace(' ', '-')
+
+    if sorting == 'date':
+        sorting = ''
+
     for p in range(1, max_page + 1):
         logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, tag_name))
-        if isinstance(tag_name, str):
-            response = request('get', url='%s/%s/?page=%d' % (constant.TAG_URL[index], tag_name, p)).content
-            result += _get_title_and_id(response)
-        else:
-            for i in tag_name:
-                response = request('get', url='%s/%s/?page=%d' % (constant.TAG_URL[index], i, p)).content
-                result += _get_title_and_id(response)
+        response = request('get', url='%s/%s/%s?page=%d' % (constant.TAG_URL, tag_name, sorting, p)).content
+
+        result += _get_title_and_id(response)
         if not result:
             logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
             return
@@ -220,13 +212,13 @@ def tag_parser(tag_name, max_page=1, index=0):
     return result
 
 
-def __api_suspended_search_parser(keyword, page):
+def __api_suspended_search_parser(keyword, sorting, page):
     logger.debug('Searching doujinshis using keywords {0}'.format(keyword))
     result = []
     i = 0
     while i < 5:
         try:
-            response = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page}).json()
+            response = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page, 'sort': sorting}).json()
         except Exception as e:
             i += 1
             if not i < 5:
@@ -250,10 +242,10 @@ def __api_suspended_search_parser(keyword, page):
     return result
 
 
-def __api_suspended_tag_parser(tag_id, max_page=1):
+def __api_suspended_tag_parser(tag_id, sorting, max_page=1):
     logger.info('Searching for doujinshi with tag id {0}'.format(tag_id))
     result = []
-    response = request('get', url=constant.TAG_API_URL, params={'sort': 'popular', 'tag_id': tag_id}).json()
+    response = request('get', url=constant.TAG_API_URL, params={'sort': sorting, 'tag_id': tag_id}).json()
     page = max_page if max_page <= response['num_pages'] else int(response['num_pages'])
 
     for i in range(1, page + 1):
@@ -261,7 +253,7 @@ def __api_suspended_tag_parser(tag_id, max_page=1):
 
         if page != 1:
             response = request('get', url=constant.TAG_API_URL,
-                               params={'sort': 'popular', 'tag_id': tag_id}).json()
+                               params={'sort': sorting, 'tag_id': tag_id}).json()
     for row in response['result']:
         title = row['title']['english']
         title = title[:85] + '..' if len(title) > 85 else title

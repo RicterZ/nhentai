@@ -207,3 +207,10 @@ an invalid filename.
     # Remove [] from filename
     filename = filename.replace('[]', '')
     return filename
+
+
+def signal_handler(signal, frame):
+    logger.error('Ctrl-C signal received. Stopping...')
+    exit(1)
+
+
