@@ -189,19 +189,28 @@ def print_doujinshi(doujinshi_list):
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
-def tag_parser(tag_name, sorting='date', max_page=1):
+def tag_parser(tag_name, sorting='date', max_page=1, index=0):
     result = []
     tag_name = tag_name.lower()
-    tag_name = tag_name.replace(' ', '-')
-
+    if ',' in tag_name:
+        tag_name = [i.strip().replace(' ', '-') for i in tag_name.split(',')]
+    else:
+        tag_name = tag_name.replace(' ', '-')
     if sorting == 'date':
         sorting = ''
 
     for p in range(1, max_page + 1):
-        logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, tag_name))
-        response = request('get', url='%s/%s/%s?page=%d' % (constant.TAG_URL, tag_name, sorting, p)).content
+        if isinstance(tag_name, str):
+            logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, tag_name))
+            response = request('get', url='%s/%s/%s?page=%d' % (constant.TAG_URL[index], tag_name, sorting, p)).content
+            result += _get_title_and_id(response)
+        else:
+            for i in tag_name:
+                logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, i))
+                response = request('get',
+                                   url='%s/%s/%s?page=%d' % (constant.TAG_URL[index], i, sorting, p)).content
+                result += _get_title_and_id(response)
 
-        result += _get_title_and_id(response)
         if not result:
             logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
             return
