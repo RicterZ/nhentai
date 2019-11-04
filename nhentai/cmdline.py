@@ -98,7 +98,8 @@ def cmd_parser():
                       help='set cookie of nhentai to bypass Google recaptcha')
 
     try:
-        sys.argv = list(map(lambda x: unicode(x.decode(sys.stdin.encoding)), sys.argv))
+        sys.argv = [unicode(i.decode(sys.stdin.encoding)) for i in sys.argv]
+        print()
     except (NameError, TypeError):
         pass
     except UnicodeDecodeError:
@@ -163,13 +164,13 @@ def cmd_parser():
             exit(1)
 
     if args.id:
-        _ = map(lambda id_: id_.strip(), args.id.split(','))
-        args.id = set(map(int, filter(lambda id_: id_.isdigit(), _)))
+        _ = [i.strip() for i in args.id.split(',')]
+        args.id = set(int(i) for i in _ if i.isdigit())
 
     if args.file:
         with open(args.file, 'r') as f:
-            _ = map(lambda id: id.strip(), f.readlines())
-            args.id = set(map(int, filter(lambda id_: id_.isdigit(), _)))
+            _ = [i.strip() for i in f.readlines()]
+            args.id = set(int(i) for i in _ if i.isdigit())
 
     if (args.is_download or args.is_show) and not args.id and not args.keyword and \
             not args.tag and not args.artist and not args.character and \

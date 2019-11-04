@@ -298,7 +298,7 @@ def __api_suspended_doujinshi_parser(id_):
     doujinshi['name'] = response['title']['english']
     doujinshi['subtitle'] = response['title']['japanese']
     doujinshi['img_id'] = response['media_id']
-    doujinshi['ext'] = ''.join(map(lambda s: s['t'], response['images']['pages']))
+    doujinshi['ext'] = ''.join([i['t'] for i in response['images']['pages']])
     doujinshi['pages'] = len(response['images']['pages'])
 
     # gain information of the doujinshi
