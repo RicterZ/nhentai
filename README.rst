@@ -74,23 +74,31 @@ Download by tag name:
 
     nhentai --tag lolicon --download --page=2
 
+Download by artist name:
+
 .. code-block:: bash
 
     nhentai --artist henreader --download
+
+Download by character name:
 
 .. code-block:: bash
 
     nhentai --character kuro von einsbern --download
 
+Download by parody name:
+
 .. code-block:: bash
 
     nhentai --parody the idolmaster --download
+
+Download by group name:
 
 .. code-block:: bash
 
     nhentai --group clesta --download
 
-Download with multiple tags (--tag, --character, --paordy and --group supported):
+Download using multiple tags (--tag, --character, --paordy and --group supported):
 
 .. code-block:: bash
 
