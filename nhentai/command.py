@@ -90,7 +90,7 @@ def main():
                 doujinshi_list.append(Doujinshi(name_format=options.name_format, **doujinshi_info))
 
             if (i + 1) % 10 == 0:
-                logger.info('Progress: %d / %d' % (i + 1, len(list(doujinshi_ids))))
+                logger.info('Progress: %d / %d' % (i + 1, len(doujinshi_ids)))
 
     if not options.is_show:
         downloader = Downloader(path=options.output_dir, size=options.threads,
