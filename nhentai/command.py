@@ -38,43 +38,43 @@ def main():
         doujinshis = favorites_parser()
         print_doujinshi(doujinshis)
         if options.is_download and doujinshis:
-            doujinshi_ids = map(lambda d: d['id'], doujinshis)
+            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.tag:
         doujinshis = tag_parser(options.tag, sorting=options.sorting, max_page=options.max_page)
         print_doujinshi(doujinshis)
         if options.is_download and doujinshis:
-            doujinshi_ids = map(lambda d: d['id'], doujinshis)
+            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.artist:
         doujinshis = tag_parser(options.artist, max_page=options.max_page, index=1)
         print_doujinshi(doujinshis)
         if options.is_download and doujinshis:
-            doujinshi_ids = map(lambda d: d['id'], doujinshis)
+            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.character:
         doujinshis = tag_parser(options.character, max_page=options.max_page, index=2)
         print_doujinshi(doujinshis)
         if options.is_download and doujinshis:
-            doujinshi_ids = map(lambda d: d['id'], doujinshis)
+            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.parody:
         doujinshis = tag_parser(options.parody, max_page=options.max_page, index=3)
         print_doujinshi(doujinshis)
         if options.is_download and doujinshis:
-            doujinshi_ids = map(lambda d: d['id'], doujinshis)
+            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.group:
         doujinshis = tag_parser(options.group, max_page=options.max_page, index=4)
         print_doujinshi(doujinshis)
         if options.is_download and doujinshis:
-            doujinshi_ids = map(lambda d: d['id'], doujinshis)
+            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.keyword:
         doujinshis = search_parser(options.keyword, sorting=options.sorting, page=options.page)
         print_doujinshi(doujinshis)
         if options.is_download:
-            doujinshi_ids = map(lambda d: d['id'], doujinshis)
+            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif not doujinshi_ids:
         doujinshi_ids = options.id
