@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
+from tabulate import tabulate
 
 import sys
 import re
@@ -103,6 +104,41 @@ def generate_html(output_dir='.', doujinshi_obj=None):
         logger.log(15, 'HTML Viewer has been write to \'{0}\''.format(os.path.join(doujinshi_dir, 'index.html')))
     except Exception as e:
         logger.warning('Writen HTML Viewer failed ({})'.format(str(e)))
+
+def generate_metadata(output_dir=".", doujinshi_obj=None):
+    if doujinshi_obj is not None:
+        doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
+    else:
+        doujinshi_dir = '.'
+
+    if doujinshi_obj is not None:    
+        table = [
+                ["Title (EN)", doujinshi_obj.name],
+                ["Title", doujinshi_obj.info.subtitle],
+                ["Characters", doujinshi_obj.info.characters],
+                ["Authors", doujinshi_obj.info.artists],
+                ["Languages", doujinshi_obj.info.languages],
+                ["Tags", doujinshi_obj.info.tags],
+                ["ID", doujinshi_obj.id],
+                ["Pages", doujinshi_obj.pages],
+            ]
+    else:
+        table = [['']]
+        logger.warning('Metadata generation failed (doujinshi_obj is None)')
+
+    metadata_txt = tabulate(table)
+
+    try:
+        if sys.version_info < (3, 0):
+            with open(os.path.join(doujinshi_dir, 'index.html'), 'w') as f:
+                f.write(metadata_txt)
+        else:
+            with open(os.path.join(doujinshi_dir, '_metadata.txt'), 'wb') as f:
+                f.write(metadata_txt.encode('utf-8'))
+
+        logger.log(15, 'Metadata has been write to \'{0}\''.format(os.path.join(doujinshi_dir, '_metadata.txt')))
+    except Exception as e:
+        logger.warning('Metadata generation failed ({})'.format(str(e)))
 
 
 def generate_main_html(output_dir='./'):

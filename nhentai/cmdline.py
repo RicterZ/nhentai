@@ -85,6 +85,8 @@ def cmd_parser():
                       help='generate Comic Book CBZ File')
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
                       help='remove downloaded doujinshi dir when generated CBZ file.')
+    parser.add_option('--no-metadata', dest='no_metadata', action='store_true', default=False,
+                      help='do not generate metadata file for collection')
 
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
