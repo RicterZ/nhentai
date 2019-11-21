@@ -37,7 +37,7 @@ class Doujinshi(object):
         self.url = '%s/%d' % (DETAIL_URL, self.id)
         self.info = DoujinshiInfo(**kwargs)
 
-        name_format = name_format.replace('%i', ('0'*(6-len(str(self.id))))+str(self.id)) #pad with leading zeroes
+        name_format = name_format.replace('%i', str(self.id).zfilll(6))
         name_format = name_format.replace('%a', self.info.artists)
         name_format = name_format.replace('%t', self.name)
         name_format = name_format.replace('%s', self.info.subtitle)
