@@ -48,8 +48,13 @@ def cmd_parser():
 
     # doujinshi options
     parser.add_option('--id', type='string', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
-    parser.add_option('--search', '-s', type='string', dest='keyword', action='store', help='search doujinshi by keyword')
+    parser.add_option('--search', '-s', type='string', dest='keyword', action='store',
+                      help='search doujinshi by keyword')
     parser.add_option('--tag', type='string', dest='tag', action='store', help='download doujinshi by tag')
+    parser.add_option('--artist', type='string', dest='artist', action='store', help='download doujinshi by artist')
+    parser.add_option('--character', type='string', dest='character', action='store', help='download doujinshi by character')
+    parser.add_option('--parody', type='string', dest='parody', action='store', help='download doujinshi by parody')
+    parser.add_option('--group', type='string', dest='group', action='store', help='download doujinshi by group')
     parser.add_option('--favorites', '-F', action='store_true', dest='favorites',
                       help='list or download your favorites.')
 
@@ -58,6 +63,8 @@ def cmd_parser():
                       help='page number of search results')
     parser.add_option('--max-page', type='int', dest='max_page', action='store', default=1,
                       help='The max page when recursive download tagged doujinshi')
+    parser.add_option('--sorting', dest='sorting', action='store', default='date',
+                      help='sorting of doujinshi (date / popular)', choices=['date', 'popular'])
 
     # download options
     parser.add_option('--output', '-o', type='string', dest='output_dir', action='store', default='',
@@ -91,7 +98,8 @@ def cmd_parser():
                       help='set cookie of nhentai to bypass Google recaptcha')
 
     try:
-        sys.argv = list(map(lambda x: unicode(x.decode(sys.stdin.encoding)), sys.argv))
+        sys.argv = [unicode(i.decode(sys.stdin.encoding)) for i in sys.argv]
+        print()
     except (NameError, TypeError):
         pass
     except UnicodeDecodeError:
@@ -104,7 +112,8 @@ def cmd_parser():
         exit(0)
 
     if args.main_viewer and not args.id and not args.keyword and \
-            not args.tag and not args.favorites:
+            not args.tag and not args.artist and not args.character and \
+            not args.parody and not args.group and not args.favorites:
         generate_main_html()
         exit(0)
 
@@ -155,21 +164,23 @@ def cmd_parser():
             exit(1)
 
     if args.id:
-        _ = map(lambda id_: id_.strip(), args.id.split(','))
-        args.id = set(map(int, filter(lambda id_: id_.isdigit(), _)))
+        _ = [i.strip() for i in args.id.split(',')]
+        args.id = set(int(i) for i in _ if i.isdigit())
 
     if args.file:
         with open(args.file, 'r') as f:
-            _ = map(lambda id: id.strip(), f.readlines())
-            args.id = set(map(int, filter(lambda id_: id_.isdigit(), _)))
+            _ = [i.strip() for i in f.readlines()]
+            args.id = set(int(i) for i in _ if i.isdigit())
 
     if (args.is_download or args.is_show) and not args.id and not args.keyword and \
-            not args.tag and not args.favorites:
+            not args.tag and not args.artist and not args.character and \
+            not args.parody and not args.group and not args.favorites:
         logger.critical('Doujinshi id(s) are required for downloading')
         parser.print_help()
         exit(1)
 
-    if not args.keyword and not args.id and not args.tag and not args.favorites:
+    if not args.keyword and not args.id and not args.tag and not args.artist and \
+            not args.character and not args.parody and not args.group and not args.favorites:
         parser.print_help()
         exit(1)
 
