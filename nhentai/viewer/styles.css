@@ -67,3 +67,16 @@ html, body {
         0 0 2px #222,
         0 0 2px #222;
 }
+
+h4, ul {
+    margin: 10px;
+}
+
+ul li {
+    margin-left: -10px;
+}
+
+#metadata-panel {
+    width: 300px;
+    margin-left: 20px;
+}
