@@ -12,7 +12,7 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader, init_worker
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_metadata, generate_cbz, generate_main_html, check_cookie
+from nhentai.utils import generate_html, generate_metadata, generate_cbz, generate_main_html, check_cookie, signal_handler
 
 
 def main():
