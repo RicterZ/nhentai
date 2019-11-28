@@ -12,7 +12,7 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader, init_worker
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_metadata, generate_cbz, generate_main_html, check_cookie, signal_handler
+from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie, signal_handler
 
 
 def main():
@@ -105,8 +105,6 @@ def main():
                 generate_html(options.output_dir, doujinshi)
             elif options.is_cbz:
                 generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir)
-            if not options.no_metadata:
-                generate_metadata(options.output_dir, doujinshi)
         if options.main_viewer:
             generate_main_html(options.output_dir)
 
