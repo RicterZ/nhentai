@@ -1,4 +1,3 @@
-function to just regenerate metadata and index.html
 search bar in main.html
 package into gui
 package into chrome plugin

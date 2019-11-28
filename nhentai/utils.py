@@ -265,6 +265,6 @@ def generate_index(output_dir='./', doujinshi_list=None):
             if os.path.exists(os.path.join(output_dir, doujinshi_obj.filename)):
                 generate_html(output_dir, doujinshi_obj)
             else:
-                logger.warning('Gallery {} does not exist, skipped'.format(doujinshi_obj.filename))
+                logger.warning('Folder {} does not exist, skipped'.format(doujinshi_obj.filename))
     else:
         logger.error('No doujinshi list detected')

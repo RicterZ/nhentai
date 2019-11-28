@@ -168,6 +168,9 @@ Other options:
       --gen-index=ID        generate index.html for gallery IDs
       --gen-all-index=FILE  generate index.html for gallery IDs in file
 
+      NOTE: --gen-index and --gen-all-index only work for existing folders.
+            Please set --format to match format of folders.
+
       # nHentai options
       --cookie=COOKIE       set cookie of nhentai to bypass Google recaptcha
 
