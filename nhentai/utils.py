@@ -258,3 +258,13 @@ def format_metadata(doujinshi_obj=None):
         m_tags = '\t<li>ERROR</li>\n'
 
     return metadata.format(M_TITLEEN=m_titleen, M_TITLE=m_title, M_ID=m_id, M_LANGUAGE=m_language, M_AUTHOR=m_author, M_CHARACTERS=m_characters, M_TAGS=m_tags)  
+
+def generate_index(output_dir='./', doujinshi_list=None):
+    if doujinshi_list is not None:
+        for doujinshi_obj in doujinshi_list:
+            if os.path.exists(os.path.join(output_dir, doujinshi_obj.filename)):
+                generate_html(output_dir, doujinshi_obj)
+            else:
+                logger.warning('Gallery {} does not exist, skipped'.format(doujinshi_obj.filename))
+    else:
+        logger.error('No doujinshi list detected')

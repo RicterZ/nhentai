@@ -165,6 +165,8 @@ Other options:
       --gen-main            generate a main viewer contain all the doujin in the folder
       -C, --cbz             generate Comic Book CBZ File
       --rm-origin-dir       remove downloaded doujinshi dir when generated CBZ file.
+      --gen-index=ID        generate index.html for gallery IDs
+      --gen-all-index=FILE  generate index.html for gallery IDs in file
 
       # nHentai options
       --cookie=COOKIE       set cookie of nhentai to bypass Google recaptcha

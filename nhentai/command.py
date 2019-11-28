@@ -12,7 +12,7 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader, init_worker
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie, signal_handler
+from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie, signal_handler, generate_index
 
 
 def main():
@@ -92,7 +92,7 @@ def main():
             if (i + 1) % 10 == 0:
                 logger.info('Progress: %d / %d' % (i + 1, len(doujinshi_ids)))
 
-    if not options.is_show:
+    if not options.is_show and not options.gen_all_index and not options.gen_index:
         downloader = Downloader(path=options.output_dir, size=options.threads,
                                 timeout=options.timeout, delay=options.delay)
 
@@ -113,8 +113,11 @@ def main():
         else:
             logger.log(15, 'All done.')
 
-    else:
+    elif options.is_show:
         [doujinshi.show() for doujinshi in doujinshi_list]
+    
+    else:
+        generate_index(options.output_dir, doujinshi_list)
 
 
 signal.signal(signal.SIGINT, signal_handler)

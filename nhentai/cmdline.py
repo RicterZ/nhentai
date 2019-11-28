@@ -92,6 +92,10 @@ def cmd_parser():
                       help='generate Comic Book CBZ File')
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
                       help='remove downloaded doujinshi dir when generated CBZ file.')
+    parser.add_option('--gen-index', type='string', dest='gen_index', action='store',
+                      help='generate index.html for gallery IDs')
+    parser.add_option('--gen-all-index', type='string', dest='gen_all_index', action='store',
+                      help='generate index.html for gallery IDs in file')
 
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
@@ -169,6 +173,15 @@ def cmd_parser():
 
     if args.file:
         with open(args.file, 'r') as f:
+            _ = [i.strip() for i in f.readlines()]
+            args.id = set(int(i) for i in _ if i.isdigit())
+
+    if args.gen_index:
+        _ = [i.strip() for i in args.gen_index.split(',')]
+        args.id = set(int(i) for i in _ if i.isdigit())
+
+    if args.gen_all_index:
+        with open(args.gen_all_index, 'r') as f:
             _ = [i.strip() for i in f.readlines()]
             args.id = set(int(i) for i in _ if i.isdigit())
 
