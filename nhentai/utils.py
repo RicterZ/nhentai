@@ -84,51 +84,16 @@ def generate_html(output_dir='.', doujinshi_obj=None):
     html = readfile('viewer/index.html')
     css = readfile('viewer/styles.css')
     js = readfile('viewer/scripts.js')
-    metadata = readfile('viewer/metadata.html')
+    metadata = format_metadata(doujinshi_obj)
 
     if doujinshi_obj is not None:
         title = doujinshi_obj.name
-        m_titleen = doujinshi_obj.name
-        m_title = doujinshi_obj.info.subtitle
-        m_id = 'ID: ' + str(doujinshi_obj.id)
-        m_language = ''
-        m_author = ''
-        m_characters = ''
-        m_tags = ''
-
-        m_languagelist = doujinshi_obj.info.languages.split(', ')
-        m_authorlist = doujinshi_obj.info.artists.split(', ')
-        m_characterslist = doujinshi_obj.info.characters.split(', ')
-        m_tagslist = doujinshi_obj.info.tags.split(', ')
-
-        for language in m_languagelist:
-            m_language += '<li>{}</li>\n'.format(language)
-        for author in m_authorlist:
-            m_author += '<li>{}</li>\n'.format(author)
-        for characters in m_characterslist:
-            m_characters += '<li>{}</li>\n'.format(characters)
-        for tags in m_tagslist:
-            m_tags += '<li>{}</li>\n'.format(tags)
 
         if sys.version_info < (3, 0):
             title = title.encode('utf-8')
-            m_titleen = m_titleen.encode('utf-8')
-            m_title = m_title.encode('utf-8')
-            m_id = m_id.encode('utf-8')
-            m_language = m_language.encode('utf-8')
-            m_author = m_author.encode('utf-8')
-            m_characters = m_characters.encode('utf-8')
-            m_tags = m_tags.encode('utf-8')
     else:
         title = 'nHentai HTML Viewer'
-        m_titleen = 'ERROR'
-        m_title = 'ERROR'
-        m_language = '<li>ERROR</li>\n'
-        m_author = '<li>ERROR</li>\n'
-        m_characters = '<li>ERROR</li>\n'
-        m_tags = '<li>ERROR</li>\n'
 
-    metadata = metadata.format(M_TITLEEN=m_titleen, M_TITLE=m_title, M_ID=m_id, M_LANGUAGE=m_language, M_AUTHOR=m_author, M_CHARACTERS=m_characters, M_TAGS=m_tags)
     data = html.format(TITLE=title, IMAGES=image_html, SCRIPTS=js, STYLES=css, METADATA=metadata)
     try:
         if sys.version_info < (3, 0):
@@ -285,4 +250,46 @@ def signal_handler(signal, frame):
     logger.error('Ctrl-C signal received. Stopping...')
     exit(1)
 
+def format_metadata(doujinshi_obj=None):
+    metadata = readfile('viewer/metadata.html')
 
+    if doujinshi_obj is not None:
+        m_titleen = doujinshi_obj.name
+        m_title = doujinshi_obj.info.subtitle
+        m_id = 'ID: ' + str(doujinshi_obj.id)
+        m_language = ''
+        m_author = ''
+        m_characters = ''
+        m_tags = ''
+
+        m_languagelist = doujinshi_obj.info.languages.split(', ')
+        m_authorlist = doujinshi_obj.info.artists.split(', ')
+        m_characterslist = doujinshi_obj.info.characters.split(', ')
+        m_tagslist = doujinshi_obj.info.tags.split(', ')
+
+        for language in m_languagelist:
+            m_language += '\t<li>{}</li>\n'.format(language)
+        for author in m_authorlist:
+            m_author += '\t<li>{}</li>\n'.format(author)
+        for characters in m_characterslist:
+            m_characters += '\t<li>{}</li>\n'.format(characters)
+        for tags in m_tagslist:
+            m_tags += '\t<li>{}</li>\n'.format(tags)
+
+        if sys.version_info < (3, 0):
+            m_titleen = m_titleen.encode('utf-8')
+            m_title = m_title.encode('utf-8')
+            m_id = m_id.encode('utf-8')
+            m_language = m_language.encode('utf-8')
+            m_author = m_author.encode('utf-8')
+            m_characters = m_characters.encode('utf-8')
+            m_tags = m_tags.encode('utf-8')
+    else:
+        m_titleen = 'ERROR'
+        m_title = 'ERROR'
+        m_language = '\t<li>ERROR</li>\n'
+        m_author = '\t<li>ERROR</li>\n'
+        m_characters = '\t<li>ERROR</li>\n'
+        m_tags = '\t<li>ERROR</li>\n'
+
+    return metadata.format(M_TITLEEN=m_titleen, M_TITLE=m_title, M_ID=m_id, M_LANGUAGE=m_language, M_AUTHOR=m_author, M_CHARACTERS=m_characters, M_TAGS=m_tags)  
