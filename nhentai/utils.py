@@ -233,13 +233,13 @@ def format_metadata(doujinshi_obj=None):
         m_tagslist = doujinshi_obj.info.tags.split(', ')
 
         for language in m_languagelist:
-            m_language += '\t<li>{}</li>\n'.format(language)
+            m_language += '\t\t<li>{}</li>\n'.format(language)
         for author in m_authorlist:
-            m_author += '\t<li>{}</li>\n'.format(author)
+            m_author += '\t\t<li>{}</li>\n'.format(author)
         for characters in m_characterslist:
-            m_characters += '\t<li>{}</li>\n'.format(characters)
+            m_characters += '\t\t<li>{}</li>\n'.format(characters)
         for tags in m_tagslist:
-            m_tags += '\t<li>{}</li>\n'.format(tags)
+            m_tags += '\t\t<li>{}</li>\n'.format(tags)
 
         if sys.version_info < (3, 0):
             m_titleen = m_titleen.encode('utf-8')
@@ -252,10 +252,10 @@ def format_metadata(doujinshi_obj=None):
     else:
         m_titleen = 'ERROR'
         m_title = 'ERROR'
-        m_language = '\t<li>ERROR</li>\n'
-        m_author = '\t<li>ERROR</li>\n'
-        m_characters = '\t<li>ERROR</li>\n'
-        m_tags = '\t<li>ERROR</li>\n'
+        m_language = '\t\t<li>ERROR</li>\n'
+        m_author = '\t\t<li>ERROR</li>\n'
+        m_characters = '\t\t<li>ERROR</li>\n'
+        m_tags = '\t\t<li>ERROR</li>\n'
 
     return metadata.format(M_TITLEEN=m_titleen, M_TITLE=m_title, M_ID=m_id, M_LANGUAGE=m_language, M_AUTHOR=m_author, M_CHARACTERS=m_characters, M_TAGS=m_tags)  
 
