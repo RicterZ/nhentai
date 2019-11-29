@@ -17,6 +17,12 @@
 
         <h1>Main Folder ({COUNT})</h1>
 
+        <div class="search-bar">
+            <form id = "search-input" role="search" onsubmit="Search(); return false">
+                <input type="search" name="q" id="gallery-search" placeholder="Search...">
+            </form>
+        </div>
+
         <div class="container" id="favcontainer">
 
             {PICTURE}
@@ -28,3 +34,7 @@
 </body>
 
 </html>
+
+<script>
+{SCRIPTS}
+</script>

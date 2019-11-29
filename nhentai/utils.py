@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
 from tabulate import tabulate
+from bs4 import BeautifulSoup
 
 import sys
 import re
@@ -118,9 +119,10 @@ def generate_main_html(output_dir='./'):
     image_html = ''
     main = readfile('viewer/main.html')
     css = readfile('viewer/main.css')
+    scripts = readfile('viewer/mainscripts.js')
     element = '\n\
             <div class="gallery-favorite">\n\
-                <div class="gallery">\n\
+                <div class="gallery" data-metadata="{METADATA}">\n\
                     <a href="./{FOLDER}/index.html" class="cover" style="padding:0 0 141.6% 0"><img\n\
                             src="./{FOLDER}/{IMAGE}" />\n\
                         <div class="caption">{TITLE}</div>\n\
@@ -139,7 +141,9 @@ def generate_main_html(output_dir='./'):
         if 'index.html' in files:
             count += 1
             logger.info('Add doujinshi \'{}\''.format(folder))
+            metadata = extract_metadata('./{}/index.html'.format(folder))
         else:
+            metadata = ''
             continue
 
         image = files[0]  # 001.jpg or 001.png
@@ -148,13 +152,13 @@ def generate_main_html(output_dir='./'):
         else:
             title = 'nHentai HTML Viewer'
 
-        image_html += element.format(FOLDER=folder, IMAGE=image, TITLE=title)
+        image_html += element.format(METADATA=metadata, FOLDER=folder, IMAGE=image, TITLE=title)
 
     if image_html == '':
         logger.warning('None index.html found, --gen-main paused.')
         return
     try:
-        data = main.format(STYLES=css, COUNT=count, PICTURE=image_html)
+        data = main.format(STYLES=css, COUNT=count, PICTURE=image_html, SCRIPTS=scripts)
         if sys.version_info < (3, 0):
             with open('./main.html', 'w') as f:
                 f.write(data)
@@ -268,3 +272,21 @@ def generate_index(output_dir='./', doujinshi_list=None):
                 logger.warning('Folder {} does not exist, skipped'.format(doujinshi_obj.filename))
     else:
         logger.error('No doujinshi list detected')
+
+def extract_metadata(indexpath):
+    indexfile = open(indexpath, 'r', encoding='utf-8')
+    indexcontent = indexfile.read()
+    index = BeautifulSoup(indexcontent, 'html.parser')
+
+    metadata = index.select('#metadata-titleEN')[0].string
+
+    for language in index.select('#metadata-language')[0].stripped_strings:
+        metadata += ' ' + language
+    for author in index.select('#metadata-author')[0].stripped_strings:
+        metadata += ' ' + author
+    for character in index.select('#metadata-characters')[0].stripped_strings:
+        metadata += ' ' + character
+    for tag in index.select('#metadata-tags')[0].stripped_strings:
+        metadata += ' ' + tag
+
+    return metadata

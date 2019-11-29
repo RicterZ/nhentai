@@ -1,3 +1,2 @@
-search bar in main.html
 package into gui
 package into chrome plugin

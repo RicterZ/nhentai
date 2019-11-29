@@ -26,8 +26,8 @@ setup(
     keywords='nhentai, doujinshi',
     description='nhentai.net doujinshis downloader',
     long_description=long_description(),
-    url='https://github.com/RicterZ/nhentai',
-    download_url='https://github.com/RicterZ/nhentai/tarball/master',
+    url='https://github.com/jwfiredragon/nhentai',
+    download_url='https://github.com/jwfiredragon/nhentai/tarball/master',
     include_package_data=True,
     zip_safe=False,
 
