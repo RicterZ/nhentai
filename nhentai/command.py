@@ -92,7 +92,7 @@ def main():
             if (i + 1) % 10 == 0:
                 logger.info('Progress: %d / %d' % (i + 1, len(doujinshi_ids)))
 
-    if not options.is_show and not options.gen_all_index and not options.gen_index:
+    if not options.is_show and not options.gen_index_f and not options.gen_index:
         downloader = Downloader(path=options.output_dir, size=options.threads,
                                 timeout=options.timeout, delay=options.delay)
 

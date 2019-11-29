@@ -94,7 +94,7 @@ def cmd_parser():
                       help='remove downloaded doujinshi dir when generated CBZ file.')
     parser.add_option('--gen-index', type='string', dest='gen_index', action='store',
                       help='generate index.html for gallery IDs')
-    parser.add_option('--gen-all-index', type='string', dest='gen_all_index', action='store',
+    parser.add_option('--gen-index-f', type='string', dest='gen_index_f', action='store',
                       help='generate index.html for gallery IDs in file')
 
     # nhentai options
@@ -180,8 +180,8 @@ def cmd_parser():
         _ = [i.strip() for i in args.gen_index.split(',')]
         args.id = set(int(i) for i in _ if i.isdigit())
 
-    if args.gen_all_index:
-        with open(args.gen_all_index, 'r') as f:
+    if args.gen_index_f:
+        with open(args.gen_index_f, 'r') as f:
             _ = [i.strip() for i in f.readlines()]
             args.id = set(int(i) for i in _ if i.isdigit())
 

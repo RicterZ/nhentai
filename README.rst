@@ -166,9 +166,9 @@ Other options:
       -C, --cbz             generate Comic Book CBZ File
       --rm-origin-dir       remove downloaded doujinshi dir when generated CBZ file.
       --gen-index=ID        generate index.html for gallery IDs
-      --gen-all-index=FILE  generate index.html for gallery IDs in file
+      --gen-index-f=FILE    generate index.html for gallery IDs in file
 
-      NOTE: --gen-index and --gen-all-index only work for existing folders.
+      NOTE: --gen-index and --gen-index-f only work for existing folders.
             Please set --format to match format of folders.
 
       # nHentai options
