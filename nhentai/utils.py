@@ -289,4 +289,4 @@ def extract_metadata(indexpath):
     for tag in index.select('#metadata-tags')[0].stripped_strings:
         metadata += ' ' + tag
 
-    return metadata
+    return metadata.replace('"', '\'')
