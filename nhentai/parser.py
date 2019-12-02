@@ -158,7 +158,7 @@ def doujinshi_parser(id_):
 
     # gain information of the doujinshi
     information_fields = doujinshi_info.find_all('div', attrs={'class': 'field-name'})
-    needed_fields = ['Characters', 'Artists', 'Languages', 'Tags']
+    needed_fields = ['Characters', 'Artists', 'Languages', 'Tags', 'Parodies', 'Groups', 'Categories']
     for field in information_fields:
         field_name = field.contents[0].strip().strip(':')
         if field_name in needed_fields:
@@ -166,6 +166,9 @@ def doujinshi_parser(id_):
                     field.find_all('a', attrs={'class': 'tag'})]
             doujinshi[field_name.lower()] = ', '.join(data)
 
+    time_field = doujinshi_info.find('time')
+    if time_field.has_attr('datetime'):
+        doujinshi['date'] = time_field['datetime']
     return doujinshi
 
 
@@ -302,7 +305,7 @@ def __api_suspended_doujinshi_parser(id_):
     doujinshi['pages'] = len(response['images']['pages'])
 
     # gain information of the doujinshi
-    needed_fields = ['character', 'artist', 'language', 'tag']
+    needed_fields = ['character', 'artist', 'language', 'tag', 'parody', 'group', 'category']
     for tag in response['tags']:
         tag_type = tag['type']
         if tag_type in needed_fields:

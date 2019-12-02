@@ -4,6 +4,7 @@ from __future__ import unicode_literals, print_function
 import sys
 import re
 import os
+import json
 import string
 import zipfile
 import shutil
@@ -11,6 +12,7 @@ import requests
 
 from nhentai import constant
 from nhentai.logger import logger
+from nhentai.serializer import serialize
 
 
 def request(method, url, **kwargs):
@@ -85,13 +87,16 @@ def generate_html(output_dir='.', doujinshi_obj=None):
     js = readfile('viewer/scripts.js')
 
     if doujinshi_obj is not None:
-        title = doujinshi_obj.name
+        metadata = serialize(doujinshi_obj)
         if sys.version_info < (3, 0):
-            title = title.encode('utf-8')
+            metadata['Title'] = doujinshi_obj.name.encode('utf-8')
+            metadata['Subtitle'] = doujinshi_obj.info.subtitle.encode('utf-8')
+        with open(os.path.join(doujinshi_dir, 'metadata.json'), 'w') as f:
+            json.dump(metadata, f, separators=','':')
     else:
-        title = 'nHentai HTML Viewer'
+        metadata= {'Title': 'nHentai HTML Viewer'}
 
-    data = html.format(TITLE=title, IMAGES=image_html, SCRIPTS=js, STYLES=css)
+    data = html.format(TITLE=metadata['Title'], IMAGES=image_html, SCRIPTS=js, STYLES=css)
     try:
         if sys.version_info < (3, 0):
             with open(os.path.join(doujinshi_dir, 'index.html'), 'w') as f:

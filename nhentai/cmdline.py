@@ -55,6 +55,7 @@ def cmd_parser():
     parser.add_option('--character', type='string', dest='character', action='store', help='download doujinshi by character')
     parser.add_option('--parody', type='string', dest='parody', action='store', help='download doujinshi by parody')
     parser.add_option('--group', type='string', dest='group', action='store', help='download doujinshi by group')
+    parser.add_option('--language', type='string', dest='language', action='store', help='download doujinshi by language')
     parser.add_option('--favorites', '-F', action='store_true', dest='favorites',
                       help='list or download your favorites.')
 
@@ -113,7 +114,7 @@ def cmd_parser():
 
     if args.main_viewer and not args.id and not args.keyword and \
             not args.tag and not args.artist and not args.character and \
-            not args.parody and not args.group and not args.favorites:
+            not args.parody and not args.group and not args.language and not args.favorites:
         generate_main_html()
         exit(0)
 
@@ -174,13 +175,13 @@ def cmd_parser():
 
     if (args.is_download or args.is_show) and not args.id and not args.keyword and \
             not args.tag and not args.artist and not args.character and \
-            not args.parody and not args.group and not args.favorites:
+            not args.parody and not args.group and not args.language and not args.favorites:
         logger.critical('Doujinshi id(s) are required for downloading')
         parser.print_help()
         exit(1)
 
     if not args.keyword and not args.id and not args.tag and not args.artist and \
-            not args.character and not args.parody and not args.group and not args.favorites:
+            not args.character and not args.parody and not args.group and not args.language and not args.favorites:
         parser.print_help()
         exit(1)
 

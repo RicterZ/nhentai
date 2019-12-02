@@ -74,6 +74,12 @@ Download by tag name:
 
     nhentai --tag lolicon --download --page=2
 
+Download by language:
+
+.. code-block:: bash
+
+    nhentai --language english --download --page=2
+
 Download by artist name:
 
 .. code-block:: bash
