@@ -94,7 +94,7 @@ def generate_html(output_dir='.', doujinshi_obj=None):
         with open(os.path.join(doujinshi_dir, 'metadata.json'), 'w') as f:
             json.dump(metadata, f, separators=','':')
     else:
-        metadata= {'Title': 'nHentai HTML Viewer'}
+        metadata = {'Title': 'nHentai HTML Viewer'}
 
     data = html.format(TITLE=metadata['Title'], IMAGES=image_html, SCRIPTS=js, STYLES=css)
     try:
@@ -117,10 +117,11 @@ def generate_main_html(output_dir='./'):
     Default output folder will be the CLI path.
     """
 
-    count = 0
     image_html = ''
     main = readfile('viewer/main.html')
     css = readfile('viewer/main.css')
+    js = readfile('viewer/main.js')
+
     element = '\n\
             <div class="gallery-favorite">\n\
                 <div class="gallery">\n\
@@ -133,18 +134,24 @@ def generate_main_html(output_dir='./'):
 
     os.chdir(output_dir)
     doujinshi_dirs = next(os.walk('.'))[1]
+    database = open('data.js', 'w')
+    database.write("var data = JSON.parse('[")
 
     for folder in doujinshi_dirs:
-
+        folder_json = ',"Folder":"'+folder+'"}'
         files = os.listdir(folder)
         files.sort()
 
         if 'index.html' in files:
-            count += 1
             logger.info('Add doujinshi \'{}\''.format(folder))
         else:
             continue
 
+        database.write(open(output_dir + folder + '/' + files[-1], 'r').read()[:-2]+folder_json)
+        if folder != doujinshi_dirs[-1]:
+            database.write(",'+\n'")
+        else:
+            database.write("]')")
         image = files[0]  # 001.jpg or 001.png
         if folder is not None:
             title = folder.replace('_', ' ')
@@ -153,11 +160,12 @@ def generate_main_html(output_dir='./'):
 
         image_html += element.format(FOLDER=folder, IMAGE=image, TITLE=title)
 
+    database.close()
     if image_html == '':
         logger.warning('None index.html found, --gen-main paused.')
         return
     try:
-        data = main.format(STYLES=css, COUNT=count, PICTURE=image_html)
+        data = main.format(STYLES=css, SCRIPTS=js, PICTURE=image_html)
         if sys.version_info < (3, 0):
             with open('./main.html', 'w') as f:
                 f.write(data)

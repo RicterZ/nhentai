@@ -13,7 +13,7 @@ body {
 
 h1 {
     font-size: 2em;
-    margin: .67em 0
+    margin: .67em 0;
 }
 
 a {
@@ -130,14 +130,14 @@ blockquote {
 .container {
     display: block;
     clear: both;
-    margin-left: auto;
+    margin-left: 200px;
     margin-right: auto;
     margin-bottom: 10px;
     margin-top: 10px;
     padding: 10px;
     border-radius: 9px;
     background-color: #ecf0f1;
-    width: 100%;
+    width: 100% - 200px;
     max-width: 1200px
 }
 
@@ -220,6 +220,35 @@ blockquote {
 
 .gallery-favorite .gallery {
     width: 100%
+}
+
+.sidenav {
+  height: 100%;
+  width: 200px;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.sidenav a {
+  padding: 6px 6px 6px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
 }
 
 html.theme-black,html.theme-black body {
