@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="theme-color" content="#1f1f1f" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes, viewport-fit=cover" />
-    <title>nHentai &raquo; Viewer</title>
+    <title>nHentai Viewer</title>
     <script type="text/javascript" src="data.js"></script>
         <!-- <link rel="stylesheet" href="./main.css"> -->
 <style>
@@ -15,7 +15,29 @@
 
 <body>
     <div id="content">
-        <nav class="sidenav">nHentai Viewer</nav>
+        <nav class="sidenav">
+			<img src="logo.png">
+			<h1>nHentai Viewer</h1>
+									<button class="accordion">Language</button>
+            <div class="options" id="language">
+                    <a>English</a>
+                    <a>日本語</a>
+                    <a>中国語</a>
+            </div>
+			<button class="accordion">Category</button>
+            <div class="options" id ="category">
+                    <a>Doujinshi	</a>
+                    <a>Manga</a>
+            </div>
+			<button class="nav-btn hidden">Filters</button>
+			<div class="search">
+				<input type="search" name="q" value="" autocapitalize="none" required="">
+				<button type="submit" class="btn btn-primary btn-square">
+				<i class="fa fa-search"></i></button>
+			</div>
+			<div id="tags">
+			</div>
+		</nav>
         <div class="container" id="favcontainer">
 
             {PICTURE}

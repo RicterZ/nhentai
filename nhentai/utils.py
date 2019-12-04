@@ -4,7 +4,6 @@ from __future__ import unicode_literals, print_function
 import sys
 import re
 import os
-import json
 import string
 import zipfile
 import shutil
@@ -12,7 +11,7 @@ import requests
 
 from nhentai import constant
 from nhentai.logger import logger
-from nhentai.serializer import serialize
+from nhentai.serializer import serialize, set_js_database
 
 
 def request(method, url, **kwargs):
@@ -81,22 +80,19 @@ def generate_html(output_dir='.', doujinshi_obj=None):
 
         image_html += '<img src="{0}" class="image-item"/>\n'\
             .format(image)
-
     html = readfile('viewer/index.html')
     css = readfile('viewer/styles.css')
     js = readfile('viewer/scripts.js')
 
     if doujinshi_obj is not None:
-        metadata = serialize(doujinshi_obj)
+        serialize(doujinshi_obj, doujinshi_dir)
+        name = doujinshi_obj.name
         if sys.version_info < (3, 0):
-            metadata['Title'] = doujinshi_obj.name.encode('utf-8')
-            metadata['Subtitle'] = doujinshi_obj.info.subtitle.encode('utf-8')
-        with open(os.path.join(doujinshi_dir, 'metadata.json'), 'w') as f:
-            json.dump(metadata, f, separators=','':')
+            name = doujinshi_obj.name.encode('utf-8')
     else:
-        metadata = {'Title': 'nHentai HTML Viewer'}
+        name = {'title': 'nHentai HTML Viewer'}
 
-    data = html.format(TITLE=metadata['Title'], IMAGES=image_html, SCRIPTS=js, STYLES=css)
+    data = html.format(TITLE=name, IMAGES=image_html, SCRIPTS=js, STYLES=css)
     try:
         if sys.version_info < (3, 0):
             with open(os.path.join(doujinshi_dir, 'index.html'), 'w') as f:
@@ -118,6 +114,7 @@ def generate_main_html(output_dir='./'):
     """
 
     image_html = ''
+
     main = readfile('viewer/main.html')
     css = readfile('viewer/main.css')
     js = readfile('viewer/main.js')
@@ -134,11 +131,8 @@ def generate_main_html(output_dir='./'):
 
     os.chdir(output_dir)
     doujinshi_dirs = next(os.walk('.'))[1]
-    database = open('data.js', 'w')
-    database.write("var data = JSON.parse('[")
 
     for folder in doujinshi_dirs:
-        folder_json = ',"Folder":"'+folder+'"}'
         files = os.listdir(folder)
         files.sort()
 
@@ -147,11 +141,6 @@ def generate_main_html(output_dir='./'):
         else:
             continue
 
-        database.write(open(output_dir + folder + '/' + files[-1], 'r').read()[:-2]+folder_json)
-        if folder != doujinshi_dirs[-1]:
-            database.write(",'+\n'")
-        else:
-            database.write("]')")
         image = files[0]  # 001.jpg or 001.png
         if folder is not None:
             title = folder.replace('_', ' ')
@@ -159,8 +148,6 @@ def generate_main_html(output_dir='./'):
             title = 'nHentai HTML Viewer'
 
         image_html += element.format(FOLDER=folder, IMAGE=image, TITLE=title)
-
-    database.close()
     if image_html == '':
         logger.warning('None index.html found, --gen-main paused.')
         return
@@ -172,6 +159,8 @@ def generate_main_html(output_dir='./'):
         else:
             with open('./main.html', 'wb') as f:
                 f.write(data.encode('utf-8'))
+        shutil.copy(os.path.dirname(__file__)+'/viewer/logo.png', './')
+        set_js_database()
         logger.log(
             15, 'Main Viewer has been write to \'{0}main.html\''.format(output_dir))
     except Exception as e:
@@ -225,5 +214,3 @@ an invalid filename.
 def signal_handler(signal, frame):
     logger.error('Ctrl-C signal received. Stopping...')
     exit(1)
-
-
