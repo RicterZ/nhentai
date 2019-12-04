@@ -286,17 +286,26 @@ blockquote {
   font-weight: bold;
   background-color: #eee;
   color: #444;
-  padding: 10px 0px 5px 8px;
+  padding: 8px 8px 5px 9px;
   width: 100%;
   border: none;
   text-align: left;
   outline: none;
   font-size: 15px;
-  transition: 0.4s;
 }
 
 .nav-btn.hidden {
-  display:none
+  display:none;
+}
+
+.nav-btn a{
+  font-weight: normal;
+  padding-right: 10px;
+  border-radius: 15px;
+  cursor: crosshair
+}
+
+.nav-btn a.language{
 }
 
 .options {
@@ -363,24 +372,24 @@ blockquote {
     text-align:left;
     display: block;
 	width:15rem;
-	display: flex;
-    flex-flow: row wrap;
+
     justify-content: start;
 	margin: 2px 2px 2px 0px
 }
 
 .btn-2{
   font-weight:700;
-  padding-right:10px;
-  padding-left:10px;
+  padding-right:0.5rem;
+  padding-left:0.5rem;
   color:#fff;
   border:0;
   font-size:100%;
-  height:20px;
+  height:1.25rem;
   outline: 0;
-  border-radius: 3px;
+  border-radius: 0.3rem;
   cursor: pointer;
-  margin:2px;
+  margin:0.15rem;
+  transition: all 1s linear;
 }
 
 .btn-2.parody{
@@ -406,6 +415,15 @@ blockquote {
 .btn-2.hover{
   filter: saturate(20%)
 }
+
+.btn-2.hidden{
+  display: none;
+}
+
+.btn-2.vhidden {
+  opacity: 0;
+}
+
 input,input:focus{
   border:none;
   outline:0;
@@ -441,4 +459,14 @@ html.theme-black code {
     color: #ed2553;
     border: none;
     background-color: #292929
+}
+.btn span.icon {
+    background: url(imgs/icon.png) no-repeat;
+    float: right;
+    width: 10px;
+    height: 40px;
+}
+.cross{
+	float:left
+	height: 5px;
 }

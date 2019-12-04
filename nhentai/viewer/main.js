@@ -15,13 +15,17 @@ for (var i = 0; i < menu.length; i++) {
 var language = document.getElementById("language").children;
 for (var i = 0; i < language.length; i++){
 	language[i].addEventListener("click", function() {
-		document.getElementById("language").style.maxHeight = null;
+		toggler = document.getElementById("language")
+		toggler.style.maxHeight = null;
 		document.getElementsByClassName("accordion")[0].classList.toggle("active");
-
-		var toggler = document.getElementsByClassName("nav-btn")[0].classList;
-				if (toggler.contains("hidden")){
-		  toggler.toggle("hidden");
+		var nav_btn = document.getElementsByClassName("nav-btn")[0];
+		if (nav_btn.classList.contains("hidden")){
+		  nav_btn.classList.toggle("hidden");
 		}
+		var node = filter_maker(this.innerText, "language");
+		var check = filter_checker(this.innerText)
+		if (check == true){
+			nav_btn.appendChild(node);}
 });
 }
 var category = document.getElementById("category").children;
@@ -30,31 +34,72 @@ for (var i = 0; i < category.length; i++){
 		document.getElementById("category").style.maxHeight = null;
 		document.getElementsByClassName("accordion")[1].classList.toggle("active");
 
-		var toggler = document.getElementsByClassName("nav-btn")[0].classList;
-				if (toggler.contains("hidden")){
-		  toggler.toggle("hidden");
+		var nav_btn = document.getElementsByClassName("nav-btn")[0];
+		if (nav_btn.classList.contains("hidden")){
+		  nav_btn.classList.toggle("hidden");
 		}
+
+		var node = filter_maker(this.innerText, "category");
+		var check = filter_checker(this.innerText)
+		if (check == true){
+			nav_btn.appendChild(node);}
 });
 }
+tag_maker(tags)
 //-----------------------------------------------------------------------------------
-var tags = document.getElementById("tags");
-for (i in data){
-	tag_maker(data[i])
+//------------------------------------Functions--------------------------------------
+
+function filter_maker(text, class_value){
+    var node = document.createElement("a");
+    var textnode = document.createTextNode(text);
+    node.appendChild(textnode);
+    node.classList.add(class_value);
+    return node;
 }
+
+function filter_checker(text){
+    var filter_tags = document.getElementsByClassName("nav-btn")[0].children;
+	if (filter_tags == null){return true;}
+	for (i in filter_tags){
+		if (filter_tags[i].innerText == text){return false;}
+	}
+	return true;
+}
+
 function tag_maker(data){
-	var options = ["parody", "character", "tag", "artist", "group"];
-		for (i in options){
-			var i = options[i]
-			if (data[i] != null){
-				for (j in data[i]){
-					var node = document.createElement("button");                   // Create a <li> node
-					var textnode = document.createTextNode(data[i][j]);  					// Create a text node
-					node.appendChild(textnode);                             // Append the text to <li>
-					node.classList.add("btn-2");
-					node.classList.add("parody");
-					document.getElementById(i).appendChild(node);
-					console.log("teste");
-				}
-			}
+	for (i in data){
+		for (j in data[i]){
+			var node = document.createElement("button");
+			var textnode = document.createTextNode(data[i][j]);
+			node.appendChild(textnode);
+			node.classList.add("btn-2");
+			node.classList.add(i);
+			node.classList.add("hidden");
+			document.getElementById("tags").appendChild(node);
 		}
+	}
 }
+
+var input = document.getElementById("tagfilter");
+
+input.addEventListener("input", function() {
+	var tags = document.querySelectorAll(".btn-2");
+	if (this.value.length > 0) {
+        for (var i = 0; i < tags.length; i++) {
+            var tag = tags[i];
+            var nome = tag.innerText;
+            var exp = new RegExp(this.value, "i");;
+            if (exp.test(nome)) {
+                tag.classList.remove("hidden");
+		    }
+			else {
+				tag.classList.add("hidden");
+            }
+        }
+    } else {
+        for (var i = 0; i < tags.length; i++) {
+            var tag = tags[i];
+				tag.classList.add('hidden');
+        }
+    }
+});
