@@ -294,7 +294,7 @@ blockquote {
   font-size: 15px;
 }
 
-.nav-btn.hidden {
+.hidden {
   display:none;
 }
 
@@ -392,23 +392,23 @@ blockquote {
   transition: all 1s linear;
 }
 
-.btn-2.parody{
+.btn-2#parody{
   background-color: red;
 }
 
-.btn-2.character{
+.btn-2#character{
   background-color: blue;
 }
 
-.btn-2.tag{
+.btn-2#tag{
   background-color: green;
 }
 
-.btn-2.artist{
+.btn-2#artist{
   background-color: fuchsia;
 }
 
-.btn-2.group{
+.btn-2#group{
   background-color: teal;
 }
 
@@ -418,10 +418,6 @@ blockquote {
 
 .btn-2.hidden{
   display: none;
-}
-
-.btn-2.vhidden {
-  opacity: 0;
 }
 
 input,input:focus{
@@ -459,14 +455,4 @@ html.theme-black code {
     color: #ed2553;
     border: none;
     background-color: #292929
-}
-.btn span.icon {
-    background: url(imgs/icon.png) no-repeat;
-    float: right;
-    width: 10px;
-    height: 40px;
-}
-.cross{
-	float:left
-	height: 5px;
 }
