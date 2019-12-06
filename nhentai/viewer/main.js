@@ -91,7 +91,7 @@ function filter_searcher(){
 			filter_searcher();
 		}
 		catch{
-			var gallery = document.getElementsByClassName("gallery");
+			var gallery = document.getElementsByClassName("gallery-favorite");
 			for (var i = 0; i < gallery.length; i++){
 				gallery[i].classList.remove("hidden");
 			}
@@ -120,9 +120,9 @@ function filter_searcher(){
 		}
 		if (verifier){doujinshi_id.push(data[i].Folder);}
 	}
-	var gallery = document.getElementsByClassName("gallery");
+	var gallery = document.getElementsByClassName("gallery-favorite");
 	for (var i = 0; i < gallery.length; i++){
-		gtext = gallery[i].children[0].children[1].innerText;
+		gtext = gallery	[i].children[0].children[0].children[1].innerText;
 		if(doujinshi_id.includes(gtext)){
 			gallery[i].classList.remove("hidden");
 		}
