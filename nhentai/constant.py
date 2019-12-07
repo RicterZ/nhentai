@@ -21,7 +21,8 @@ TAG_URL = ['%s/tag' % BASE_URL,
            '%s/artist' % BASE_URL,
            '%s/character' % BASE_URL,
            '%s/parody' % BASE_URL,
-           '%s/group' % BASE_URL]
+           '%s/group' % BASE_URL,
+           '%s/language' % BASE_URL]
 
 TAG_API_URL = '%s/api/galleries/tagged' % BASE_URL
 LOGIN_URL = '%s/login/' % BASE_URL

@@ -71,7 +71,7 @@ def main():
             doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.language:
-        doujinshis = tag_parser(options.group, max_page=options.max_page, index=5)
+        doujinshis = tag_parser(options.language, max_page=options.max_page, index=5)
         print_doujinshi(doujinshis)
         if options.is_download and doujinshis:
             doujinshi_ids = [i['id'] for i in doujinshis]
