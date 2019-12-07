@@ -1,4 +1,4 @@
-//------------------------------------navbar script------------------------------------
+    //------------------------------------navbar script------------------------------------
 var menu = document.getElementsByClassName("accordion");
 for (var i = 0; i < menu.length; i++) {
   menu[i].addEventListener("click", function() {
@@ -62,8 +62,29 @@ input.addEventListener("input", function() {
         }
     }
 });
+input.addEventListener('keypress', function (e) {
+	enter_search(e, this.value);
+});
 //-----------------------------------------------------------------------------------
 //------------------------------------Functions--------------------------------------
+function enter_search(e, input){
+	var count = 0;
+	var key = e.which || e.keyCode;
+	if (key === 13 && input.length > 0) {
+	  var all_tags = document.getElementById("tags").children;
+	  for(i = 0; i < all_tags.length; i++){
+		if (!all_tags[i].classList.contains("hidden")){
+			count++;
+			var tag_name = all_tags[i].innerText;
+			var tag_id   = all_tags[i].id;
+			if (count>1){break}
+		}
+	  }
+	  if (count == 1){
+		filter_maker(tag_name, tag_id);
+	  }
+	}
+}
 function filter_maker(text, class_value){
     var check = filter_checker(text);
 	var nav_btn = document.getElementsByClassName("nav-btn")[0];
@@ -74,7 +95,7 @@ function filter_maker(text, class_value){
 		var node = document.createElement("a");
 		var textnode = document.createTextNode(text);
 		node.appendChild(textnode);
-		node.classList.add(class_value);	
+		node.classList.add(class_value);
 		nav_btn.appendChild(node);
 		filter_searcher();
 	}
@@ -130,8 +151,6 @@ function filter_searcher(){
 		gallery[i].classList.add("hidden");
 		}
 	}
-
-	console.log(doujinshi_id)
 }
 
 function filter_checker(text){

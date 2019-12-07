@@ -38,7 +38,7 @@ html, body {
 #image-container {
     flex: auto;
     height: 100vh;
-    background: #222;
+    background: #000;
     color: #fff;
     text-align: center;
     cursor: pointer;
@@ -48,6 +48,7 @@ html, body {
 }
 
 #image-container #dest {
+    background: #000;
     height: 100%;
     width: 100%;
     background-size: contain;
