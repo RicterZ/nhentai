@@ -22,7 +22,7 @@ def serialize(doujinshi, dir):
     metadata['category']      = doujinshi.info.categories
     metadata['URL']             = doujinshi.url
     metadata['Pages']           = doujinshi.pages
-    with open(os.path.join(dir, 'metadata.json'), 'w') as f:
+    with open(os.path.join(dir, 'metadata.json'), 'w', encoding="raw_unicode_escape") as f:
         json.dump(metadata, f, separators=','':')
 
 
@@ -32,13 +32,15 @@ def merge_json():
     os.chdir(output_dir)
     doujinshi_dirs = next(os.walk('.'))[1]
     for folder in doujinshi_dirs:
-        folder_json = ',"Folder":"' + folder + '"}'
         files = os.listdir(folder)
         if 'metadata.json' not in files:
             continue
         data_folder = output_dir + folder + '/' + 'metadata.json'
-        json_file = open(data_folder, encoding='raw_unicode_escape').read()[:-2]+folder_json
-        lst.append(json.loads(json_file.encode('raw_unicode_escape').decode()))
+        json_file = open(data_folder, 'r')
+        json_dict = {}
+        json_dict = json.load(json_file)
+        json_dict['Folder'] = folder
+        lst.append(json_dict)
     return lst
 
 
@@ -50,15 +52,15 @@ def serialize_unique(lst):
     artist = []
     group = []
     for dic in lst:
-        if dic['parody']:
+        if 'parody' in dic:
             parody.extend([i for i in dic['parody']])
-        if dic['character']:
+        if 'character' in dic:
             character.extend([i for i in dic['character']])
-        if dic['tag']:
+        if 'tag' in dic:
             tag.extend([i for i in dic['tag']])
-        if dic['artist']:
+        if 'artist' in dic:
             artist.extend([i for i in dic['artist']])
-        if dic['group']:
+        if 'group' in dic:
             group.extend([i for i in dic['group']])
     dictionary['parody'] = list(set(parody))
     dictionary['character'] = list(set(character))
