@@ -1,72 +1,12 @@
 /*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
 /* Original from https://static.nhentai.net/css/main_style.9bb9b703e601.css */
-html {
-    line-height: 1.15;
-    -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%
-}
-
-body {
-    margin: 0
-}
-
-h1 {
-    font-size: 2em;
-    margin: .67em 0;
-}
-
 a {
     background-color: transparent;
     -webkit-text-decoration-skip: objects
 }
 
-abbr[title] {
-    border-bottom: none;
-    text-decoration: underline;
-    text-decoration: underline dotted
-}
-
-b,strong {
-    font-weight: inherit
-}
-
-b,strong {
-    font-weight: bolder
-}
-
-code,kbd,samp {
-    font-family: monospace,monospace;
-    font-size: 1em
-}
-
-small {
-    font-size: 80%
-}
-
-sub,sup {
-    font-size: 75%;
-    line-height: 0;
-    position: relative;
-    vertical-align: baseline
-}
-
-sub {
-    bottom: -.25em
-}
-
-sup {
-    top: -.5em
-}
-
 img {
     border-style: none
-}
-
-label {
-    display: block;
-    font-weight: 700;
-    text-align: justify;
-    white-space: nowrap
 }
 
 html {
@@ -75,10 +15,6 @@ html {
 
 *,:after,:before {
     box-sizing: inherit
-}
-
-h1,h2,h3,h4,h5,h6 {
-    font-weight: 700
 }
 
 body,html {
@@ -97,20 +33,6 @@ body,html {
 a {
     text-decoration: none;
     color: #34495e
-}
-
-a.count {
-    color: #999
-}
-
-a.bold {
-    font-weight: 700
-}
-
-code {
-    color: #ed2553;
-    border: 1px solid #fbd3dd;
-    background-color: #fef0f3
 }
 
 blockquote {
@@ -255,11 +177,6 @@ blockquote {
   background-color: #EC2754;
 }
 
-@media screen and (max-height: 450px) {
-  .sidenav {padding-top: 15px;}
-  .sidenav a {font-size: 15px;}
-}
-
 .accordion {
   font-weight: bold;
   background-color: #eee;
@@ -305,10 +222,8 @@ blockquote {
   cursor: crosshair
 }
 
-.nav-btn a.language{
-}
-
 .options {
+  display:block;
   padding: 0px 0px 0px 0px;
   background-color: #eee;
   max-height: 0;
@@ -317,10 +232,13 @@ blockquote {
   cursor:pointer;
 }
 
-.search{background-color: #eee;
-  padding-right:45px;
+.search{
+  background-color: #eee;
+  padding-right:40px;
   white-space: nowrap;
-  padding-top: 5px
+  padding-top: 5px;
+  height:43px;
+
 }
 
 .search input{
@@ -333,48 +251,22 @@ blockquote {
   vertical-align:top;
 }
 
-.search .btn.btn-square{
-  border-top-left-radius:10px;
-  border-bottom-left-radius:0px;
-}
-
-.fa{
-  font:normal normal normal 14px/1 FontAwesome;
-  font-size:1.33333333em;
-  line-height:.75em;
-}
-
-.fa-search:before{
-  content:"\f002";
-}
-
 .btn{
-  font-weight:700;
-  padding-right:12px;
-  padding-left:12px;
+  border-top-left-radius:10px;
   color:#fff;
-  border:0;
   font-size:100%;
-  height:38px;
-  line-height:40px;
-  outline: 0;
-}
-
-.btn.btn-primary{
+  padding: 8px;
+  width:38px;
   background-color:#ed2553;
-}
-
-.btn.btn-primary:active,.btn.btn-primary:focus,.btn.btn-primary:hover{
-  color:#fff;background:#f15478;
 }
 
 #tags{
     text-align:left;
-    display: block;
+    display: flex;
 	width:15rem;
-
     justify-content: start;
-	margin: 2px 2px 2px 0px
+	margin: 2px 2px 2px 0px;
+	flex-wrap: wrap;
 }
 
 .btn-2{
@@ -416,10 +308,6 @@ blockquote {
   filter: saturate(20%)
 }
 
-.btn-2.hidden{
-  display: none;
-}
-
 input,input:focus{
   border:none;
   outline:0;
@@ -434,14 +322,6 @@ html.theme-black #thumbnail-container,html.theme-black .container {
     background-color: #1f1f1f
 }
 
-html.theme-black #thumbnail-container .lazyload,html.theme-black .lazyload {
-    background-color: #262626
-}
-
-html.theme-black #thumbnail-container .lazyload-loading,html.theme-black .lazyload-loading {
-    background-color: #2e2e2e
-}
-
 html.theme-black .gallery:hover .caption {
     box-shadow: 0 10px 20px rgba(0,0,0,.5)
 }
@@ -449,10 +329,4 @@ html.theme-black .gallery:hover .caption {
 html.theme-black .caption {
     background-color: #404040;
     color: #d9d9d9
-}
-
-html.theme-black code {
-    color: #ed2553;
-    border: none;
-    background-color: #292929
 }
