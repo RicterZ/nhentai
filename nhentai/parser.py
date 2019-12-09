@@ -134,7 +134,7 @@ def doujinshi_parser(id_):
     doujinshi['subtitle'] = subtitle.text if subtitle else ''
 
     doujinshi_cover = html.find('div', attrs={'id': 'cover'})
-    img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png)$', doujinshi_cover.a.img.attrs['data-src'])
+    img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png|gif)$', doujinshi_cover.a.img.attrs['data-src'])
 
     ext = []
     for i in html.find_all('div', attrs={'class': 'thumb-container'}):
@@ -198,7 +198,7 @@ def tag_parser(tag_name, sorting='date', max_page=1, index=0):
     if ',' in tag_name:
         tag_name = [i.strip().replace(' ', '-') for i in tag_name.split(',')]
     else:
-        tag_name = tag_name.replace(' ', '-')
+        tag_name = tag_name.strip().replace(' ', '-')
     if sorting == 'date':
         sorting = ''
 
