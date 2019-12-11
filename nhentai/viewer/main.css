@@ -64,7 +64,8 @@ sup {
 }
 
 img {
-    border-style: none
+    border-style: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 label {
@@ -252,4 +253,10 @@ html.theme-black code {
     color: #ed2553;
     border: none;
     background-color: #292929
+}
+
+:focus {
+    outline: 0;
+    border:none;
+    color: rgba(0, 0, 0, 0);
 }
