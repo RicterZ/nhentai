@@ -1,10 +1,15 @@
 # coding: utf-
 from __future__ import unicode_literals, print_function
+
+import multiprocessing
+import signal
+
 from future.builtins import str as text
 import os
 import requests
 import threadpool
 import time
+import multiprocessing as mp
 
 try:
     from urllib.parse import urlparse
@@ -13,29 +18,25 @@ except ImportError:
 
 from nhentai.logger import logger
 from nhentai.parser import request
-from nhentai.utils import Singleton
-
+from nhentai.utils import Singleton, signal_handler
 
 requests.packages.urllib3.disable_warnings()
+semaphore = mp.Semaphore()
 
 
-class NhentaiImageNotExistException(Exception):
+class NHentaiImageNotExistException(Exception):
     pass
 
 
 class Downloader(Singleton):
 
-    def __init__(self, path='', thread=1, timeout=30, delay=0):
-        if not isinstance(thread, (int, )) or thread < 1 or thread > 15:
-            raise ValueError('Invalid threads count')
+    def __init__(self, path='', size=5, timeout=30, delay=0):
+        self.size = size
         self.path = str(path)
-        self.thread_count = thread
-        self.threads = []
-        self.thread_pool = None
         self.timeout = timeout
         self.delay = delay
 
-    def _download(self, url, folder='', filename='', retried=0):
+    def download_(self, url, folder='', filename='', retried=0):
         if self.delay:
             time.sleep(self.delay)
         logger.info('Starting to download {0} ...'.format(url))
@@ -54,9 +55,9 @@ class Downloader(Singleton):
                     try:
                         response = request('get', url, stream=True, timeout=self.timeout)
                         if response.status_code != 200:
-                            raise NhentaiImageNotExistException
+                            raise NHentaiImageNotExistException
 
-                    except NhentaiImageNotExistException as e:
+                    except NHentaiImageNotExistException as e:
                         raise e
 
                     except Exception as e:
@@ -78,27 +79,37 @@ class Downloader(Singleton):
         except (requests.HTTPError, requests.Timeout) as e:
             if retried < 3:
                 logger.warning('Warning: {0}, retrying({1}) ...'.format(str(e), retried))
-                return 0, self._download(url=url, folder=folder, filename=filename, retried=retried+1)
+                return 0, self.download_(url=url, folder=folder, filename=filename, retried=retried+1)
             else:
                 return 0, None
 
-        except NhentaiImageNotExistException as e:
+        except NHentaiImageNotExistException as e:
             os.remove(os.path.join(folder, base_filename.zfill(3) + extension))
             return -1, url
 
         except Exception as e:
+            import traceback
+            traceback.print_stack()
             logger.critical(str(e))
             return 0, None
 
+        except KeyboardInterrupt:
+            return -3, None
+
         return 1, url
 
-    def _download_callback(self, request, result):
+    def _download_callback(self, result):
         result, data = result
         if result == 0:
             logger.warning('fatal errors occurred, ignored')
             # exit(1)
         elif result == -1:
             logger.warning('url {} return status code 404'.format(data))
+        elif result == -2:
+            logger.warning('Ctrl-C pressed, exiting sub processes ...')
+        elif result == -3:
+            # workers wont be run, just pass
+            pass
         else:
             logger.log(15, '{0} downloaded successfully'.format(data))
 
@@ -115,14 +126,34 @@ class Downloader(Singleton):
                 os.makedirs(folder)
             except EnvironmentError as e:
                 logger.critical('{0}'.format(str(e)))
-                exit(1)
+
         else:
             logger.warn('Path \'{0}\' already exist.'.format(folder))
 
-        queue = [([url], {'folder': folder}) for url in queue]
+        queue = [(self, url, folder) for url in queue]
 
-        self.thread_pool = threadpool.ThreadPool(self.thread_count)
-        requests_ = threadpool.makeRequests(self._download, queue, self._download_callback)
-        [self.thread_pool.putRequest(req) for req in requests_]
+        pool = multiprocessing.Pool(self.size, init_worker)
 
-        self.thread_pool.wait()
+        for item in queue:
+            pool.apply_async(download_wrapper, args=item, callback=self._download_callback)
+
+        pool.close()
+        pool.join()
+
+
+def download_wrapper(obj, url, folder=''):
+    if semaphore.get_value():
+        return Downloader.download_(obj, url=url, folder=folder)
+    else:
+        return -3, None
+
+
+def init_worker():
+    signal.signal(signal.SIGINT, subprocess_signal)
+
+
+def subprocess_signal(signal, frame):
+    if semaphore.acquire(timeout=1):
+        logger.warning('Ctrl-C pressed, exiting sub processes ...')
+
+    raise KeyboardInterrupt
