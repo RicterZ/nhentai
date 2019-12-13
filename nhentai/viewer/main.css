@@ -253,17 +253,3 @@ html.theme-black code {
     border: none;
     background-color: #292929
 }
-
-/*
-    trying to fix conflict
-*/
-
-div {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-:focus {
-    outline: 0;
-    border:none;
-    color: rgba(0, 0, 0, 0);
-}
