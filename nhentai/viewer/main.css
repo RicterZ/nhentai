@@ -64,8 +64,7 @@ sup {
 }
 
 img {
-    border-style: none;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    border-style: none
 }
 
 label {
@@ -253,6 +252,14 @@ html.theme-black code {
     color: #ed2553;
     border: none;
     background-color: #292929
+}
+
+/*
+    trying to fix conflict
+*/
+
+div {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 :focus {
