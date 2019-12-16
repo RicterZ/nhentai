@@ -68,3 +68,25 @@ html, body {
         0 0 2px #222,
         0 0 2px #222;
 }
+
+@media only screen and (max-width: 855px) {
+    nav {
+        display: none;
+    }
+}
+
+@media only screen and (max-device-width: 855px) {
+    nav {
+        display: none;
+    }
+}
+
+div {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+:focus {
+    outline: 0;
+    border:none;
+    color: rgba(0, 0, 0, 0);
+}
