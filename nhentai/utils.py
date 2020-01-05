@@ -225,7 +225,7 @@ def format_metadata(doujinshi_obj=None):
     if doujinshi_obj is not None:
         m_titleen = doujinshi_obj.name
         m_title = doujinshi_obj.info.subtitle
-        m_id = 'ID: ' + str(doujinshi_obj.id)
+        m_id = str(doujinshi_obj.id)
         m_language = ''
         m_author = ''
         m_characters = ''
@@ -278,7 +278,7 @@ def extract_metadata(indexpath):
     indexcontent = indexfile.read()
     index = BeautifulSoup(indexcontent, 'html.parser')
 
-    metadata = index.select('#metadata-titleEN')[0].string
+    metadata = index.select('#metadata-id')[0].string + ' ' + index.select('#metadata-titleEN')[0].string
 
     for language in index.select('#metadata-language')[0].stripped_strings:
         metadata += ' ' + language
