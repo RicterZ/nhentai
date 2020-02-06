@@ -35,7 +35,7 @@ def main():
         if not options.is_download:
             logger.warning('You do not specify --download option')
 
-        doujinshis = favorites_parser()
+        doujinshis = favorites_parser(options.page_range)
         print_doujinshi(doujinshis)
         if options.is_download and doujinshis:
             doujinshi_ids = [i['id'] for i in doujinshis]

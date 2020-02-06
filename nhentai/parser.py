@@ -65,7 +65,7 @@ def _get_title_and_id(response):
     return result
 
 
-def favorites_parser():
+def favorites_parser(page_range=''):
     result = []
     html = BeautifulSoup(request('get', constant.FAV_URL).content, 'html.parser')
     count = html.find('span', attrs={'class': 'count'})
@@ -89,7 +89,12 @@ def favorites_parser():
     if os.getenv('DEBUG'):
         pages = 1
 
-    for page in range(1, pages + 1):
+    page_range_list = range(1, pages + 1)
+    if page_range:
+        logger.info('page range is {0}'.format(page_range))
+        page_range_list = page_range_parser(page_range, pages)
+
+    for page in page_range_list:
         try:
             logger.info('Getting doujinshi ids of page %d' % page)
             resp = request('get', constant.FAV_URL + '?page=%d' % page).content
@@ -100,6 +105,30 @@ def favorites_parser():
 
     return result
 
+def page_range_parser(page_range, max_page_num):
+    pages = set()
+    ranges = str.split(page_range, ',')
+    for range_str in ranges:
+        idx = range_str.find('-')
+        if idx == -1:
+            try:
+                page = int(range_str)
+                if page <= max_page_num:
+                    pages.add(page)
+            except ValueError:
+                logger.error('page range({0}) is not valid'.format(page_range))
+        else:
+            try:
+                left = int(range_str[:idx])
+                right = int(range_str[idx+1:])
+                if right > max_page_num:
+                    right = max_page_num
+                for page in range(left, right+1):
+                    pages.add(page)
+            except ValueError:
+                logger.error('page range({0}) is not valid'.format(page_range))
+    
+    return list(pages)    
 
 def doujinshi_parser(id_):
     if not isinstance(id_, (int,)) and (isinstance(id_, (str,)) and not id_.isdigit()):
