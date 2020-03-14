@@ -74,6 +74,12 @@ Download by tag name:
 
     nhentai --tag lolicon --download --page=2
 
+Download by language:
+
+.. code-block:: bash
+
+    nhentai --language english --download --page=2
+
 Download by artist name:
 
 .. code-block:: bash
@@ -84,13 +90,13 @@ Download by character name:
 
 .. code-block:: bash
 
-    nhentai --character kuro von einsbern --download
+    nhentai --character "kuro von einsbern" --download
 
 Download by parody name:
 
 .. code-block:: bash
 
-    nhentai --parody the idolmaster --download
+    nhentai --parody "the idolmaster" --download
 
 Download by group name:
 
@@ -102,7 +108,7 @@ Download using multiple tags (--tag, --character, --paordy and --group supported
 
 .. code-block:: bash
 
-    nhentai --tag lolicon, teasing --artist tamano kedama, atte nanakusa
+    nhentai --tag "lolicon, teasing" --artist "tamano kedama, atte nanakusa"
 
 Download your favorites with delay:
 

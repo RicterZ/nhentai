@@ -11,6 +11,7 @@ import requests
 
 from nhentai import constant
 from nhentai.logger import logger
+from nhentai.serializer import serialize, set_js_database
 
 
 def request(method, url, **kwargs):
@@ -79,19 +80,19 @@ def generate_html(output_dir='.', doujinshi_obj=None):
 
         image_html += '<img src="{0}" class="image-item"/>\n'\
             .format(image)
-
     html = readfile('viewer/index.html')
     css = readfile('viewer/styles.css')
     js = readfile('viewer/scripts.js')
 
     if doujinshi_obj is not None:
-        title = doujinshi_obj.name
+        serialize(doujinshi_obj, doujinshi_dir)
+        name = doujinshi_obj.name
         if sys.version_info < (3, 0):
-            title = title.encode('utf-8')
+            name = doujinshi_obj.name.encode('utf-8')
     else:
-        title = 'nHentai HTML Viewer'
+        name = {'title': 'nHentai HTML Viewer'}
 
-    data = html.format(TITLE=title, IMAGES=image_html, SCRIPTS=js, STYLES=css)
+    data = html.format(TITLE=name, IMAGES=image_html, SCRIPTS=js, STYLES=css)
     try:
         if sys.version_info < (3, 0):
             with open(os.path.join(doujinshi_dir, 'index.html'), 'w') as f:
@@ -112,10 +113,12 @@ def generate_main_html(output_dir='./'):
     Default output folder will be the CLI path.
     """
 
-    count = 0
     image_html = ''
+
     main = readfile('viewer/main.html')
     css = readfile('viewer/main.css')
+    js = readfile('viewer/main.js')
+
     element = '\n\
             <div class="gallery-favorite">\n\
                 <div class="gallery">\n\
@@ -130,12 +133,10 @@ def generate_main_html(output_dir='./'):
     doujinshi_dirs = next(os.walk('.'))[1]
 
     for folder in doujinshi_dirs:
-
         files = os.listdir(folder)
         files.sort()
 
         if 'index.html' in files:
-            count += 1
             logger.info('Add doujinshi \'{}\''.format(folder))
         else:
             continue
@@ -147,18 +148,19 @@ def generate_main_html(output_dir='./'):
             title = 'nHentai HTML Viewer'
 
         image_html += element.format(FOLDER=folder, IMAGE=image, TITLE=title)
-
     if image_html == '':
         logger.warning('None index.html found, --gen-main paused.')
         return
     try:
-        data = main.format(STYLES=css, COUNT=count, PICTURE=image_html)
+        data = main.format(STYLES=css, SCRIPTS=js, PICTURE=image_html)
         if sys.version_info < (3, 0):
             with open('./main.html', 'w') as f:
                 f.write(data)
         else:
             with open('./main.html', 'wb') as f:
                 f.write(data.encode('utf-8'))
+        shutil.copy(os.path.dirname(__file__)+'/viewer/logo.png', './')
+        set_js_database()
         logger.log(
             15, 'Main Viewer has been write to \'{0}main.html\''.format(output_dir))
     except Exception as e:
@@ -212,5 +214,3 @@ an invalid filename.
 def signal_handler(signal, frame):
     logger.error('Ctrl-C signal received. Stopping...')
     exit(1)
-
-

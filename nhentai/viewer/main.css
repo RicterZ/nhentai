@@ -1,77 +1,12 @@
 /*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
 /* Original from https://static.nhentai.net/css/main_style.9bb9b703e601.css */
-html {
-    font-family: sans-serif;
-    line-height: 1.15;
-    -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%
-}
-
-body {
-    margin: 0
-}
-
-h1 {
-    font-size: 2em;
-    margin: .67em 0
-}
-
 a {
     background-color: transparent;
     -webkit-text-decoration-skip: objects
 }
 
-a:active,a:hover {
-    outline-width: 0
-}
-
-abbr[title] {
-    border-bottom: none;
-    text-decoration: underline;
-    text-decoration: underline dotted
-}
-
-b,strong {
-    font-weight: inherit
-}
-
-b,strong {
-    font-weight: bolder
-}
-
-code,kbd,samp {
-    font-family: monospace,monospace;
-    font-size: 1em
-}
-
-small {
-    font-size: 80%
-}
-
-sub,sup {
-    font-size: 75%;
-    line-height: 0;
-    position: relative;
-    vertical-align: baseline
-}
-
-sub {
-    bottom: -.25em
-}
-
-sup {
-    top: -.5em
-}
-
 img {
     border-style: none
-}
-
-label {
-    display: block;
-    font-weight: 700;
-    text-align: justify;
-    white-space: nowrap
 }
 
 html {
@@ -80,10 +15,6 @@ html {
 
 *,:after,:before {
     box-sizing: inherit
-}
-
-h1,h2,h3,h4,h5,h6 {
-    font-weight: 700
 }
 
 body,html {
@@ -104,25 +35,6 @@ a {
     color: #34495e
 }
 
-a:hover {
-    text-decoration: none;
-    color: #ed2553
-}
-
-a.count {
-    color: #999
-}
-
-a.bold {
-    font-weight: 700
-}
-
-code {
-    color: #ed2553;
-    border: 1px solid #fbd3dd;
-    background-color: #fef0f3
-}
-
 blockquote {
     border: 0
 }
@@ -130,15 +42,15 @@ blockquote {
 .container {
     display: block;
     clear: both;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    padding: 10px;
+    margin-left: 15rem;
+    margin-right: 0.5rem;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 4px;
     border-radius: 9px;
     background-color: #ecf0f1;
-    width: 100%;
-    max-width: 1200px
+    width: 100% - 15rem;
+    max-width: 1500px
 }
 
 .gallery,.gallery-favorite,.thumb-container {
@@ -156,7 +68,6 @@ blockquote {
     .gallery,.gallery-favorite,.thumb-container {
         width:19%;
         margin: 3px;
-        margin-bottom: 8px
     }
 }
 
@@ -222,6 +133,186 @@ blockquote {
     width: 100%
 }
 
+.sidenav {
+  height: 100%;
+  width: 15rem;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #0d0d0d;
+  overflow: hidden;
+
+  padding-top: 20px;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+}
+
+.sidenav a {
+  background-color: #eee;
+  padding: 5px 0px 5px 15px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #0d0d0d9;
+  display: block;
+  text-align: left;
+}
+.sidenav img {
+	width:100%;
+	padding: 0px 5px 0px 5px;
+
+}
+
+.sidenav h1 {
+    font-size: 1.5em;
+	margin: 0px 0px 10px;
+}
+
+.sidenav a:hover {
+  color: white;
+  background-color: #EC2754;
+}
+
+.accordion {
+  font-weight: bold;
+  background-color: #eee;
+  color: #444;
+  padding: 10px 0px 5px 8px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  transition: 0.4s;
+  cursor:pointer;
+}
+
+.accordion:hover {
+  background-color: #ddd;
+}
+
+.accordion.active{
+  background-color:#ddd;
+}
+
+.nav-btn {
+  font-weight: bold;
+  background-color: #eee;
+  color: #444;
+  padding: 8px 8px 5px 9px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.hidden {
+  display:none;
+}
+
+.nav-btn a{
+  font-weight: normal;
+  padding-right: 10px;
+  border-radius: 15px;
+  cursor: crosshair
+}
+
+.options {
+  display:block;
+  padding: 0px 0px 0px 0px;
+  background-color: #eee;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  cursor:pointer;
+}
+
+.search{
+  background-color: #eee;
+  padding-right:40px;
+  white-space: nowrap;
+  padding-top: 5px;
+  height:43px;
+
+}
+
+.search input{
+  border-top-right-radius:10px;
+  padding-top:0;
+  padding-bottom:0;
+  font-size:1em;
+  width:100%;
+  height:38px;
+  vertical-align:top;
+}
+
+.btn{
+  border-top-left-radius:10px;
+  color:#fff;
+  font-size:100%;
+  padding: 8px;
+  width:38px;
+  background-color:#ed2553;
+}
+
+#tags{
+    text-align:left;
+    display: flex;
+	width:15rem;
+    justify-content: start;
+	margin: 2px 2px 2px 0px;
+	flex-wrap: wrap;
+}
+
+.btn-2{
+  font-weight:700;
+  padding-right:0.5rem;
+  padding-left:0.5rem;
+  color:#fff;
+  border:0;
+  font-size:100%;
+  height:1.25rem;
+  outline: 0;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  margin:0.15rem;
+  transition: all 1s linear;
+}
+
+.btn-2#parody{
+  background-color: red;
+}
+
+.btn-2#character{
+  background-color: blue;
+}
+
+.btn-2#tag{
+  background-color: green;
+}
+
+.btn-2#artist{
+  background-color: fuchsia;
+}
+
+.btn-2#group{
+  background-color: teal;
+}
+
+.btn-2.hover{
+  filter: saturate(20%)
+}
+
+input,input:focus{
+  border:none;
+  outline:0;
+}
+
 html.theme-black,html.theme-black body {
     color: #d9d9d9;
     background-color: #0d0d0d
@@ -231,14 +322,6 @@ html.theme-black #thumbnail-container,html.theme-black .container {
     background-color: #1f1f1f
 }
 
-html.theme-black #thumbnail-container .lazyload,html.theme-black .lazyload {
-    background-color: #262626
-}
-
-html.theme-black #thumbnail-container .lazyload-loading,html.theme-black .lazyload-loading {
-    background-color: #2e2e2e
-}
-
 html.theme-black .gallery:hover .caption {
     box-shadow: 0 10px 20px rgba(0,0,0,.5)
 }
@@ -246,10 +329,4 @@ html.theme-black .gallery:hover .caption {
 html.theme-black .caption {
     background-color: #404040;
     color: #d9d9d9
-}
-
-html.theme-black code {
-    color: #ed2553;
-    border: none;
-    background-color: #292929
 }

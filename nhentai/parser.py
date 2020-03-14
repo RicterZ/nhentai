@@ -163,7 +163,7 @@ def doujinshi_parser(id_):
     doujinshi['subtitle'] = subtitle.text if subtitle else ''
 
     doujinshi_cover = html.find('div', attrs={'id': 'cover'})
-    img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png)$', doujinshi_cover.a.img.attrs['data-src'])
+    img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png|gif)$', doujinshi_cover.a.img.attrs['data-src'])
 
     ext = []
     for i in html.find_all('div', attrs={'class': 'thumb-container'}):
@@ -187,7 +187,7 @@ def doujinshi_parser(id_):
 
     # gain information of the doujinshi
     information_fields = doujinshi_info.find_all('div', attrs={'class': 'field-name'})
-    needed_fields = ['Characters', 'Artists', 'Languages', 'Tags']
+    needed_fields = ['Characters', 'Artists', 'Languages', 'Tags', 'Parodies', 'Groups', 'Categories']
     for field in information_fields:
         field_name = field.contents[0].strip().strip(':')
         if field_name in needed_fields:
@@ -195,6 +195,9 @@ def doujinshi_parser(id_):
                     field.find_all('a', attrs={'class': 'tag'})]
             doujinshi[field_name.lower()] = ', '.join(data)
 
+    time_field = doujinshi_info.find('time')
+    if time_field.has_attr('datetime'):
+        doujinshi['date'] = time_field['datetime']
     return doujinshi
 
 
@@ -224,7 +227,7 @@ def tag_parser(tag_name, sorting='date', max_page=1, index=0):
     if ',' in tag_name:
         tag_name = [i.strip().replace(' ', '-') for i in tag_name.split(',')]
     else:
-        tag_name = tag_name.replace(' ', '-')
+        tag_name = tag_name.strip().replace(' ', '-')
     if sorting == 'date':
         sorting = ''
 
@@ -331,7 +334,7 @@ def __api_suspended_doujinshi_parser(id_):
     doujinshi['pages'] = len(response['images']['pages'])
 
     # gain information of the doujinshi
-    needed_fields = ['character', 'artist', 'language', 'tag']
+    needed_fields = ['character', 'artist', 'language', 'tag', 'parody', 'group', 'category']
     for tag in response['tags']:
         tag_type = tag['type']
         if tag_type in needed_fields:
