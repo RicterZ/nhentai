@@ -64,6 +64,8 @@ def cmd_parser():
                       help='page number of search results')
     parser.add_option('--max-page', type='int', dest='max_page', action='store', default=1,
                       help='The max page when recursive download tagged doujinshi')
+    parser.add_option('--page-range', type='string', dest='page_range', action='store',
+                      help='page range of favorites.  e.g. 1,2-5,14')
     parser.add_option('--sorting', dest='sorting', action='store', default='date',
                       help='sorting of doujinshi (date / popular)', choices=['date', 'popular'])
 

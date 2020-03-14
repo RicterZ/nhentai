@@ -17,6 +17,8 @@ function changePage(pageNum) {
     const display = document.getElementById('dest');
     display.style.backgroundImage = `url("${current.src}")`;
 
+    scroll(0,0)
+
     document.getElementById('page-num')
         .innerText = [
                 (pageNum + 1).toLocaleString(),
@@ -47,9 +49,8 @@ document.onkeypress = event => {
     switch (event.key.toLowerCase()) {
         // Previous Image
         case 'w':
-			document.getElementById("dest").style.height = "200%";
-			document.getElementById("list").style.height = "200%";
-            break;
+	   scrollBy(0, -40);
+	   break;
         case 'a':
             changePage(currentPage - 1);
             break;
@@ -60,8 +61,7 @@ document.onkeypress = event => {
         // Next Image
         case ' ':
         case 's':
-			document.getElementById("dest").style.height = "100%";
-			document.getElementById("list").style.height = "100%";
+	    scrollBy(0, 40);
             break;
         case 'd':
             changePage(currentPage + 1);
@@ -74,8 +74,12 @@ document.onkeydown = event =>{
         case 37: //left
             changePage(currentPage - 1);
             break;
+        case 38: //up
+            break;
         case 39: //right
             changePage(currentPage + 1);
+            break;
+        case 40: //down
             break;
     }
 };
