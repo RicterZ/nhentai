@@ -207,7 +207,7 @@ an invalid filename.
         filename = filename[:100] + '...]'
 
     # Remove [] from filename
-    filename = filename.replace('[]', '')
+    filename = filename.replace('[]', '').strip()
     return filename
 
 
