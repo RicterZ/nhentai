@@ -1,10 +1,9 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
 
+import sys
 import os
 import re
-import threadpool
-import requests
 import time
 from bs4 import BeautifulSoup
 from tabulate import tabulate
@@ -105,6 +104,7 @@ def favorites_parser(page_range=''):
 
     return result
 
+
 def page_range_parser(page_range, max_page_num):
     pages = set()
     ranges = str.split(page_range, ',')
@@ -129,6 +129,7 @@ def page_range_parser(page_range, max_page_num):
                 logger.error('page range({0}) is not valid'.format(page_range))
     
     return list(pages)    
+
 
 def doujinshi_parser(id_):
     if not isinstance(id_, (int,)) and (isinstance(id_, (str,)) and not id_.isdigit()):
@@ -232,7 +233,12 @@ def tag_parser(tag_name, sorting='date', max_page=1, index=0):
         sorting = ''
 
     for p in range(1, max_page + 1):
-        if isinstance(tag_name, str):
+        if sys.version_info >= (3, 0, 0):
+            unicode_ = str
+        else:
+            unicode_ = unicode
+
+        if isinstance(tag_name, (str, unicode_)):
             logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, tag_name))
             response = request('get', url='%s/%s/%s?page=%d' % (constant.TAG_URL[index], tag_name, sorting, p)).content
             result += _get_title_and_id(response)
