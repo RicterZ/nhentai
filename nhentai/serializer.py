@@ -24,7 +24,7 @@ def serialize(doujinshi, dir):
     metadata['URL'] = doujinshi.url
     metadata['Pages'] = doujinshi.pages
 
-    with open(os.path.join(dir, 'metadata.json'), 'w', encoding="raw_unicode_escape") as f:
+    with open(os.path.join(dir, 'metadata.json'), 'w') as f:
         json.dump(metadata, f, separators=','':')
 
 
