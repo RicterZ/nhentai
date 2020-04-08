@@ -5,6 +5,7 @@ import signal
 import platform
 import time
 import multiprocessing
+import os
 
 from nhentai.cmdline import cmd_parser, banner
 from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, favorites_parser, tag_parser, login
@@ -98,7 +99,14 @@ def main():
             if (i + 1) % 10 == 0:
                 logger.info('Progress: %d / %d' % (i + 1, len(doujinshi_ids)))
 
-    if not options.is_show:
+    if options.is_iddownload:
+        with open(os.path.join(options.output_dir, 'doujinshiID.txt'), 'w') as f:
+            for id_ in doujinshi_ids:
+                f.write(str(id_))
+                f.write('\n')
+                logger.info('added doujinshi id %d to %s' % (id_, 'poyo'))
+
+    if not options.is_show and not options.is_iddownload:
         downloader = Downloader(path=options.output_dir, size=options.threads,
                                 timeout=options.timeout, delay=options.delay)
 
@@ -120,7 +128,7 @@ def main():
         else:
             logger.log(15, 'All done.')
 
-    else:
+    elif not options.is_iddownload:
         [doujinshi.show() for doujinshi in doujinshi_list]
 
 
