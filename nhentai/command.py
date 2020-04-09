@@ -28,6 +28,7 @@ def main():
     # check your cookie
     check_cookie()
 
+    doujinshis = []
     doujinshi_ids = []
     doujinshi_list = []
 
@@ -36,54 +37,38 @@ def main():
             logger.warning('You do not specify --download option')
 
         doujinshis = favorites_parser(options.page_range)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.tag:
         doujinshis = tag_parser(options.tag, sorting=options.sorting, max_page=options.max_page)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.artist:
         doujinshis = tag_parser(options.artist, max_page=options.max_page, index=1)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.character:
         doujinshis = tag_parser(options.character, max_page=options.max_page, index=2)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.parody:
         doujinshis = tag_parser(options.parody, max_page=options.max_page, index=3)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.group:
         doujinshis = tag_parser(options.group, max_page=options.max_page, index=4)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.language:
         doujinshis = tag_parser(options.language, max_page=options.max_page, index=5)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.keyword:
         doujinshis = search_parser(options.keyword, sorting=options.sorting, page=options.page)
-        print_doujinshi(doujinshis)
-        if options.is_download:
-            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif not doujinshi_ids:
         doujinshi_ids = options.id
+
+    if options.is_download and doujinshis:
+        print_doujinshi(doujinshis)
+        doujinshi_ids = [i['id'] for i in doujinshis]
+
+        if options.is_save_download_states:
+            # TODO:
+            pass
 
     if doujinshi_ids:
         for i, id_ in enumerate(doujinshi_ids):
