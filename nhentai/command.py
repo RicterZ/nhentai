@@ -27,6 +27,7 @@ def main():
     # check your cookie
     check_cookie()
 
+    index = 0
     doujinshis = []
     doujinshi_ids = []
     doujinshi_list = []
@@ -41,25 +42,28 @@ def main():
         doujinshis = tag_parser(options.tag, sorting=options.sorting, max_page=options.max_page)
 
     elif options.artist:
-        doujinshis = tag_parser(options.artist, max_page=options.max_page, index=1)
+        index = 1
 
     elif options.character:
-        doujinshis = tag_parser(options.character, max_page=options.max_page, index=2)
+        index = 2
 
     elif options.parody:
-        doujinshis = tag_parser(options.parody, max_page=options.max_page, index=3)
+        index = 3
 
     elif options.group:
-        doujinshis = tag_parser(options.group, max_page=options.max_page, index=4)
+        index = 4
 
     elif options.language:
-        doujinshis = tag_parser(options.language, max_page=options.max_page, index=5)
+        index = 5
 
     elif options.keyword:
         doujinshis = search_parser(options.keyword, sorting=options.sorting, page=options.page)
 
     elif not doujinshi_ids:
         doujinshi_ids = options.id
+
+    if index:
+        doujinshis = tag_parser(options.language, max_page=options.max_page, index=index)
 
     print_doujinshi(doujinshis)
     if options.is_download and doujinshis:
