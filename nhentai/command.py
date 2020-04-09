@@ -86,7 +86,7 @@ def main():
     elif not doujinshi_ids:
         doujinshi_ids = options.id
 
-    if doujinshi_ids:
+    if doujinshi_ids and not options.is_iddownload:
         for i, id_ in enumerate(doujinshi_ids):
             if options.delay:
                 time.sleep(options.delay)
@@ -104,7 +104,7 @@ def main():
             for id_ in doujinshi_ids:
                 f.write(str(id_))
                 f.write('\n')
-                logger.info('added doujinshi id %d to %s' % (id_, 'poyo'))
+                logger.info('added doujinshi id %d to %s' % (id_, 'doujinshiID.txt'))
 
     if not options.is_show and not options.is_iddownload:
         downloader = Downloader(path=options.output_dir, size=options.threads,

@@ -45,7 +45,7 @@ def cmd_parser():
     parser.add_option('--download', '-D', dest='is_download', action='store_true',
                       help='download doujinshi (for search results)')
     parser.add_option('--show', '-S', dest='is_show', action='store_true', help='just show the doujinshi information')
-    parser.add_option('--IDdownload', '-I', dest='is_iddownload', action='store_true',
+    parser.add_option('--iddownload', '-I', dest='is_iddownload', action='store_true',
                       help='download doujinshi ID to file')
 
     # doujinshi options
