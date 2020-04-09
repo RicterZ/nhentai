@@ -4,15 +4,14 @@ from __future__ import unicode_literals, print_function
 import signal
 import platform
 import time
-import multiprocessing
 
 from nhentai.cmdline import cmd_parser, banner
-from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, favorites_parser, tag_parser, login
+from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, favorites_parser, tag_parser
 from nhentai.doujinshi import Doujinshi
-from nhentai.downloader import Downloader, init_worker
+from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie, signal_handler
+from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie, signal_handler, DB
 
 
 def main():
@@ -62,13 +61,15 @@ def main():
     elif not doujinshi_ids:
         doujinshi_ids = options.id
 
+    print_doujinshi(doujinshis)
     if options.is_download and doujinshis:
-        print_doujinshi(doujinshis)
         doujinshi_ids = [i['id'] for i in doujinshis]
 
-        if options.is_save_download_states:
-            # TODO:
-            pass
+        if options.is_save_download_history:
+            with DB() as db:
+                data = set(db.get_all())
+
+            doujinshi_ids = list(set(doujinshi_ids) - data)
 
     if doujinshi_ids:
         for i, id_ in enumerate(doujinshi_ids):
@@ -91,6 +92,9 @@ def main():
 
             doujinshi.downloader = downloader
             doujinshi.download()
+            if options.is_save_download_history:
+                with DB() as db:
+                    db.add_one(doujinshi.id)
 
             if not options.is_nohtml and not options.is_cbz:
                 generate_html(options.output_dir, doujinshi)

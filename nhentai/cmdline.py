@@ -10,7 +10,7 @@ except ImportError:
 
 import nhentai.constant as constant
 from nhentai import __version__
-from nhentai.utils import urlparse, generate_html, generate_main_html
+from nhentai.utils import urlparse, generate_html, generate_main_html, DB
 from nhentai.logger import logger
 
 try:
@@ -101,8 +101,10 @@ def cmd_parser():
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
                       help='set cookie of nhentai to bypass Google recaptcha')
-    parser.add_option('--save-download-states', dest='is_save_download_states', action='store_true',
+    parser.add_option('--save-download-history', dest='is_save_download_history', action='store_true',
                       default=False, help='save downloaded doujinshis, whose will be skipped if you re-download them')
+    parser.add_option('--clean-download-history', action='store_true', default=False, dest='clean_download_history',
+                      help='clean download history')
 
     try:
         sys.argv = [unicode(i.decode(sys.stdin.encoding)) for i in sys.argv]
@@ -122,6 +124,13 @@ def cmd_parser():
             not args.tag and not args.artist and not args.character and \
             not args.parody and not args.group and not args.language and not args.favorites:
         generate_main_html()
+        exit(0)
+
+    if args.clean_download_history:
+        with DB() as db:
+            db.clean_all()
+
+        logger.info('Download history cleaned.')
         exit(0)
 
     if os.path.exists(constant.NHENTAI_COOKIE):

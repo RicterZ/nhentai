@@ -35,6 +35,7 @@ IMAGE_URL = '%s://i.%s/galleries' % (u.scheme, u.hostname)
 NHENTAI_HOME = os.path.join(os.getenv('HOME', tempfile.gettempdir()), '.nhentai')
 NHENTAI_PROXY = os.path.join(NHENTAI_HOME, 'proxy')
 NHENTAI_COOKIE = os.path.join(NHENTAI_HOME, 'cookie')
+NHENTAI_HISTORY = os.path.join(NHENTAI_HOME, 'history.sqlite3')
 
 PROXY = {}
 

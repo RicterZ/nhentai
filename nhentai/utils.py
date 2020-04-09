@@ -8,6 +8,7 @@ import string
 import zipfile
 import shutil
 import requests
+import sqlite3
 
 from nhentai import constant
 from nhentai.logger import logger
@@ -214,3 +215,30 @@ an invalid filename.
 def signal_handler(signal, frame):
     logger.error('Ctrl-C signal received. Stopping...')
     exit(1)
+
+
+class DB(object):
+    conn = None
+    cur = None
+
+    def __enter__(self):
+        self.conn = sqlite3.connect(constant.NHENTAI_HISTORY)
+        self.cur = self.conn.cursor()
+        self.cur.execute('CREATE TABLE IF NOT EXISTS download_history (id text)')
+        self.conn.commit()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.conn.close()
+
+    def clean_all(self):
+        self.cur.execute('DELETE FROM download_history WHERE 1')
+        self.conn.commit()
+
+    def add_one(self, data):
+        self.cur.execute('INSERT INTO download_history VALUES (?)', [data])
+        self.conn.commit()
+
+    def get_all(self):
+        data = self.cur.execute('SELECT id FROM download_history')
+        return [i[0] for i in data]
