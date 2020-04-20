@@ -4,15 +4,14 @@ from __future__ import unicode_literals, print_function
 import signal
 import platform
 import time
-import multiprocessing
 
 from nhentai.cmdline import cmd_parser, banner
-from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, favorites_parser, tag_parser, login
+from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, favorites_parser, tag_parser
 from nhentai.doujinshi import Doujinshi
-from nhentai.downloader import Downloader, init_worker
+from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie, signal_handler
+from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie, signal_handler, DB
 
 
 def main():
@@ -28,6 +27,8 @@ def main():
     # check your cookie
     check_cookie()
 
+    index = 0
+    doujinshis = []
     doujinshi_ids = []
     doujinshi_list = []
 
@@ -36,54 +37,43 @@ def main():
             logger.warning('You do not specify --download option')
 
         doujinshis = favorites_parser(options.page_range)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.tag:
         doujinshis = tag_parser(options.tag, sorting=options.sorting, max_page=options.max_page)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif options.artist:
-        doujinshis = tag_parser(options.artist, max_page=options.max_page, index=1)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
+        index = 1
 
     elif options.character:
-        doujinshis = tag_parser(options.character, max_page=options.max_page, index=2)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
+        index = 2
 
     elif options.parody:
-        doujinshis = tag_parser(options.parody, max_page=options.max_page, index=3)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
+        index = 3
 
     elif options.group:
-        doujinshis = tag_parser(options.group, max_page=options.max_page, index=4)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
+        index = 4
 
     elif options.language:
-        doujinshis = tag_parser(options.language, max_page=options.max_page, index=5)
-        print_doujinshi(doujinshis)
-        if options.is_download and doujinshis:
-            doujinshi_ids = [i['id'] for i in doujinshis]
+        index = 5
 
     elif options.keyword:
         doujinshis = search_parser(options.keyword, sorting=options.sorting, page=options.page)
-        print_doujinshi(doujinshis)
-        if options.is_download:
-            doujinshi_ids = [i['id'] for i in doujinshis]
 
     elif not doujinshi_ids:
         doujinshi_ids = options.id
+
+    if index:
+        doujinshis = tag_parser(options.language, max_page=options.max_page, index=index)
+
+    print_doujinshi(doujinshis)
+    if options.is_download and doujinshis:
+        doujinshi_ids = [i['id'] for i in doujinshis]
+
+        if options.is_save_download_history:
+            with DB() as db:
+                data = set(db.get_all())
+
+            doujinshi_ids = list(set(doujinshi_ids) - data)
 
     if doujinshi_ids:
         for i, id_ in enumerate(doujinshi_ids):
@@ -106,6 +96,9 @@ def main():
 
             doujinshi.downloader = downloader
             doujinshi.download()
+            if options.is_save_download_history:
+                with DB() as db:
+                    db.add_one(doujinshi.id)
 
             if not options.is_nohtml and not options.is_cbz:
                 generate_html(options.output_dir, doujinshi)

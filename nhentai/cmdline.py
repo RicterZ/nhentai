@@ -10,7 +10,7 @@ except ImportError:
 
 import nhentai.constant as constant
 from nhentai import __version__
-from nhentai.utils import urlparse, generate_html, generate_main_html
+from nhentai.utils import urlparse, generate_html, generate_main_html, DB
 from nhentai.logger import logger
 
 try:
@@ -52,10 +52,12 @@ def cmd_parser():
                       help='search doujinshi by keyword')
     parser.add_option('--tag', type='string', dest='tag', action='store', help='download doujinshi by tag')
     parser.add_option('--artist', type='string', dest='artist', action='store', help='download doujinshi by artist')
-    parser.add_option('--character', type='string', dest='character', action='store', help='download doujinshi by character')
+    parser.add_option('--character', type='string', dest='character', action='store',
+                      help='download doujinshi by character')
     parser.add_option('--parody', type='string', dest='parody', action='store', help='download doujinshi by parody')
     parser.add_option('--group', type='string', dest='group', action='store', help='download doujinshi by group')
-    parser.add_option('--language', type='string', dest='language', action='store', help='download doujinshi by language')
+    parser.add_option('--language', type='string', dest='language', action='store',
+                      help='download doujinshi by language')
     parser.add_option('--favorites', '-F', action='store_true', dest='favorites',
                       help='list or download your favorites.')
 
@@ -99,6 +101,10 @@ def cmd_parser():
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
                       help='set cookie of nhentai to bypass Google recaptcha')
+    parser.add_option('--save-download-history', dest='is_save_download_history', action='store_true',
+                      default=False, help='save downloaded doujinshis, whose will be skipped if you re-download them')
+    parser.add_option('--clean-download-history', action='store_true', default=False, dest='clean_download_history',
+                      help='clean download history')
 
     try:
         sys.argv = [unicode(i.decode(sys.stdin.encoding)) for i in sys.argv]
@@ -120,8 +126,15 @@ def cmd_parser():
         generate_main_html()
         exit(0)
 
-    if os.path.exists(os.path.join(constant.NHENTAI_HOME, 'cookie')):
-        with open(os.path.join(constant.NHENTAI_HOME, 'cookie'), 'r') as f:
+    if args.clean_download_history:
+        with DB() as db:
+            db.clean_all()
+
+        logger.info('Download history cleaned.')
+        exit(0)
+
+    if os.path.exists(constant.NHENTAI_COOKIE):
+        with open(constant.NHENTAI_COOKIE, 'r') as f:
             constant.COOKIE = f.read()
 
     if args.cookie:
@@ -129,7 +142,7 @@ def cmd_parser():
             if not os.path.exists(constant.NHENTAI_HOME):
                 os.mkdir(constant.NHENTAI_HOME)
 
-            with open(os.path.join(constant.NHENTAI_HOME, 'cookie'), 'w') as f:
+            with open(constant.NHENTAI_COOKIE, 'w') as f:
                 f.write(args.cookie)
         except Exception as e:
             logger.error('Cannot create NHENTAI_HOME: {}'.format(str(e)))
@@ -138,8 +151,8 @@ def cmd_parser():
         logger.info('Cookie saved.')
         exit(0)
 
-    if os.path.exists(os.path.join(constant.NHENTAI_HOME, 'proxy')):
-        with open(os.path.join(constant.NHENTAI_HOME, 'proxy'), 'r') as f:
+    if os.path.exists(constant.NHENTAI_PROXY):
+        with open(constant.NHENTAI_PROXY, 'r') as f:
             link = f.read()
             constant.PROXY = {'http': link, 'https': link}
 
@@ -152,8 +165,9 @@ def cmd_parser():
             if proxy_url.scheme not in ('http', 'https'):
                 logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
             else:
-                with open(os.path.join(constant.NHENTAI_HOME, 'proxy'), 'w') as f:
+                with open(constant.NHENTAI_PROXY, 'w') as f:
                     f.write(args.proxy)
+
         except Exception as e:
             logger.error('Cannot create NHENTAI_HOME: {}'.format(str(e)))
             exit(1)
