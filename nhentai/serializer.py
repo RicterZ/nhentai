@@ -1,9 +1,11 @@
 # coding: utf-8
 import json
 import os
+from iso8601 import parse_date
+from xml.sax.saxutils import escape
 
 
-def serialize(doujinshi, dir):
+def serialize_json(doujinshi, dir):
     metadata = {'title': doujinshi.name,
                 'subtitle': doujinshi.info.subtitle}
     if doujinshi.info.date:
@@ -27,6 +29,48 @@ def serialize(doujinshi, dir):
     with open(os.path.join(dir, 'metadata.json'), 'w') as f:
         json.dump(metadata, f, separators=','':')
 
+
+def serialize_comicxml(doujinshi, dir):
+    with open(os.path.join(dir, 'ComicInfo.xml'), 'w') as f:
+        f.write('<?xml version="1.0" encoding="utf-8"?>\n')
+        f.write('<ComicInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n')
+
+        xml_write_simple_tag(f, 'Manga', 'Yes')
+
+        xml_write_simple_tag(f, 'Title', doujinshi.name)
+        xml_write_simple_tag(f, 'Summary', doujinshi.info.subtitle)
+        xml_write_simple_tag(f, 'PageCount', doujinshi.pages)
+        xml_write_simple_tag(f, 'URL', doujinshi.url)
+        xml_write_simple_tag(f, 'NhentaiId', doujinshi.id)
+        xml_write_simple_tag(f, 'Genre', doujinshi.info.categories)
+
+        xml_write_simple_tag(f, 'BlackAndWhite', 'No' if doujinshi.info.tags and 'full color' in doujinshi.info.tags else 'Yes')
+
+        if doujinshi.info.date:
+            dt = parse_date(doujinshi.info.date)
+            xml_write_simple_tag(f, 'Year', dt.year)
+            xml_write_simple_tag(f, 'Month', dt.month)
+            xml_write_simple_tag(f, 'Day', dt.day)
+        if doujinshi.info.parodies:
+            xml_write_simple_tag(f, 'Series', doujinshi.info.parodies)
+        if doujinshi.info.characters:
+            xml_write_simple_tag(f, 'Characters', doujinshi.info.characters)
+        if doujinshi.info.tags:
+            xml_write_simple_tag(f, 'Tags', doujinshi.info.tags)
+        if doujinshi.info.artists:
+            xml_write_simple_tag(f, 'Writer', ' & '.join([i.strip() for i in doujinshi.info.artists.split(',')]))
+        # if doujinshi.info.groups:
+        #     metadata['group'] = [i.strip() for i in doujinshi.info.groups.split(',')]
+        if doujinshi.info.languages:
+            languages = [i.strip() for i in doujinshi.info.languages.split(',')]
+            xml_write_simple_tag(f, 'Translated', 'Yes' if 'translated' in languages else 'No')
+            [xml_write_simple_tag(f, 'Language', i) for i in languages if i != 'translated']
+
+        f.write('</ComicInfo>')
+
+
+def xml_write_simple_tag(f, name, val, indent=1):
+    f.write(f'{"  " * indent}<{name}>{escape(str(val))}</{name}>\n')
 
 def merge_json():
     lst = []
