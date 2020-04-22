@@ -109,7 +109,7 @@ def main():
             if not options.is_nohtml and not options.is_cbz:
                 generate_html(options.output_dir, doujinshi)
             elif options.is_cbz:
-                generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir)
+                generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir, options.write_comic_info)
 
         if options.main_viewer:
             generate_main_html(options.output_dir)

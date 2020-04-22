@@ -38,7 +38,7 @@ def banner():
 def cmd_parser():
     parser = OptionParser('\n  nhentai --search [keyword] --download'
                           '\n  NHENTAI=http://h.loli.club nhentai --id [ID ...]'
-                          '\n  nhentai --file [filename]'    
+                          '\n  nhentai --file [filename]'
                           '\n\nEnvironment Variable:\n'
                           '  NHENTAI                 nhentai mirror url')
     # operation options
@@ -95,6 +95,8 @@ def cmd_parser():
                       help='generate a main viewer contain all the doujin in the folder')
     parser.add_option('--cbz', '-C', dest='is_cbz', action='store_true',
                       help='generate Comic Book CBZ File')
+    parser.add_option('--comic-info', dest='write_comic_info', action='store_true',
+                      help='when generating Comic Book CBZ File, also write ComicInfo.xml')
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
                       help='remove downloaded doujinshi dir when generated CBZ file.')
 

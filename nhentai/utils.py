@@ -168,10 +168,11 @@ def generate_main_html(output_dir='./'):
         logger.warning('Writing Main Viewer failed ({})'.format(str(e)))
 
 
-def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
+def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_comic_info=False):
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
-        serialize_comicxml(doujinshi_obj, doujinshi_dir)
+        if write_comic_info:
+            serialize_comicxml(doujinshi_obj, doujinshi_dir)
         cbz_filename = os.path.join(os.path.join(doujinshi_dir, '..'), '{}.cbz'.format(doujinshi_obj.filename))
     else:
         cbz_filename = './doujinshi.cbz'
