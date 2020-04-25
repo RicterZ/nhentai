@@ -65,7 +65,7 @@ Set your nhentai cookie against captcha:
 
     nhentai --cookie "YOUR COOKIE FROM nhentai.net"
 
-**NOTE**: The format of the cookie is `"csrftoken=CRSFTOKEN; sessionid=SESSIONID"`
+**NOTE**: The format of the cookie is `"csrftoken=TOKEN; sessionid=ID"`
 
 Download specified doujinshi:
 
