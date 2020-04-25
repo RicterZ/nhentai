@@ -19,15 +19,28 @@ nhentai
 
 nHentai is a CLI tool for downloading doujinshi from <http://nhentai.net>
 
-============
-Installation
-============
+===================
+Manual Installation
+===================
 .. code-block::
 
     git clone https://github.com/RicterZ/nhentai
     cd nhentai
     python setup.py install
-    
+
+==================
+Installation (pip)
+==================
+Alternatively, install from PyPI with pip
+.. code-block::
+
+           pip install nhentai
+
+For a self-contained installation, use _Pipx:
+.. code-block::
+
+           pipx install nhentai
+           
 =====================
 Installation (Gentoo)
 =====================
@@ -222,3 +235,4 @@ Set `NHENTAI` env var to your nhentai mirror.
 
 .. |license| image:: https://img.shields.io/github/license/ricterz/nhentai.svg
    :target: https://github.com/RicterZ/nhentai/blob/master/LICENSE
+.. _Pipx: https://github.com/pipxproject/pipx/
