@@ -31,16 +31,18 @@ Manual Installation
 ==================
 Installation (pip)
 ==================
-Alternatively, install from PyPI with pip
+Alternatively, install from PyPI with pip:
+
 .. code-block::
 
            pip install nhentai
 
-For a self-contained installation, use _Pipx:
+For a self-contained installation, use `Pipx <https://github.com/pipxproject/pipx/>`_:
+
 .. code-block::
 
            pipx install nhentai
-           
+
 =====================
 Installation (Gentoo)
 =====================
@@ -62,6 +64,8 @@ Set your nhentai cookie against captcha:
 .. code-block:: bash
 
     nhentai --cookie "YOUR COOKIE FROM nhentai.net"
+
+**NOTE**: The format of the cookie is `"csrftoken=CRSFTOKEN; sessionid=SESSIONID"`
 
 Download specified doujinshi:
 
@@ -196,7 +200,7 @@ nHentai Mirror
 If you want to use a mirror, you should set up a reverse proxy of `nhentai.net` and `i.nhentai.net`.
 For example:
 
-.. code-block:: 
+.. code-block::
 
     i.h.loli.club -> i.nhentai.net
     h.loli.club -> nhentai.net
@@ -235,4 +239,3 @@ Set `NHENTAI` env var to your nhentai mirror.
 
 .. |license| image:: https://img.shields.io/github/license/ricterz/nhentai.svg
    :target: https://github.com/RicterZ/nhentai/blob/master/LICENSE
-.. _Pipx: https://github.com/pipxproject/pipx/
