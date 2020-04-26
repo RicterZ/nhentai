@@ -19,15 +19,30 @@ nhentai
 
 nHentai is a CLI tool for downloading doujinshi from <http://nhentai.net>
 
-============
-Installation
-============
+===================
+Manual Installation
+===================
 .. code-block::
 
     git clone https://github.com/RicterZ/nhentai
     cd nhentai
     python setup.py install
-    
+
+==================
+Installation (pip)
+==================
+Alternatively, install from PyPI with pip:
+
+.. code-block::
+
+           pip install nhentai
+
+For a self-contained installation, use `Pipx <https://github.com/pipxproject/pipx/>`_:
+
+.. code-block::
+
+           pipx install nhentai
+
 =====================
 Installation (Gentoo)
 =====================
@@ -49,6 +64,8 @@ Set your nhentai cookie against captcha:
 .. code-block:: bash
 
     nhentai --cookie "YOUR COOKIE FROM nhentai.net"
+
+**NOTE**: The format of the cookie is `"csrftoken=TOKEN; sessionid=ID"`
 
 Download specified doujinshi:
 
@@ -183,7 +200,7 @@ nHentai Mirror
 If you want to use a mirror, you should set up a reverse proxy of `nhentai.net` and `i.nhentai.net`.
 For example:
 
-.. code-block:: 
+.. code-block::
 
     i.h.loli.club -> i.nhentai.net
     h.loli.club -> nhentai.net
