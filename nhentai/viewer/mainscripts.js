@@ -20,6 +20,6 @@ function Search() {
 
     function isMatch(searchOnString, searchText) {
         searchText = searchText.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-        return searchOnString.match(new RegExp("\\b"+searchText+"\\b", "i")) != null;
+        return searchOnString.match(new RegExp("\\b"+searchText, "i")) != null;
     }
 }
