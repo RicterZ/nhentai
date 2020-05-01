@@ -33,7 +33,8 @@ def serialize_json(doujinshi, dir):
 def serialize_comicxml(doujinshi, dir):
     with open(os.path.join(dir, 'ComicInfo.xml'), 'w') as f:
         f.write('<?xml version="1.0" encoding="utf-8"?>\n')
-        f.write('<ComicInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n')
+        f.write('<ComicInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" '
+                'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n')
 
         xml_write_simple_tag(f, 'Manga', 'Yes')
 
@@ -70,7 +71,8 @@ def serialize_comicxml(doujinshi, dir):
 
 
 def xml_write_simple_tag(f, name, val, indent=1):
-    f.write(f'{"  " * indent}<{name}>{escape(str(val))}</{name}>\n')
+    f.write('{}<{}>{}</{}>\n'.format(' ' * indent, name, escape(str(val)), name))
+
 
 def merge_json():
     lst = []
