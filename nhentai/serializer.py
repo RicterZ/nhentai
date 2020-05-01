@@ -1,7 +1,6 @@
 # coding: utf-8
 import json
 import os
-from iso8601 import parse_date
 from xml.sax.saxutils import escape
 
 
@@ -31,6 +30,7 @@ def serialize_json(doujinshi, dir):
 
 
 def serialize_comicxml(doujinshi, dir):
+    from iso8601 import parse_date
     with open(os.path.join(dir, 'ComicInfo.xml'), 'w') as f:
         f.write('<?xml version="1.0" encoding="utf-8"?>\n')
         f.write('<ComicInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" '
