@@ -6,7 +6,7 @@ import platform
 import time
 
 from nhentai.cmdline import cmd_parser, banner
-from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, favorites_parser, tag_parser
+from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, favorites_parser
 from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
