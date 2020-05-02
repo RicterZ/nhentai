@@ -21,14 +21,12 @@ def main():
 
     from nhentai.constant import PROXY
     # constant.PROXY will be changed after cmd_parser()
-    if PROXY != {}:
+    if PROXY:
         logger.info('Using proxy: {0}'.format(PROXY))
 
     # check your cookie
     check_cookie()
 
-    index = 0
-    index_value = None
     doujinshis = []
     doujinshi_ids = []
     doujinshi_list = []
@@ -39,37 +37,15 @@ def main():
 
         doujinshis = favorites_parser(options.page_range)
 
-    elif options.tag:
-        doujinshis = tag_parser(options.tag, sorting=options.sorting, max_page=options.max_page)
-
-    elif options.artist:
-        index = 1
-        index_value = options.artist
-
-    elif options.character:
-        index = 2
-        index_value = options.character
-
-    elif options.parody:
-        index = 3
-        index_value = options.parody
-
-    elif options.group:
-        index = 4
-        index_value = options.group
-
-    elif options.language:
-        index = 5
-        index_value = options.language
-
     elif options.keyword:
+        from nhentai.constant import LANGUAGE
+        if LANGUAGE:
+            logger.info('Using deafult language: {0}'.format(LANGUAGE))
+            options.keyword += ', language:{}'.format(LANGUAGE)
         doujinshis = search_parser(options.keyword, sorting=options.sorting, page=options.page)
 
     elif not doujinshi_ids:
         doujinshi_ids = options.id
-
-    if index:
-        doujinshis = tag_parser(index_value, max_page=options.max_page, index=index)
 
     print_doujinshi(doujinshis)
     if options.is_download and doujinshis:
@@ -109,7 +85,7 @@ def main():
             if not options.is_nohtml and not options.is_cbz:
                 generate_html(options.output_dir, doujinshi)
             elif options.is_cbz:
-                generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir, options.write_comic_info)
+                generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir)
 
         if options.main_viewer:
             generate_main_html(options.output_dir)
@@ -124,7 +100,6 @@ def main():
 
 
 signal.signal(signal.SIGINT, signal_handler)
-
 
 if __name__ == '__main__':
     main()

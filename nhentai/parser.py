@@ -120,15 +120,15 @@ def page_range_parser(page_range, max_page_num):
         else:
             try:
                 left = int(range_str[:idx])
-                right = int(range_str[idx+1:])
+                right = int(range_str[idx + 1:])
                 if right > max_page_num:
                     right = max_page_num
-                for page in range(left, right+1):
+                for page in range(left, right + 1):
                     pages.add(page)
             except ValueError:
                 logger.error('page range({0}) is not valid'.format(page_range))
-    
-    return list(pages)    
+
+    return list(pages)
 
 
 def doujinshi_parser(id_):
@@ -143,7 +143,7 @@ def doujinshi_parser(id_):
 
     try:
         response = request('get', url)
-        if response.status_code in (200, ):
+        if response.status_code in (200,):
             response = response.content
         else:
             logger.debug('Slow down and retry ({}) ...'.format(id_))
@@ -202,7 +202,7 @@ def doujinshi_parser(id_):
     return doujinshi
 
 
-def search_parser(keyword, sorting='date', page=1):
+def old_search_parser(keyword, sorting='date', page=1):
     logger.debug('Searching doujinshis of keyword {0}'.format(keyword))
     response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page, 'sort': sorting}).content
 
@@ -222,50 +222,15 @@ def print_doujinshi(doujinshi_list):
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
-def tag_parser(tag_name, sorting='date', max_page=1, index=0):
-    result = []
-    tag_name = tag_name.lower()
-    if ',' in tag_name:
-        tag_name = [i.strip().replace(' ', '-') for i in tag_name.split(',')]
-    else:
-        tag_name = tag_name.strip().replace(' ', '-')
-    if sorting == 'date':
-        sorting = ''
-
-    for p in range(1, max_page + 1):
-        if sys.version_info >= (3, 0, 0):
-            unicode_ = str
-        else:
-            unicode_ = unicode
-
-        if isinstance(tag_name, (str, unicode_)):
-            logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, tag_name))
-            response = request('get', url='%s/%s/%s?page=%d' % (constant.TAG_URL[index], tag_name, sorting, p)).content
-            result += _get_title_and_id(response)
-        else:
-            for i in tag_name:
-                logger.debug('Fetching page {0} for doujinshi with tag \'{1}\''.format(p, i))
-                response = request('get',
-                                   url='%s/%s/%s?page=%d' % (constant.TAG_URL[index], i, sorting, p)).content
-                result += _get_title_and_id(response)
-
-        if not result:
-            logger.error('Cannot find doujinshi id of tag \'{0}\''.format(tag_name))
-            return
-
-    if not result:
-        logger.warn('No results for tag \'{}\''.format(tag_name))
-
-    return result
-
-
-def __api_suspended_search_parser(keyword, sorting, page):
+def search_parser(keyword, sorting, page):
     logger.debug('Searching doujinshis using keywords {0}'.format(keyword))
+    keyword = '+'.join([i.strip().replace(' ', '-').lower() for i in keyword.split(',')])
     result = []
     i = 0
     while i < 5:
         try:
-            response = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page, 'sort': sorting}).json()
+            url = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page, 'sort': sorting}).url
+            response = request('get', url.replace('%2B', '+')).json()
         except Exception as e:
             i += 1
             if not i < 5:
@@ -285,29 +250,6 @@ def __api_suspended_search_parser(keyword, sorting, page):
 
     if not result:
         logger.warn('No results for keywords {}'.format(keyword))
-
-    return result
-
-
-def __api_suspended_tag_parser(tag_id, sorting, max_page=1):
-    logger.info('Searching for doujinshi with tag id {0}'.format(tag_id))
-    result = []
-    response = request('get', url=constant.TAG_API_URL, params={'sort': sorting, 'tag_id': tag_id}).json()
-    page = max_page if max_page <= response['num_pages'] else int(response['num_pages'])
-
-    for i in range(1, page + 1):
-        logger.info('Getting page {} ...'.format(i))
-
-        if page != 1:
-            response = request('get', url=constant.TAG_API_URL,
-                               params={'sort': sorting, 'tag_id': tag_id}).json()
-    for row in response['result']:
-        title = row['title']['english']
-        title = title[:85] + '..' if len(title) > 85 else title
-        result.append({'id': row['id'], 'title': title})
-
-    if not result:
-        logger.warn('No results for tag id {}'.format(tag_id))
 
     return result
 
