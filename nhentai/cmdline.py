@@ -38,7 +38,7 @@ def banner():
 def cmd_parser():
     parser = OptionParser('\n  nhentai --search [keyword] --download'
                           '\n  NHENTAI=http://h.loli.club nhentai --id [ID ...]'
-                          '\n  nhentai --file [filename]'
+                          '\n  nhentai --file [filename]'    
                           '\n\nEnvironment Variable:\n'
                           '  NHENTAI                 nhentai mirror url')
     # operation options
@@ -50,14 +50,6 @@ def cmd_parser():
     parser.add_option('--id', type='string', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
     parser.add_option('--search', '-s', type='string', dest='keyword', action='store',
                       help='search doujinshi by keyword')
-    parser.add_option('--tag', type='string', dest='tag', action='store', help='download doujinshi by tag')
-    parser.add_option('--artist', type='string', dest='artist', action='store', help='download doujinshi by artist')
-    parser.add_option('--character', type='string', dest='character', action='store',
-                      help='download doujinshi by character')
-    parser.add_option('--parody', type='string', dest='parody', action='store', help='download doujinshi by parody')
-    parser.add_option('--group', type='string', dest='group', action='store', help='download doujinshi by group')
-    parser.add_option('--language', type='string', dest='language', action='store',
-                      help='download doujinshi by language')
     parser.add_option('--favorites', '-F', action='store_true', dest='favorites',
                       help='list or download your favorites.')
 
@@ -95,14 +87,14 @@ def cmd_parser():
                       help='generate a main viewer contain all the doujin in the folder')
     parser.add_option('--cbz', '-C', dest='is_cbz', action='store_true',
                       help='generate Comic Book CBZ File')
-    parser.add_option('--comic-info', dest='write_comic_info', action='store_true',
-                      help='when generating Comic Book CBZ File, also write ComicInfo.xml')
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
                       help='remove downloaded doujinshi dir when generated CBZ file.')
 
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
                       help='set cookie of nhentai to bypass Google recaptcha')
+    parser.add_option('--language', type='str', dest='language', action='store',
+                      help='set default language to parse doujinshis')
     parser.add_option('--save-download-history', dest='is_save_download_history', action='store_true',
                       default=False, help='save downloaded doujinshis, whose will be skipped if you re-download them')
     parser.add_option('--clean-download-history', action='store_true', default=False, dest='clean_download_history',
@@ -123,8 +115,7 @@ def cmd_parser():
         exit(0)
 
     if args.main_viewer and not args.id and not args.keyword and \
-            not args.tag and not args.artist and not args.character and \
-            not args.parody and not args.group and not args.language and not args.favorites:
+            not args.tag and not args.favorites:
         generate_main_html()
         exit(0)
 
@@ -151,6 +142,25 @@ def cmd_parser():
             exit(1)
 
         logger.info('Cookie saved.')
+        exit(0)
+
+    if os.path.exists(constant.NHENTAI_LANGUAGE) and not args.language:
+        with open(constant.NHENTAI_LANGUAGE, 'r') as f:
+            constant.LANGUAGE = f.read()
+            args.language = f.read()
+
+    if args.language:
+        try:
+            if not os.path.exists(constant.NHENTAI_HOME):
+                os.mkdir(constant.NHENTAI_HOME)
+
+            with open(constant.NHENTAI_LANGUAGE, 'w') as f:
+                f.write(args.language)
+        except Exception as e:
+            logger.error('Cannot create NHENTAI_HOME: {}'.format(str(e)))
+            exit(1)
+
+        logger.info('Default language now is {}.'.format(args.language))
         exit(0)
 
     if os.path.exists(constant.NHENTAI_PROXY):
@@ -192,14 +202,12 @@ def cmd_parser():
             args.id = set(int(i) for i in _ if i.isdigit())
 
     if (args.is_download or args.is_show) and not args.id and not args.keyword and \
-            not args.tag and not args.artist and not args.character and \
-            not args.parody and not args.group and not args.language and not args.favorites:
+            not args.tag and not args.favorites:
         logger.critical('Doujinshi id(s) are required for downloading')
         parser.print_help()
         exit(1)
 
-    if not args.keyword and not args.id and not args.tag and not args.artist and \
-            not args.character and not args.parody and not args.group and not args.language and not args.favorites:
+    if not args.keyword and not args.id and not  args.favorites:
         parser.print_help()
         exit(1)
 
