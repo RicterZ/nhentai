@@ -154,8 +154,9 @@ Other options:
       --no-html             don't generate HTML after downloading
       --gen-main            generate a main viewer contain all the doujin in the folder
       -C, --cbz             generate Comic Book CBZ File
+      -P --pdf              generate PDF file
       --rm-origin-dir       remove downloaded doujinshi dir when generated CBZ
-                            file.
+                            or PDF file.
 
       # nHentai options
       --cookie=COOKIE       set cookie of nhentai to bypass Google recaptcha
