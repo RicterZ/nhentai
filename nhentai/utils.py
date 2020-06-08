@@ -9,6 +9,7 @@ import zipfile
 import shutil
 import requests
 import sqlite3
+import img2pdf
 
 from nhentai import constant
 from nhentai.logger import logger
@@ -191,6 +192,34 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
         shutil.rmtree(doujinshi_dir, ignore_errors=True)
 
     logger.log(15, 'Comic Book CBZ file has been written to \'{0}\''.format(doujinshi_dir))
+
+
+def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
+    """Write images to a PDF file using img2pdf."""
+    if doujinshi_obj is not None:
+        doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
+        pdf_filename = os.path.join(
+            os.path.join(doujinshi_dir, '..'),
+            '{}.pdf'.format(doujinshi_obj.filename)
+        )
+    else:
+        pdf_filename = './doujinshi.pdf'
+        doujinshi_dir = '.'
+
+    file_list = os.listdir(doujinshi_dir)
+    file_list.sort()
+
+    logger.info('Writing PDF file to path: {}'.format(pdf_filename))
+    with open(pdf_filename, 'wb') as pdf_f:
+        full_path_list = (
+            [os.path.join(doujinshi_dir, image) for image in file_list]
+        )
+        pdf_f.write(img2pdf.convert(full_path_list))
+
+    if rm_origin_dir:
+        shutil.rmtree(doujinshi_dir, ignore_errors=True)
+
+    logger.log(15, 'PDF file has been written to \'{0}\''.format(doujinshi_dir))
 
 
 def format_filename(s):

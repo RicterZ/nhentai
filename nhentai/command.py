@@ -11,7 +11,7 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_cbz, generate_main_html, check_cookie, signal_handler, DB
+from nhentai.utils import generate_html, generate_cbz, generate_main_html, generate_pdf, check_cookie, signal_handler, DB
 
 
 def main():
@@ -82,10 +82,12 @@ def main():
                 with DB() as db:
                     db.add_one(doujinshi.id)
 
-            if not options.is_nohtml and not options.is_cbz:
+            if not options.is_nohtml and not options.is_cbz and not options.is_pdf:
                 generate_html(options.output_dir, doujinshi)
             elif options.is_cbz:
                 generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir)
+            elif options.is_pdf:
+                generate_pdf(options.output_dir, doujinshi, options.rm_origin_dir)
 
         if options.main_viewer:
             generate_main_html(options.output_dir)
