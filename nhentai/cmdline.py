@@ -79,7 +79,7 @@ def cmd_parser():
                       help='store a proxy, for example: -p \'http://127.0.0.1:1080\'')
     parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
-                      help='format the saved folder name', default='[%i][%a][%t]')
+                      help='format the saved folder name', default='%i')
 
     # generate options
     parser.add_option('--html', dest='html_viewer', action='store_true',
