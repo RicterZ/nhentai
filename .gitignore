@@ -6,5 +6,5 @@ dist/
 .python-version
 .DS_Store
 output/
-.vscode/settings.json
-nhentai/.vscode/settings.json
+.vscode/
+nhentai/.vscode/
