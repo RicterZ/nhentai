@@ -179,11 +179,9 @@ def doujinshi_parser(id_):
     doujinshi['ext'] = ext
 
     pages = 0
-    for _ in doujinshi_info.find_all('div', class_=''):
-        pages = re.search('([\d]+) pages', _.text)
-        if pages:
-            pages = pages.group(1)
-            break
+    for _ in doujinshi_info.find_all('div', class_='tag-container field-name'):
+        if re.search('Pages:', _.text):
+            pages = _.find('span', class_='name').string
     doujinshi['pages'] = int(pages)
 
     # gain information of the doujinshi
@@ -192,7 +190,7 @@ def doujinshi_parser(id_):
     for field in information_fields:
         field_name = field.contents[0].strip().strip(':')
         if field_name in needed_fields:
-            data = [sub_field.contents[0].strip() for sub_field in
+            data = [sub_field.find('span', attrs={'class': 'name'}).contents[0].strip() for sub_field in
                     field.find_all('a', attrs={'class': 'tag'})]
             doujinshi[field_name.lower()] = ', '.join(data)
 
