@@ -116,8 +116,7 @@ def cmd_parser():
         generate_html()
         exit(0)
 
-    if args.main_viewer and not args.id and not args.keyword and \
-            not args.tag and not args.favorites:
+    if args.main_viewer and not args.id and not args.keyword and not args.favorites:
         generate_main_html()
         exit(0)
 
@@ -203,8 +202,7 @@ def cmd_parser():
             _ = [i.strip() for i in f.readlines()]
             args.id = set(int(i) for i in _ if i.isdigit())
 
-    if (args.is_download or args.is_show) and not args.id and not args.keyword and \
-            not args.tag and not args.favorites:
+    if (args.is_download or args.is_show) and not args.id and not args.keyword and not args.favorites:
         logger.critical('Doujinshi id(s) are required for downloading')
         parser.print_help()
         exit(1)
