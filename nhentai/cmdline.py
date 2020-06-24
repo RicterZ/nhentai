@@ -206,8 +206,8 @@ def cmd_parser():
     if args.threads <= 0:
         args.threads = 1
 
-    elif args.threads > 15:
-        logger.critical('Maximum number of used threads is 15')
-        exit(1)
+    # elif args.threads > 15:
+    #     logger.critical('Maximum number of used threads is 15')
+    #     exit(1)
 
     return args
