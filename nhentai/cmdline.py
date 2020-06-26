@@ -186,8 +186,10 @@ def cmd_parser():
 
     if args.file:
         with open(args.file, 'r') as f:
-            _ = [i.strip() for i in f.readlines()]
-            args.id = set(int(i) for i in _ if i.isdigit())
+            _ = [int(i.strip()) for i in f.readlines() if i.strip().isdigit()]
+            # args.id = list(set(int(i) for i in _ if i.isdigit()))
+            args.id = list(set(_))
+            args.id.sort(key=_.index)
 
     if (args.is_download or args.is_show) and not args.id and not args.keyword and \
             not args.tag and not args.artist and not args.character and \
@@ -204,8 +206,8 @@ def cmd_parser():
     if args.threads <= 0:
         args.threads = 1
 
-    elif args.threads > 15:
-        logger.critical('Maximum number of used threads is 15')
-        exit(1)
+    # elif args.threads > 15:
+    #     logger.critical('Maximum number of used threads is 15')
+    #     exit(1)
 
     return args
