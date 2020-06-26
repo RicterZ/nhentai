@@ -11,10 +11,9 @@ install:
 
 script:
     - echo 268642 > /tmp/test.txt
-    - nhentai --cookie "csrftoken=xIh7s9d4NB8qSLN7eJZG9064zsV84aHEYFoAU49Ib9anqmoT0pZRw6TIdayLzQuT; sessionid=un101zfgpglsyffdnsm72le4euuisp7t"
+    - nhentai --cookie "_ga=GA1.2.2000087053.1558179358; __cfduid=d8930f7b43d04e1b2117719e28386b2e31593148489; csrftoken=3914GQGSmmqQyfQTBswNgfXuhFiefu8sAgOnsfZWiiqS4PJpKivuTp34p2USV6xu; sessionid=be0w2lwlprlmld3ahg9i592ipsuaw840"
     - nhentai --search umaru
     - nhentai --id=152503,146134 -t 10 --output=/tmp/ --cbz
-    - nhentai --tag lolicon --sorting popular
     - nhentai -F
     - nhentai --file /tmp/test.txt
     - nhentai --id=152503,146134 --gen-main --output=/tmp/

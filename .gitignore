@@ -6,3 +6,4 @@ dist/
 .python-version
 .DS_Store
 output/
+venv/

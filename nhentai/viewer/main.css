@@ -148,7 +148,7 @@ blockquote {
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Old versions of Firefox */
-  ms-user-select: none; /* Internet Explorer/Edge */
+  -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
 }
 
@@ -157,7 +157,7 @@ blockquote {
   padding: 5px 0px 5px 15px;
   text-decoration: none;
   font-size: 15px;
-  color: #0d0d0d9;
+  color: #0d0d0d;
   display: block;
   text-align: left;
 }

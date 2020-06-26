@@ -9,10 +9,11 @@ import zipfile
 import shutil
 import requests
 import sqlite3
+import img2pdf
 
 from nhentai import constant
 from nhentai.logger import logger
-from nhentai.serializer import serialize, set_js_database
+from nhentai.serializer import serialize_json, serialize_comicxml, set_js_database
 
 
 def request(method, url, **kwargs):
@@ -86,7 +87,7 @@ def generate_html(output_dir='.', doujinshi_obj=None):
     js = readfile('viewer/scripts.js')
 
     if doujinshi_obj is not None:
-        serialize(doujinshi_obj, doujinshi_dir)
+        serialize_json(doujinshi_obj, doujinshi_dir)
         name = doujinshi_obj.name
         if sys.version_info < (3, 0):
             name = doujinshi_obj.name.encode('utf-8')
@@ -102,9 +103,9 @@ def generate_html(output_dir='.', doujinshi_obj=None):
             with open(os.path.join(doujinshi_dir, 'index.html'), 'wb') as f:
                 f.write(data.encode('utf-8'))
 
-        logger.log(15, 'HTML Viewer has been write to \'{0}\''.format(os.path.join(doujinshi_dir, 'index.html')))
+        logger.log(15, 'HTML Viewer has been written to \'{0}\''.format(os.path.join(doujinshi_dir, 'index.html')))
     except Exception as e:
-        logger.warning('Writen HTML Viewer failed ({})'.format(str(e)))
+        logger.warning('Writing HTML Viewer failed ({})'.format(str(e)))
 
 
 def generate_main_html(output_dir='./'):
@@ -150,7 +151,7 @@ def generate_main_html(output_dir='./'):
 
         image_html += element.format(FOLDER=folder, IMAGE=image, TITLE=title)
     if image_html == '':
-        logger.warning('None index.html found, --gen-main paused.')
+        logger.warning('No index.html found, --gen-main paused.')
         return
     try:
         data = main.format(STYLES=css, SCRIPTS=js, PICTURE=image_html)
@@ -163,14 +164,16 @@ def generate_main_html(output_dir='./'):
         shutil.copy(os.path.dirname(__file__)+'/viewer/logo.png', './')
         set_js_database()
         logger.log(
-            15, 'Main Viewer has been write to \'{0}main.html\''.format(output_dir))
+            15, 'Main Viewer has been written to \'{0}main.html\''.format(output_dir))
     except Exception as e:
-        logger.warning('Writen Main Viewer failed ({})'.format(str(e)))
+        logger.warning('Writing Main Viewer failed ({})'.format(str(e)))
 
 
-def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
+def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_comic_info=False):
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
+        if write_comic_info:
+            serialize_comicxml(doujinshi_obj, doujinshi_dir)
         cbz_filename = os.path.join(os.path.join(doujinshi_dir, '..'), '{}.cbz'.format(doujinshi_obj.filename))
     else:
         cbz_filename = './doujinshi.cbz'
@@ -188,7 +191,35 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
     if rm_origin_dir:
         shutil.rmtree(doujinshi_dir, ignore_errors=True)
 
-    logger.log(15, 'Comic Book CBZ file has been write to \'{0}\''.format(doujinshi_dir))
+    logger.log(15, 'Comic Book CBZ file has been written to \'{0}\''.format(doujinshi_dir))
+
+
+def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
+    """Write images to a PDF file using img2pdf."""
+    if doujinshi_obj is not None:
+        doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
+        pdf_filename = os.path.join(
+            os.path.join(doujinshi_dir, '..'),
+            '{}.pdf'.format(doujinshi_obj.filename)
+        )
+    else:
+        pdf_filename = './doujinshi.pdf'
+        doujinshi_dir = '.'
+
+    file_list = os.listdir(doujinshi_dir)
+    file_list.sort()
+
+    logger.info('Writing PDF file to path: {}'.format(pdf_filename))
+    with open(pdf_filename, 'wb') as pdf_f:
+        full_path_list = (
+            [os.path.join(doujinshi_dir, image) for image in file_list]
+        )
+        pdf_f.write(img2pdf.convert(full_path_list))
+
+    if rm_origin_dir:
+        shutil.rmtree(doujinshi_dir, ignore_errors=True)
+
+    logger.log(15, 'PDF file has been written to \'{0}\''.format(doujinshi_dir))
 
 
 def format_filename(s):
@@ -202,6 +233,9 @@ and append a file extension like '.txt', so I avoid the potential of using
 an invalid filename.
 
 """
+    return s
+
+    # maybe you can use `--format` to select a suitable filename
     valid_chars = "-_.()[] %s%s" % (string.ascii_letters, string.digits)
     filename = ''.join(c for c in s if c in valid_chars)
     if len(filename) > 100:

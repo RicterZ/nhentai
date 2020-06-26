@@ -19,15 +19,30 @@ nhentai
 
 nHentai is a CLI tool for downloading doujinshi from <http://nhentai.net>
 
-============
-Installation
-============
+===================
+Manual Installation
+===================
 .. code-block::
 
     git clone https://github.com/RicterZ/nhentai
     cd nhentai
     python setup.py install
-    
+
+==================
+Installation (pip)
+==================
+Alternatively, install from PyPI with pip:
+
+.. code-block::
+
+           pip install nhentai
+
+For a self-contained installation, use `Pipx <https://github.com/pipxproject/pipx/>`_:
+
+.. code-block::
+
+           pipx install nhentai
+
 =====================
 Installation (Gentoo)
 =====================
@@ -50,6 +65,8 @@ Set your nhentai cookie against captcha:
 
     nhentai --cookie "YOUR COOKIE FROM nhentai.net"
 
+**NOTE**: The format of the cookie is `"csrftoken=TOKEN; sessionid=ID"`
+
 Download specified doujinshi:
 
 .. code-block:: bash
@@ -62,53 +79,20 @@ Download doujinshi with ids specified in a file (doujinshi ids split by line):
 
     nhentai --file=doujinshi.txt
 
+Set search default language
+
+.. code-block:: bash
+
+    nhentai --language=english
+
 Search a keyword and download the first page:
 
 .. code-block:: bash
 
     nhentai --search="tomori" --page=1 --download
-
-Download by tag name:
-
-.. code-block:: bash
-
-    nhentai --tag lolicon --download --page=2
-
-Download by language:
-
-.. code-block:: bash
-
-    nhentai --language english --download --page=2
-
-Download by artist name:
-
-.. code-block:: bash
-
-    nhentai --artist henreader --download
-
-Download by character name:
-
-.. code-block:: bash
-
-    nhentai --character "kuro von einsbern" --download
-
-Download by parody name:
-
-.. code-block:: bash
-
-    nhentai --parody "the idolmaster" --download
-
-Download by group name:
-
-.. code-block:: bash
-
-    nhentai --group clesta --download
-
-Download using multiple tags (--tag, --character, --paordy and --group supported):
-
-.. code-block:: bash
-
-    nhentai --tag "lolicon, teasing" --artist "tamano kedama, atte nanakusa"
+    # you also can download by tags and multiple keywords
+    nhentai --search="tag:lolicon, artist:henreader, tag:full color"
+    nhentai --search="lolicon, henreader, full color"
 
 Download your favorites with delay:
 
@@ -170,8 +154,9 @@ Other options:
       --no-html             don't generate HTML after downloading
       --gen-main            generate a main viewer contain all the doujin in the folder
       -C, --cbz             generate Comic Book CBZ File
+      -P --pdf              generate PDF file
       --rm-origin-dir       remove downloaded doujinshi dir when generated CBZ
-                            file.
+                            or PDF file.
 
       # nHentai options
       --cookie=COOKIE       set cookie of nhentai to bypass Google recaptcha
@@ -183,7 +168,7 @@ nHentai Mirror
 If you want to use a mirror, you should set up a reverse proxy of `nhentai.net` and `i.nhentai.net`.
 For example:
 
-.. code-block:: 
+.. code-block::
 
     i.h.loli.club -> i.nhentai.net
     h.loli.club -> nhentai.net
