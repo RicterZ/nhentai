@@ -233,6 +233,10 @@ and append a file extension like '.txt', so I avoid the potential of using
 an invalid filename.
 
 """
+    if sys.platform.startswith('win32'):
+        invalid_chars = '\/:*?"<>|.'
+        for char in invalid_chars:
+            s = s.replace(char, '_')
     return s
 
     # maybe you can use `--format` to select a suitable filename
