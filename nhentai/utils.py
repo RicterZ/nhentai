@@ -233,8 +233,6 @@ and append a file extension like '.txt', so I avoid the potential of using
 an invalid filename.
 
 """
-    return s
-
     # maybe you can use `--format` to select a suitable filename
     valid_chars = "-_.()[] %s%s" % (string.ascii_letters, string.digits)
     filename = ''.join(c for c in s if c in valid_chars)
