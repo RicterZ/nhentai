@@ -9,7 +9,6 @@ import zipfile
 import shutil
 import requests
 import sqlite3
-import img2pdf
 
 from nhentai import constant
 from nhentai.logger import logger
@@ -195,6 +194,11 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
 
 
 def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
+    try:
+        import img2pdf
+    except ImportError:
+        logger.error("Please install img2pdf package by using pip.")
+
     """Write images to a PDF file using img2pdf."""
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
@@ -233,12 +237,6 @@ and append a file extension like '.txt', so I avoid the potential of using
 an invalid filename.
 
 """
-    if sys.platform.startswith('win32'):
-        invalid_chars = '\/:*?"<>|.'
-        for char in invalid_chars:
-            s = s.replace(char, '_')
-    return s
-
     # maybe you can use `--format` to select a suitable filename
     valid_chars = "-_.()[] %s%s" % (string.ascii_letters, string.digits)
     filename = ''.join(c for c in s if c in valid_chars)

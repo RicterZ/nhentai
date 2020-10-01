@@ -178,7 +178,6 @@ def doujinshi_parser(id_):
     doujinshi['img_id'] = img_id.group(1)
     doujinshi['ext'] = ext
 
-    pages = 0
     for _ in doujinshi_info.find_all('div', class_='tag-container field-name'):
         if re.search('Pages:', _.text):
             pages = _.find('span', class_='name').string
