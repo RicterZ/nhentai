@@ -5,11 +5,10 @@ import multiprocessing
 import signal
 
 from future.builtins import str as text
+import sys
 import os
 import requests
-import threadpool
 import time
-import multiprocessing as mp
 
 try:
     from urllib.parse import urlparse
@@ -18,10 +17,10 @@ except ImportError:
 
 from nhentai.logger import logger
 from nhentai.parser import request
-from nhentai.utils import Singleton, signal_handler
+from nhentai.utils import Singleton
 
 requests.packages.urllib3.disable_warnings()
-semaphore = mp.Semaphore()
+semaphore = multiprocessing.Semaphore(1)
 
 
 class NHentaiImageNotExistException(Exception):
@@ -133,16 +132,14 @@ class Downloader(Singleton):
         queue = [(self, url, folder) for url in queue]
 
         pool = multiprocessing.Pool(self.size, init_worker)
-
-        for item in queue:
-            pool.apply_async(download_wrapper, args=item, callback=self._download_callback)
+        [pool.apply_async(download_wrapper, args=item) for item in queue]
 
         pool.close()
         pool.join()
 
 
 def download_wrapper(obj, url, folder=''):
-    if semaphore.get_value():
+    if sys.platform == 'darwin' or semaphore.get_value():
         return Downloader.download_(obj, url=url, folder=folder)
     else:
         return -3, None
