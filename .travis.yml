@@ -4,13 +4,14 @@ os:
 language: python
 python:
     - 3.7
+    - 3.8
 
 install:
     - python setup.py install
 
 script:
     - echo 268642 > /tmp/test.txt
-    - nhentai --cookie "_ga=GA1.2.2000087053.1558179358; __cfduid=d8930f7b43d04e1b2117719e28386b2e31593148489; csrftoken=3914GQGSmmqQyfQTBswNgfXuhFiefu8sAgOnsfZWiiqS4PJpKivuTp34p2USV6xu; sessionid=be0w2lwlprlmld3ahg9i592ipsuaw840"
+    - nhentai --cookie "_ga=GA1.2.1651446371.1545407218; __cfduid=d0ed34dfb81167d2a51a1d6392c1768a81601380350; csrftoken=KRN0GR1ft86m3HTefpQA99pp6R1Bo7hUs5QxNGOAIuwB5g4EcJj04fwMB8QKgLaB; sessionid=7hzoowox78c90wi5ud5ibphm4axcck7c"
     - nhentai --search umaru
     - nhentai --id=152503,146134 -t 10 --output=/tmp/ --cbz
     - nhentai -F
