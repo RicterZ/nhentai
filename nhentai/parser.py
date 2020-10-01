@@ -221,7 +221,7 @@ def print_doujinshi(doujinshi_list):
 
 def search_parser(keyword, sorting, page):
     logger.debug('Searching doujinshis using keywords {0}'.format(keyword))
-    keyword = '+'.join([i.strip().replace(' ', '-').lower() for i in keyword.split(',')])
+    # keyword = '+'.join([i.strip().replace(' ', '-').lower() for i in keyword.split(',')])
     result = []
     i = 0
     while i < 5:
@@ -229,12 +229,8 @@ def search_parser(keyword, sorting, page):
             url = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page, 'sort': sorting}).url
             response = request('get', url.replace('%2B', '+')).json()
         except Exception as e:
-            i += 1
-            if not i < 5:
-                logger.critical(str(e))
-                logger.warn('If you are in China, please configure the proxy to fu*k GFW.')
-                exit(1)
-            continue
+            logger.critical(str(e))
+
         break
 
     if 'result' not in response:
