@@ -9,7 +9,6 @@ import zipfile
 import shutil
 import requests
 import sqlite3
-import img2pdf
 
 from nhentai import constant
 from nhentai.logger import logger
@@ -195,6 +194,11 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
 
 
 def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
+    try:
+        import img2pdf
+    except ImportError:
+        logger.error("Please install img2pdf package by using pip.")
+
     """Write images to a PDF file using img2pdf."""
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
