@@ -23,7 +23,7 @@ setup(
 
     author=__author__,
     author_email=__email__,
-    keywords=['nhentai', 'doujinshi', 'downloader']
+    keywords=['nhentai', 'doujinshi', 'downloader'],
     description='nhentai.net doujinshis downloader',
     long_description=long_description(),
     url='https://github.com/RicterZ/nhentai',
