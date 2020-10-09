@@ -40,7 +40,7 @@ def main():
     elif options.keyword:
         from nhentai.constant import LANGUAGE
         if LANGUAGE:
-            logger.info('Using deafult language: {0}'.format(LANGUAGE))
+            logger.info('Using default language: {0}'.format(LANGUAGE))
             options.keyword += ', language:{}'.format(LANGUAGE)
         doujinshis = search_parser(options.keyword, sorting=options.sorting, page=options.page)
 
