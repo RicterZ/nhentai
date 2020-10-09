@@ -96,6 +96,8 @@ def cmd_parser():
                       help='set cookie of nhentai to bypass Google recaptcha')
     parser.add_option('--language', type='str', dest='language', action='store',
                       help='set default language to parse doujinshis')
+    parser.add_option('--clean-language', dest='clean_language', action='store_true', default=False,
+                      help='set DEFAULT as language to parse doujinshis')
     parser.add_option('--save-download-history', dest='is_save_download_history', action='store_true',
                       default=False, help='save downloaded doujinshis, whose will be skipped if you re-download them')
     parser.add_option('--clean-download-history', action='store_true', default=False, dest='clean_download_history',
@@ -161,6 +163,20 @@ def cmd_parser():
             exit(1)
 
         logger.info('Default language now is {}.'.format(args.language))
+        exit(0)
+
+    if args.clean_language:
+        try:
+            if not os.path.exists(constant.NHENTAI_HOME):
+                os.mkdir(constant.NHENTAI_HOME)
+
+            with open(constant.NHENTAI_LANGUAGE, 'w') as f:
+                f.close()
+        except Exception as e:
+            logger.error('Cannot create NHENTAI_HOME: {}'.format(str(e)))
+            exit(1)
+
+        logger.info('Language now is DEFAULT')
         exit(0)
 
     if os.path.exists(constant.NHENTAI_PROXY):
