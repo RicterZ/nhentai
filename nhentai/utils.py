@@ -20,9 +20,9 @@ def request(method, url, **kwargs):
     session.headers.update({
         'Referer': constant.LOGIN_URL,
         'User-Agent': 'nhentai command line client (https://github.com/RicterZ/nhentai)',
-        'Cookie': constant.COOKIE
+        'Cookie': constant.CONFIG['cookie']
     })
-    return getattr(session, method)(url, proxies=constant.PROXY, verify=False, **kwargs)
+    return getattr(session, method)(url, proxies=constant.CONFIG['proxy'], verify=False, **kwargs)
 
 
 def check_cookie():

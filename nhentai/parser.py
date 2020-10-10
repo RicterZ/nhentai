@@ -1,7 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
 
-import sys
 import os
 import re
 import time
@@ -189,19 +188,26 @@ def print_doujinshi(doujinshi_list):
         return
     doujinshi_list = [(i['id'], i['title']) for i in doujinshi_list]
     headers = ['id', 'doujinshi']
-    logger.info('Search Result\n' +
+    logger.info('Search Result || Found %i doujinshis \n' % doujinshi_list.__len__() +
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
-def search_parser(keyword, sorting, page):
+def search_parser(keyword, sorting, page, is_page_all=False):
     # keyword = '+'.join([i.strip().replace(' ', '-').lower() for i in keyword.split(',')])
     result = []
     if not page:
         page = [1]
 
+    if is_page_all:
+        url = request('get', url=constant.SEARCH_URL, params={'query': keyword}).url
+        init_response = request('get', url.replace('%2B', '+')).json()
+        page = range(1, init_response['num_pages']+1)
+
+    total = '/{0}'.format(page[-1]) if is_page_all else ''
     for p in page:
         i = 0
-        logger.info('Searching doujinshis using keywords "{0}" on page {1}'.format(keyword, p))
+
+        logger.info('Searching doujinshis using keywords "{0}" on page {1}{2}'.format(keyword, p, total))
         while i < 3:
             try:
                 url = request('get', url=constant.SEARCH_URL, params={'query': keyword,
