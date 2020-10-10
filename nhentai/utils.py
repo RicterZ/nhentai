@@ -253,6 +253,26 @@ def signal_handler(signal, frame):
     exit(1)
 
 
+def paging(page_string):
+    # 1,3-5,14 -> [1, 3, 4, 5, 14]
+    if not page_string:
+        return []
+
+    page_list = []
+    for i in page_string.split(','):
+        if '-' in i:
+            start, end = i.split('-')
+            if not (start.isdigit() and end.isdigit()):
+                raise Exception('Invalid page number')
+            page_list.extend(list(range(int(start), int(end)+1)))
+        else:
+            if not i.isdigit():
+                raise Exception('Invalid page number')
+            page_list.append(int(i))
+
+    return page_list
+
+
 class DB(object):
     conn = None
     cur = None

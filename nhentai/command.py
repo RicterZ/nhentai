@@ -11,7 +11,8 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_cbz, generate_main_html, generate_pdf, check_cookie, signal_handler, DB
+from nhentai.utils import generate_html, generate_cbz, generate_main_html, generate_pdf, \
+    paging, check_cookie, signal_handler, DB
 
 
 def main():
@@ -31,18 +32,20 @@ def main():
     doujinshi_ids = []
     doujinshi_list = []
 
+    page_list = paging(options.page)
+
     if options.favorites:
         if not options.is_download:
             logger.warning('You do not specify --download option')
 
-        doujinshis = favorites_parser(options.page_range)
+        doujinshis = favorites_parser(page=page_list)
 
     elif options.keyword:
         from nhentai.constant import LANGUAGE
         if LANGUAGE:
             logger.info('Using default language: {0}'.format(LANGUAGE))
             options.keyword += ', language:{}'.format(LANGUAGE)
-        doujinshis = search_parser(options.keyword, sorting=options.sorting, page=options.page)
+        doujinshis = search_parser(options.keyword, sorting=options.sorting, page=page_list)
 
     elif not doujinshi_ids:
         doujinshi_ids = options.id
