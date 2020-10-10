@@ -64,7 +64,7 @@ def _get_title_and_id(response):
     return result
 
 
-def favorites_parser(page_range=''):
+def favorites_parser(page=None):
     result = []
     html = BeautifulSoup(request('get', constant.FAV_URL).content, 'html.parser')
     count = html.find('span', attrs={'class': 'count'})
@@ -78,20 +78,20 @@ def favorites_parser(page_range=''):
         return []
     pages = int(count / 25)
 
-    if pages:
-        pages += 1 if count % (25 * pages) else 0
+    if page:
+        page_range_list = page
     else:
-        pages = 1
+        if pages:
+            pages += 1 if count % (25 * pages) else 0
+        else:
+            pages = 1
 
-    logger.info('You have %d favorites in %d pages.' % (count, pages))
+        logger.info('You have %d favorites in %d pages.' % (count, pages))
 
-    if os.getenv('DEBUG'):
-        pages = 1
+        if os.getenv('DEBUG'):
+            pages = 1
 
-    page_range_list = range(1, pages + 1)
-    if page_range:
-        logger.info('page range is {0}'.format(page_range))
-        page_range_list = page_range_parser(page_range, pages)
+        page_range_list = range(1, pages + 1)
 
     for page in page_range_list:
         try:
@@ -103,32 +103,6 @@ def favorites_parser(page_range=''):
             logger.error('Error: %s, continue', str(e))
 
     return result
-
-
-def page_range_parser(page_range, max_page_num):
-    pages = set()
-    ranges = str.split(page_range, ',')
-    for range_str in ranges:
-        idx = range_str.find('-')
-        if idx == -1:
-            try:
-                page = int(range_str)
-                if page <= max_page_num:
-                    pages.add(page)
-            except ValueError:
-                logger.error('page range({0}) is not valid'.format(page_range))
-        else:
-            try:
-                left = int(range_str[:idx])
-                right = int(range_str[idx + 1:])
-                if right > max_page_num:
-                    right = max_page_num
-                for page in range(left, right + 1):
-                    pages.add(page)
-            except ValueError:
-                logger.error('page range({0}) is not valid'.format(page_range))
-
-    return list(pages)
 
 
 def doujinshi_parser(id_):
@@ -220,29 +194,35 @@ def print_doujinshi(doujinshi_list):
 
 
 def search_parser(keyword, sorting, page):
-    logger.debug('Searching doujinshis using keywords {0}'.format(keyword))
     # keyword = '+'.join([i.strip().replace(' ', '-').lower() for i in keyword.split(',')])
     result = []
-    i = 0
-    while i < 5:
-        try:
-            url = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page, 'sort': sorting}).url
-            response = request('get', url.replace('%2B', '+')).json()
-        except Exception as e:
-            logger.critical(str(e))
+    if not page:
+        page = [1]
 
-        break
+    for p in page:
+        i = 0
+        logger.info('Searching doujinshis using keywords "{0}" on page {1}'.format(keyword, p))
+        while i < 3:
+            try:
+                url = request('get', url=constant.SEARCH_URL, params={'query': keyword,
+                                                                      'page': p, 'sort': sorting}).url
+                response = request('get', url.replace('%2B', '+')).json()
+            except Exception as e:
+                logger.critical(str(e))
 
-    if 'result' not in response:
-        raise Exception('No result in response')
+            break
 
-    for row in response['result']:
-        title = row['title']['english']
-        title = title[:85] + '..' if len(title) > 85 else title
-        result.append({'id': row['id'], 'title': title})
+        if 'result' not in response:
+            logger.warn('No result in response in page {}'.format(p))
+            break
 
-    if not result:
-        logger.warn('No results for keywords {}'.format(keyword))
+        for row in response['result']:
+            title = row['title']['english']
+            title = title[:85] + '..' if len(title) > 85 else title
+            result.append({'id': row['id'], 'title': title})
+
+        if not result:
+            logger.warn('No results for keywords {}'.format(keyword))
 
     return result
 
