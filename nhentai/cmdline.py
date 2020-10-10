@@ -166,7 +166,7 @@ def cmd_parser():
         exit(0)
         # TODO: search without language
 
-    if args.proxy is not None:
+    if args.proxy:
         proxy_url = urlparse(args.proxy)
         if not args.proxy == '' and proxy_url.scheme not in ('http', 'https'):
             logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
