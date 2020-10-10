@@ -95,8 +95,8 @@ def cmd_parser():
                       help='timeout for downloading doujinshi')
     parser.add_option('--delay', '-d', type='int', dest='delay', action='store', default=0,
                       help='slow down between downloading every doujinshi')
-    parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
-                      help='store a proxy, for example: -p \'http://127.0.0.1:1080\'')
+    parser.add_option('--proxy', '-p', type='string', dest='proxy', action='store', default='',
+                      help='set proxy -p \'http://127.0.0.1:1080\' or -p DEFAULT')
     parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
                       help='format the saved folder name', default='[%i][%a][%t]')
@@ -117,11 +117,9 @@ def cmd_parser():
 
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
-                      help='set cookie of nhentai to bypass Google recaptcha')
+                      help='set cookie of nhentai to bypass Google recaptcha e.g. --cookie=DEFAULT')
     parser.add_option('--language', type='str', dest='language', action='store',
-                      help='set default language to parse doujinshis')
-    parser.add_option('--clean-language', dest='clean_language', action='store_true', default=False,
-                      help='set DEFAULT as language to parse doujinshis')
+                      help='set default language to parse doujinshis e.g. --language=japanese or --language=DEFAULT')
     parser.add_option('--save-download-history', dest='is_save_download_history', action='store_true',
                       default=False, help='save downloaded doujinshis, whose will be skipped if you re-download them')
     parser.add_option('--clean-download-history', action='store_true', default=False, dest='clean_download_history',
@@ -153,22 +151,42 @@ def cmd_parser():
         exit(0)
 
     # --- set config ---
-    if args.cookie is not None:
-        constant.CONFIG['cookie'] = args.cookie
-        logger.info('Cookie saved.')
-        write_config()
-        exit(0)
+    if args.cookie:
+        if args.cookie == 'DEFAULT':
+            constant.CONFIG['cookie'] = ''
+            logger.info('Cookie restored to DEFAULT settings')
+            write_config()
+            exit(0)
+        else:
+            constant.CONFIG['cookie'] = args.cookie
+            logger.info('Cookie saved.')
+            write_config()
+            exit(0)
 
-    if args.language is not None:
-        constant.CONFIG['language'] = args.language
-        logger.info('Default language now set to \'{0}\''.format(args.language))
-        write_config()
-        exit(0)
-        # TODO: search without language
+    if args.language:
+        if args.language == 'DEFAULT':
+            constant.CONFIG['language'] = ''
+            logger.info('Default language now set to DEFAULT settings')
+            write_config()
+            exit(0)
+        else:
+            constant.CONFIG['language'] = args.language
+            logger.info('Default language now set to \'{0}\''.format(args.language))
+            write_config()
+            exit(0)
+            # TODO: search without language
 
     if args.proxy:
         proxy_url = urlparse(args.proxy)
-        if not args.proxy == '' and proxy_url.scheme not in ('http', 'https'):
+        if args.proxy == 'DEFAULT':
+            constant.CONFIG['proxy'] = {
+                'http': '',
+                'https': '',
+            }
+            logger.info('Proxy now set to DEFAULT settings')
+            write_config()
+            exit(0)
+        elif not args.proxy == '' and proxy_url.scheme not in ('http', 'https'):
             logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
             exit(0)
         else:
