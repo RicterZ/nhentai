@@ -48,6 +48,7 @@ class Doujinshi(object):
 
     def show(self):
         table = [
+            ["Parodies", self.info.parodies],
             ["Doujinshi", self.name],
             ["Subtitle", self.info.subtitle],
             ["Characters", self.info.characters],
