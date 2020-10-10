@@ -193,15 +193,23 @@ def print_doujinshi(doujinshi_list):
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
-def search_parser(keyword, sorting, page):
+def search_parser(keyword, sorting, page, is_page_all=False):
     # keyword = '+'.join([i.strip().replace(' ', '-').lower() for i in keyword.split(',')])
     result = []
     if not page:
         page = [1]
 
+    if is_page_all:
+        url = request('get', url=constant.SEARCH_URL, params={'query': keyword}).url
+        init_response = request('get', url.replace('%2B', '+')).json()
+        page = range(1, init_response['num_pages']+1)
+
     for p in page:
         i = 0
-        logger.info('Searching doujinshis using keywords "{0}" on page {1}'.format(keyword, p))
+        if is_page_all:
+            total = '/{0}'.format(page[-1])
+
+        logger.info('Searching doujinshis using keywords "{0}" on page {1}{2}'.format(keyword, p, total))
         while i < 3:
             try:
                 url = request('get', url=constant.SEARCH_URL, params={'query': keyword,
@@ -215,38 +223,6 @@ def search_parser(keyword, sorting, page):
         if 'result' not in response:
             logger.warn('No result in response in page {}'.format(p))
             break
-
-        for row in response['result']:
-            title = row['title']['english']
-            title = title[:85] + '..' if len(title) > 85 else title
-            result.append({'id': row['id'], 'title': title})
-
-        if not result:
-            logger.warn('No results for keywords {}'.format(keyword))
-
-    return result
-
-
-def search_parser_all(keyword):
-    logger.debug('Searching doujinshis using keywords {0}'.format(keyword))
-
-    result = []
-
-    url = request('get', url=constant.SEARCH_URL, params={'query': keyword}).url
-    init_response = request('get', url.replace('%2B', '+')).json()
-
-    for page in range(init_response['num_pages']):
-        try:
-            url = request('get', url=constant.SEARCH_URL, params={'query': keyword, 'page': page+1}).url
-            response = request('get', url.replace('%2B', '+')).json()
-
-            print('Obtained %d / %d pages.' % (page+1, init_response['num_pages']), end='\r')
-
-        except Exception as e:
-            logger.critical(str(e))
-
-        if 'result' not in response:
-            raise Exception('No result in response')
 
         for row in response['result']:
             title = row['title']['english']
