@@ -56,10 +56,8 @@ def cmd_parser():
     # page options
     parser.add_option('--page-all', dest='page_all', action='store_true', default=False,
                       help='all search results')
-    parser.add_option('--page', type='int', dest='page', action='store', default=1,
-                      help='page number of search results')
-    parser.add_option('--page-range', type='string', dest='page_range', action='store',
-                      help='page range of favorites.  e.g. 1,2-5,14')
+    parser.add_option('--page', '--page-range', type='string', dest='page', action='store', default='',
+                      help='page number of search results. e.g. 1,2-5,14')
     parser.add_option('--sorting', dest='sorting', action='store', default='recent',
                       help='sorting of doujinshi (recent / popular / popular-[today|week])',
                       choices=['recent', 'popular', 'popular-today', 'popular-week'])
