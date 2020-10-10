@@ -95,7 +95,7 @@ def cmd_parser():
                       help='timeout for downloading doujinshi')
     parser.add_option('--delay', '-d', type='int', dest='delay', action='store', default=0,
                       help='slow down between downloading every doujinshi')
-    parser.add_option('--proxy', '-p', type='string', dest='proxy', action='store', default='',
+    parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
                       help='store a proxy, for example: -p \'http://127.0.0.1:1080\'')
     parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
@@ -153,30 +153,32 @@ def cmd_parser():
         exit(0)
 
     # --- set config ---
-    if args.cookie:
+    if args.cookie is not None:
         constant.CONFIG['cookie'] = args.cookie
         logger.info('Cookie saved.')
         write_config()
         exit(0)
 
-    if args.language:
+    if args.language is not None:
         constant.CONFIG['language'] = args.language
-        logger.info('LANGUAGE now set to \'{0}\''.format(args.language))
+        logger.info('Default language now set to \'{0}\''.format(args.language))
         write_config()
         exit(0)
         # TODO: search without language
 
-    if args.proxy:
+    if args.proxy is not None:
         proxy_url = urlparse(args.proxy)
-        if proxy_url.scheme not in ('http', 'https'):
+        if not args.proxy == '' and proxy_url.scheme not in ('http', 'https'):
             logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
-        constant.CONFIG['proxy'] = {
-            'http': args.proxy,
-            'https': args.proxy,
-        }
-        logger.info('Proxy \'{0}\' saved.'.format(args.proxy))
-        write_config()
-        exit(0)
+            exit(0)
+        else:
+            constant.CONFIG['proxy'] = {
+                'http': args.proxy,
+                'https': args.proxy,
+            }
+            logger.info('Proxy now set to \'{0}\'.'.format(args.proxy))
+            write_config()
+            exit(0)
     # --- end set config ---
 
     if args.favorites:
