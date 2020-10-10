@@ -2,7 +2,9 @@
 from __future__ import print_function
 import os
 import sys
+import json
 from optparse import OptionParser
+
 try:
     from itertools import ifilter as filter
 except ImportError:
@@ -35,7 +37,29 @@ def banner():
 ''' % __version__)
 
 
+def load_config():
+    if not os.path.exists(constant.NHENTAI_CONFIG_FILE):
+        return
+
+    try:
+        with open(constant.NHENTAI_CONFIG_FILE, 'r') as f:
+            constant.CONFIG = json.load(f)
+    except json.JSONDecodeError:
+        logger.error('Failed to load config file.')
+        write_config()
+
+
+def write_config():
+    if not os.path.exists(constant.NHENTAI_HOME):
+        os.mkdir(constant.NHENTAI_HOME)
+
+    with open(constant.NHENTAI_CONFIG_FILE, 'w') as f:
+        f.write(json.dumps(constant.CONFIG))
+
+
 def cmd_parser():
+    load_config()
+
     parser = OptionParser('\n  nhentai --search [keyword] --download'
                           '\n  NHENTAI=http://h.loli.club nhentai --id [ID ...]'
                           '\n  nhentai --file [filename]'
@@ -128,83 +152,35 @@ def cmd_parser():
         logger.info('Download history cleaned.')
         exit(0)
 
-    if os.path.exists(constant.NHENTAI_COOKIE):
-        with open(constant.NHENTAI_COOKIE, 'r') as f:
-            constant.COOKIE = f.read()
-
+    # --- set config ---
     if args.cookie:
-        try:
-            if not os.path.exists(constant.NHENTAI_HOME):
-                os.mkdir(constant.NHENTAI_HOME)
-
-            with open(constant.NHENTAI_COOKIE, 'w') as f:
-                f.write(args.cookie)
-        except Exception as e:
-            logger.error('Cannot create NHENTAI_HOME: {}'.format(str(e)))
-            exit(1)
-
+        constant.CONFIG['cookie'] = args.cookie
         logger.info('Cookie saved.')
+        write_config()
         exit(0)
-
-    if os.path.exists(constant.NHENTAI_LANGUAGE) and not args.language:
-        with open(constant.NHENTAI_LANGUAGE, 'r') as f:
-            constant.LANGUAGE = f.read()
-            args.language = f.read()
 
     if args.language:
-        try:
-            if not os.path.exists(constant.NHENTAI_HOME):
-                os.mkdir(constant.NHENTAI_HOME)
-
-            with open(constant.NHENTAI_LANGUAGE, 'w') as f:
-                f.write(args.language)
-        except Exception as e:
-            logger.error('Cannot create NHENTAI_HOME: {}'.format(str(e)))
-            exit(1)
-
-        logger.info('Default language now is {}.'.format(args.language))
+        constant.CONFIG['language'] = args.language
+        logger.info('LANGUAGE now set to \'{0}\''.format(args.language))
+        write_config()
         exit(0)
-
-    if args.clean_language:
-        try:
-            if not os.path.exists(constant.NHENTAI_HOME):
-                os.mkdir(constant.NHENTAI_HOME)
-
-            with open(constant.NHENTAI_LANGUAGE, 'w') as f:
-                f.close()
-        except Exception as e:
-            logger.error('Cannot create NHENTAI_HOME: {}'.format(str(e)))
-            exit(1)
-
-        logger.info('Language now is DEFAULT')
-        exit(0)
-
-    if os.path.exists(constant.NHENTAI_PROXY):
-        with open(constant.NHENTAI_PROXY, 'r') as f:
-            link = f.read()
-            constant.PROXY = {'http': link, 'https': link}
+        # TODO: search without language
 
     if args.proxy:
-        try:
-            if not os.path.exists(constant.NHENTAI_HOME):
-                os.mkdir(constant.NHENTAI_HOME)
-
-            proxy_url = urlparse(args.proxy)
-            if proxy_url.scheme not in ('http', 'https'):
-                logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
-            else:
-                with open(constant.NHENTAI_PROXY, 'w') as f:
-                    f.write(args.proxy)
-
-        except Exception as e:
-            logger.error('Cannot create NHENTAI_HOME: {}'.format(str(e)))
-            exit(1)
-
+        proxy_url = urlparse(args.proxy)
+        if proxy_url.scheme not in ('http', 'https'):
+            logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
+        constant.CONFIG['proxy'] = {
+            'http': args.proxy,
+            'https': args.proxy,
+        }
         logger.info('Proxy \'{0}\' saved.'.format(args.proxy))
+        write_config()
         exit(0)
+    # --- end set config ---
 
     if args.favorites:
-        if not constant.COOKIE:
+        if not constant.CONFIG['cookie']:
             logger.warning('Cookie has not been set, please use `nhentai --cookie \'COOKIE\'` to set it.')
             exit(1)
 

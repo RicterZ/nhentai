@@ -1,7 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
 
-import sys
 import os
 import re
 import time
@@ -204,10 +203,9 @@ def search_parser(keyword, sorting, page, is_page_all=False):
         init_response = request('get', url.replace('%2B', '+')).json()
         page = range(1, init_response['num_pages']+1)
 
+    total = '/{0}'.format(page[-1]) if is_page_all else ''
     for p in page:
         i = 0
-        if is_page_all:
-            total = '/{0}'.format(page[-1])
 
         logger.info('Searching doujinshis using keywords "{0}" on page {1}{2}'.format(keyword, p, total))
         while i < 3:

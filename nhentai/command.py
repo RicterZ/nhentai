@@ -1,16 +1,19 @@
 #!/usr/bin/env python2.7
 # coding: utf-8
 from __future__ import unicode_literals, print_function
+import json
+import os
 import signal
 import platform
 import time
 
+from nhentai import constant
 from nhentai.cmdline import cmd_parser, banner
 from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, favorites_parser
 from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
-from nhentai.constant import BASE_URL, LANGUAGE
+from nhentai.constant import NHENTAI_CONFIG_FILE, BASE_URL
 from nhentai.utils import generate_html, generate_cbz, generate_main_html, generate_pdf, \
     paging, check_cookie, signal_handler, DB
 
@@ -20,10 +23,9 @@ def main():
     options = cmd_parser()
     logger.info('Using mirror: {0}'.format(BASE_URL))
 
-    from nhentai.constant import PROXY
-    # constant.PROXY will be changed after cmd_parser()
-    if PROXY:
-        logger.info('Using proxy: {0}'.format(PROXY))
+    # CONFIG['proxy'] will be changed after cmd_parser()
+    if constant.CONFIG['proxy']:
+        logger.info('Using proxy: {0}'.format(constant.CONFIG['proxy']))
 
     # check your cookie
     check_cookie()
@@ -41,9 +43,9 @@ def main():
         doujinshis = favorites_parser(page=page_list)
 
     elif options.keyword:
-        if LANGUAGE:
-            logger.info('Using default language: {0}'.format(LANGUAGE))
-            options.keyword += ', language:{}'.format(LANGUAGE)
+        if constant.CONFIG['language']:
+            logger.info('Using default language: {0}'.format(constant.CONFIG['language']))
+            options.keyword += ' language:{}'.format(constant.CONFIG['language'])
         doujinshis = search_parser(options.keyword, sorting=options.sorting, page=page_list,
                                    is_page_all=options.page_all)
 
