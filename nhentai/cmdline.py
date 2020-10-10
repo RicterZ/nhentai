@@ -54,6 +54,8 @@ def cmd_parser():
                       help='list or download your favorites.')
 
     # page options
+    parser.add_option('--page-all', dest='page_all', action='store_true', default=False,
+                      help='all search results')
     parser.add_option('--page', type='int', dest='page', action='store', default=1,
                       help='page number of search results')
     parser.add_option('--page-range', type='string', dest='page_range', action='store',
