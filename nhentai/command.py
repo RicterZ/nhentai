@@ -6,7 +6,7 @@ import platform
 import time
 
 from nhentai.cmdline import cmd_parser, banner
-from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, favorites_parser
+from nhentai.parser import doujinshi_parser, search_parser, search_parser_all, print_doujinshi, favorites_parser
 from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
@@ -39,6 +39,13 @@ def main():
             logger.warning('You do not specify --download option')
 
         doujinshis = favorites_parser(page=page_list)
+
+    elif options.keyword and options.page_all:
+        from nhentai.constant import LANGUAGE
+        if LANGUAGE:
+            logger.info('Using default language: {0}'.format(LANGUAGE))
+            options.keyword += ', language:{}'.format(LANGUAGE)
+        doujinshis = search_parser_all(options.keyword)
 
     elif options.keyword:
         from nhentai.constant import LANGUAGE
