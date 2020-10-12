@@ -59,9 +59,12 @@ def main():
         if options.is_save_download_history:
             with DB() as db:
                 data = db.get_all()
-                for i in range(0, len(data)):
-                    data[i] = int(data[i])
-            doujinshi_ids = [x for x in doujinshi_ids if x not in set(data)]
+
+                def intdata(a):
+                    return int(a)
+                data = list(map(intdata, data))
+
+            doujinshi_ids = list(set(doujinshi_ids) - set(data))
 
     if doujinshi_ids:
         for i, id_ in enumerate(doujinshi_ids):
