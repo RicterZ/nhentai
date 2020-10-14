@@ -94,11 +94,8 @@ def main():
             elif options.is_pdf:
                 generate_pdf(options.output_dir, doujinshi, options.rm_origin_dir)
 
-        if options.main_viewer and options.output_dir:
+        if options.main_viewer:
             generate_main_html(options.output_dir)
-        elif options.main_viewer:
-            generate_main_html()
-
 
         if not platform.system() == 'Windows':
             logger.log(15, '🍻 All done.')

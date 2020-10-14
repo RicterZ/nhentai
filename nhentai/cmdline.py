@@ -87,7 +87,7 @@ def cmd_parser():
                       choices=['recent', 'popular', 'popular-today', 'popular-week'])
 
     # download options
-    parser.add_option('--output', '-o', type='string', dest='output_dir', action='store', default='',
+    parser.add_option('--output', '-o', type='string', dest='output_dir', action='store', default='./',
                       help='output dir')
     parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=5,
                       help='thread count for downloading doujinshi')
