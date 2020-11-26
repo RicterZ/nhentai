@@ -64,7 +64,7 @@ def readfile(path):
         return file.read()
 
 
-def generate_html(output_dir='.', doujinshi_obj=None):
+def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
     image_html = ''
 
     if doujinshi_obj is not None:
@@ -81,9 +81,9 @@ def generate_html(output_dir='.', doujinshi_obj=None):
 
         image_html += '<img src="{0}" class="image-item"/>\n'\
             .format(image)
-    html = readfile('viewer/index.html')
-    css = readfile('viewer/styles.css')
-    js = readfile('viewer/scripts.js')
+    html = readfile('viewer/{}/index.html'.format(template))
+    css = readfile('viewer/{}/styles.css'.format(template))
+    js = readfile('viewer/{}/scripts.js'.format(template))
 
     if doujinshi_obj is not None:
         serialize_json(doujinshi_obj, doujinshi_dir)

@@ -33,5 +33,6 @@ CONFIG = {
     'proxy': {},
     'cookie': '',
     'language': '',
+    'template': '',
 }
 
