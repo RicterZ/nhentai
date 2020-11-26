@@ -43,7 +43,7 @@ def load_config():
 
     try:
         with open(constant.NHENTAI_CONFIG_FILE, 'r') as f:
-            constant.CONFIG = json.load(f)
+            constant.CONFIG.update(json.load(f))
     except json.JSONDecodeError:
         logger.error('Failed to load config file.')
         write_config()
