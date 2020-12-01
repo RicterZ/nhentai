@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
 import os
+import copy
 import tempfile
 
 try:
@@ -29,9 +30,10 @@ NHENTAI_HOME = os.path.join(os.getenv('HOME', tempfile.gettempdir()), '.nhentai'
 NHENTAI_HISTORY = os.path.join(NHENTAI_HOME, 'history.sqlite3')
 NHENTAI_CONFIG_FILE = os.path.join(NHENTAI_HOME, 'config.json')
 
+
 CONFIG = {
-    'proxy': {},
+    'proxy': {'http': '', 'https': ''},
     'cookie': '',
     'language': '',
+    'template': '',
 }
-

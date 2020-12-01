@@ -43,7 +43,7 @@ def load_config():
 
     try:
         with open(constant.NHENTAI_CONFIG_FILE, 'r') as f:
-            constant.CONFIG = json.load(f)
+            constant.CONFIG.update(json.load(f))
     except json.JSONDecodeError:
         logger.error('Failed to load config file.')
         write_config()
@@ -126,6 +126,8 @@ def cmd_parser():
                       default=False, help='save downloaded doujinshis, whose will be skipped if you re-download them')
     parser.add_option('--clean-download-history', action='store_true', default=False, dest='clean_download_history',
                       help='clean download history')
+    parser.add_option('--template', dest='viewer_template', action='store',
+                      help='set viewer template', default='')
 
     try:
         sys.argv = [unicode(i.decode(sys.stdin.encoding)) for i in sys.argv]
@@ -179,6 +181,19 @@ def cmd_parser():
             logger.info('Proxy now set to \'{0}\'.'.format(args.proxy))
             write_config()
             exit(0)
+
+    if args.viewer_template:
+        if not args.viewer_template:
+            args.viewer_template = 'default'
+
+        if not os.path.exists(os.path.join(os.path.dirname(__file__),
+                                           'viewer/{}/index.html'.format(args.viewer_template))):
+            logger.error('Template \'{}\' does not exists'.format(args.viewer_template))
+            exit(1)
+        else:
+            constant.CONFIG['template'] = args.viewer_template
+            write_config()
+
     # --- end set config ---
 
     if args.favorites:

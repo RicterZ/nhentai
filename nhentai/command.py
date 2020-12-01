@@ -13,7 +13,7 @@ from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, fav
 from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
-from nhentai.constant import NHENTAI_CONFIG_FILE, BASE_URL
+from nhentai.constant import BASE_URL
 from nhentai.utils import generate_html, generate_cbz, generate_main_html, generate_pdf, \
     paging, check_cookie, signal_handler, DB
 
@@ -24,8 +24,11 @@ def main():
     logger.info('Using mirror: {0}'.format(BASE_URL))
 
     # CONFIG['proxy'] will be changed after cmd_parser()
-    if constant.CONFIG['proxy']:
-        logger.info('Using proxy: {0}'.format(constant.CONFIG['proxy']))
+    if constant.CONFIG['proxy']['http']:
+        logger.info('Using proxy: {0}'.format(constant.CONFIG['proxy']['http']))
+
+    if constant.CONFIG['template']:
+        logger.info('Using viewer template "{}"'.format(constant.CONFIG['template']))
 
     # check your cookie
     check_cookie()
@@ -88,7 +91,7 @@ def main():
                     db.add_one(doujinshi.id)
 
             if not options.is_nohtml and not options.is_cbz and not options.is_pdf:
-                generate_html(options.output_dir, doujinshi)
+                generate_html(options.output_dir, doujinshi, template=constant.CONFIG['template'])
             elif options.is_cbz:
                 generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir)
             elif options.is_pdf:

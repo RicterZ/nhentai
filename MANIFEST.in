@@ -1,9 +1,4 @@
 include README.md
 include requirements.txt
-include nhentai/viewer/index.html
-include nhentai/viewer/styles.css
-include nhentai/viewer/scripts.js
-include nhentai/viewer/main.html
-include nhentai/viewer/main.css
-include nhentai/viewer/main.js
-include nhentai/viewer/logo.png
+include nhentai/viewer/*
+include nhentai/viewer/default/*
