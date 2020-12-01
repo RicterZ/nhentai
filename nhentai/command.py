@@ -27,8 +27,10 @@ def main():
     if constant.CONFIG['proxy']['http']:
         logger.info('Using proxy: {0}'.format(constant.CONFIG['proxy']['http']))
 
-    if constant.CONFIG['template']:
-        logger.info('Using viewer template "{}"'.format(constant.CONFIG['template']))
+    if not constant.CONFIG['template']:
+        constant.CONFIG['template'] = 'default'
+
+    logger.info('Using viewer template "{}"'.format(constant.CONFIG['template']))
 
     # check your cookie
     check_cookie()
