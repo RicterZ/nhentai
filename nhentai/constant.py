@@ -32,7 +32,7 @@ NHENTAI_CONFIG_FILE = os.path.join(NHENTAI_HOME, 'config.json')
 
 
 CONFIG = {
-    'proxy': {},
+    'proxy': {'http': '', 'https': ''},
     'cookie': '',
     'language': '',
     'template': '',
