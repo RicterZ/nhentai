@@ -227,19 +227,15 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
 
 
 def format_filename(s):
-    """Take a string and return a valid filename constructed from the string.
-Uses a whitelist approach: any characters not present in valid_chars are
-removed. Also spaces are replaced with underscores.
-
-Note: this method may produce invalid filenames such as ``, `.` or `..`
-When I use this method I prepend a date string like '2009_01_15_19_46_32_'
-and append a file extension like '.txt', so I avoid the potential of using
-an invalid filename.
-
-"""
+    """
+    It used to be a whitelist approach allowed only alphabet and a part of symbols.
+    but most doujinshi's names include Japanese 2-byte characters and these was rejected.
+    so it is using blacklist approach now.
+    if filename include forbidden characters (\'/:,;*?"<>|) ,it replace space character(' '). 
+    """
     # maybe you can use `--format` to select a suitable filename
-    valid_chars = "-_.()[] %s%s" % (string.ascii_letters, string.digits)
-    filename = ''.join(c for c in s if c in valid_chars)
+    ban_chars = '\\\'/:,;*?"<>|'
+    filename = s.translate(str.maketrans(ban_chars, ' '*len(ban_chars)))
     if len(filename) > 100:
         filename = filename[:100] + '...]'
 
