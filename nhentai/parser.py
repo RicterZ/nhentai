@@ -116,8 +116,10 @@ def doujinshi_parser(id_):
 
     try:
         response = request('get', url)
-        if response.status_code in (200,):
+        if response.status_code in (200, ):
             response = response.content
+        elif response.status_code in (404, ):
+            raise Exception('Seems doujinshi {} does not exist'.format(id_))
         else:
             logger.debug('Slow down and retry ({}) ...'.format(id_))
             time.sleep(1)
