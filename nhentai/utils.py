@@ -4,7 +4,6 @@ from __future__ import unicode_literals, print_function
 import sys
 import re
 import os
-import string
 import zipfile
 import shutil
 import requests
@@ -226,6 +225,13 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
     logger.log(15, 'PDF file has been written to \'{0}\''.format(doujinshi_dir))
 
 
+def unicode_truncate(s, length, encoding='utf-8'):
+    """https://stackoverflow.com/questions/1809531/truncating-unicode-so-it-fits-a-maximum-size-when-encoded-for-wire-transfer
+    """
+    encoded = s.encode(encoding)[:length]
+    return encoded.decode(encoding, 'ignore')
+
+
 def format_filename(s):
     """
     It used to be a whitelist approach allowed only alphabet and a part of symbols.
@@ -235,9 +241,12 @@ def format_filename(s):
     """
     # maybe you can use `--format` to select a suitable filename
     ban_chars = '\\\'/:,;*?"<>|'
-    filename = s.translate(str.maketrans(ban_chars, ' '*len(ban_chars)))
+    filename = s.translate(str.maketrans(ban_chars, ' '*len(ban_chars))).strip()
+    while filename.endswith('.'):
+        filename = filename[:-1]
+
     if len(filename) > 100:
-        filename = filename[:100] + '...]'
+        filename = filename[:100] + u'…'
 
     # Remove [] from filename
     filename = filename.replace('[]', '').strip()

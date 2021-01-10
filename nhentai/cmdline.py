@@ -15,17 +15,6 @@ from nhentai import __version__
 from nhentai.utils import urlparse, generate_html, generate_main_html, DB
 from nhentai.logger import logger
 
-try:
-    if sys.version_info < (3, 0, 0):
-        import codecs
-        import locale
-        sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
-        sys.stderr = codecs.getwriter(locale.getpreferredencoding())(sys.stderr)
-
-except NameError:
-    # python3
-    pass
-
 
 def banner():
     logger.info(u'''nHentai ver %s: あなたも変態。 いいね?
