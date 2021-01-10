@@ -1,8 +1,7 @@
 #!/usr/bin/env python2.7
 # coding: utf-8
 from __future__ import unicode_literals, print_function
-import json
-import os
+import sys
 import signal
 import platform
 import time
@@ -113,5 +112,10 @@ def main():
 
 signal.signal(signal.SIGINT, signal_handler)
 
+
 if __name__ == '__main__':
+    if sys.version_info < (3, 0, 0):
+        logger.error('nhentai now only support Python 3.x')
+        exit(1)
+
     main()

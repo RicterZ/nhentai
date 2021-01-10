@@ -116,7 +116,7 @@ def doujinshi_parser(id_):
 
     try:
         response = request('get', url)
-        if response.status_code in (200,):
+        if response.status_code in (200, ):
             response = response.content
         elif response.status_code in (404,):
             logger.error("Doujinshi with id {0} cannot be found".format(id_))
