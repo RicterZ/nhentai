@@ -1,5 +1,4 @@
 # coding: utf-8
-from __future__ import unicode_literals, print_function
 
 import sys
 import re
@@ -240,8 +239,11 @@ def format_filename(s):
     if filename include forbidden characters (\'/:,;*?"<>|) ,it replace space character(' '). 
     """
     # maybe you can use `--format` to select a suitable filename
-    ban_chars = '\\\'/:,;*?"<>|'
+    ban_chars = '\\\'/:,;*?"<>|\t'
     filename = s.translate(str.maketrans(ban_chars, ' '*len(ban_chars))).strip()
+    filename = ' '.join(filename.split())
+    print(repr(filename))
+
     while filename.endswith('.'):
         filename = filename[:-1]
 
