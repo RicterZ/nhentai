@@ -1,7 +1,6 @@
 # coding: utf-8
-from __future__ import print_function, unicode_literals
+
 from tabulate import tabulate
-from future.builtins import range
 
 from nhentai.constant import DETAIL_URL, IMAGE_URL
 from nhentai.logger import logger

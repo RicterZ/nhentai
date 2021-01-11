@@ -1,5 +1,4 @@
 # coding: utf-
-from __future__ import unicode_literals, print_function
 
 import multiprocessing
 import signal
