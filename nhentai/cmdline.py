@@ -156,7 +156,7 @@ def cmd_parser():
         exit(0)
         # TODO: search without language
 
-    if args.proxy:
+    if args.proxy is not None:
         proxy_url = urlparse(args.proxy)
         if not args.proxy == '' and proxy_url.scheme not in ('http', 'https'):
             logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
@@ -170,7 +170,7 @@ def cmd_parser():
             write_config()
             exit(0)
 
-    if args.viewer_template:
+    if args.viewer_template is not None:
         if not args.viewer_template:
             args.viewer_template = 'default'
 
