@@ -84,7 +84,7 @@ def cmd_parser():
                       help='timeout for downloading doujinshi')
     parser.add_option('--delay', '-d', type='int', dest='delay', action='store', default=0,
                       help='slow down between downloading every doujinshi')
-    parser.add_option('--proxy', type='string', dest='proxy', action='store', default='',
+    parser.add_option('--proxy', type='string', dest='proxy', action='store',
                       help='store a proxy, for example: -p \'http://127.0.0.1:1080\'')
     parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
