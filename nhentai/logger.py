@@ -1,7 +1,6 @@
 #
 # Copyright (C) 2010-2012 Vinay Sajip. All rights reserved. Licensed under the new BSD license.
 #
-from __future__ import print_function, unicode_literals
 import logging
 import re
 import platform

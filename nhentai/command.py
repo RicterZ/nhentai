@@ -19,6 +19,11 @@ from nhentai.utils import generate_html, generate_cbz, generate_main_html, gener
 
 def main():
     banner()
+
+    if sys.version_info < (3, 0, 0):
+        logger.error('nhentai now only support Python 3.x')
+        exit(1)
+
     options = cmd_parser()
     logger.info('Using mirror: {0}'.format(BASE_URL))
 
@@ -114,8 +119,4 @@ signal.signal(signal.SIGINT, signal_handler)
 
 
 if __name__ == '__main__':
-    if sys.version_info < (3, 0, 0):
-        logger.error('nhentai now only support Python 3.x')
-        exit(1)
-
     main()
