@@ -120,7 +120,6 @@ def cmd_parser():
 
     try:
         sys.argv = [unicode(i.decode(sys.stdin.encoding)) for i in sys.argv]
-        print()
     except (NameError, TypeError):
         pass
     except UnicodeDecodeError:
