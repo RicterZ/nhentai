@@ -119,14 +119,14 @@ class Downloader(Singleton):
             folder = os.path.join(self.path, folder)
 
         if not os.path.exists(folder):
-            logger.warn('Path \'{0}\' does not exist, creating.'.format(folder))
+            logger.warning('Path \'{0}\' does not exist, creating.'.format(folder))
             try:
                 os.makedirs(folder)
             except EnvironmentError as e:
                 logger.critical('{0}'.format(str(e)))
 
         else:
-            logger.warn('Path \'{0}\' already exist.'.format(folder))
+            logger.warning('Path \'{0}\' already exist.'.format(folder))
 
         queue = [(self, url, folder) for url in queue]
 

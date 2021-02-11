@@ -126,7 +126,7 @@ def doujinshi_parser(id_):
             return doujinshi_parser(str(id_))
 
     except Exception as e:
-        logger.warn('Error: {}, ignored'.format(str(e)))
+        logger.warning('Error: {}, ignored'.format(str(e)))
         return None
 
     html = BeautifulSoup(response, 'html.parser')
@@ -180,7 +180,7 @@ def old_search_parser(keyword, sorting='date', page=1):
 
     result = _get_title_and_id(response)
     if not result:
-        logger.warn('Not found anything of keyword {}'.format(keyword))
+        logger.warning('Not found anything of keyword {}'.format(keyword))
 
     return result
 
@@ -221,7 +221,7 @@ def search_parser(keyword, sorting, page, is_page_all=False):
             break
 
         if 'result' not in response:
-            logger.warn('No result in response in page {}'.format(p))
+            logger.warning('No result in response in page {}'.format(p))
             break
 
         for row in response['result']:
@@ -230,7 +230,7 @@ def search_parser(keyword, sorting, page, is_page_all=False):
             result.append({'id': row['id'], 'title': title})
 
         if not result:
-            logger.warn('No results for keywords {}'.format(keyword))
+            logger.warning('No results for keywords {}'.format(keyword))
 
     return result
 
