@@ -67,6 +67,15 @@ Set your nhentai cookie against captcha:
 
 **NOTE**: The format of the cookie is `"csrftoken=TOKEN; sessionid=ID"`
 
+| To get csrftoken and sessionid, first login to your nhentai account in web browser, then:
+| (Chrome) |ve| |ld| More tools    |ld| Developer tools     |ld| Application |ld| Storage |ld| Cookies |ld| https://nhentai.net
+| (Firefox) |hv| |ld| Web Developer |ld| Web Developer Tools                  |ld| Storage |ld| Cookies |ld| https://nhentai.net
+| 
+
+.. |hv| unicode:: U+2630 .. https://www.compart.com/en/unicode/U+2630
+.. |ve| unicode:: U+22EE .. https://www.compart.com/en/unicode/U+22EE
+.. |ld| unicode:: U+2014 .. https://www.compart.com/en/unicode/U+2014
+
 Download specified doujinshi:
 
 .. code-block:: bash
