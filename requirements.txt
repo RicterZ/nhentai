@@ -1,7 +1,6 @@
 requests>=2.5.0
-soupsieve<2.0
+soupsieve
 BeautifulSoup4>=4.0.0
-threadpool>=1.2.7
 tabulate>=0.7.5
 future>=0.15.2
 iso8601 >= 0.1
