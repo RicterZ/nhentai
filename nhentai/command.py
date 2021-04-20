@@ -65,11 +65,11 @@ def main():
     if options.is_download and doujinshis:
         doujinshi_ids = [i['id'] for i in doujinshis]
 
-        if options.is_save_download_history:
-            with DB() as db:
-                data = map(int, db.get_all())
+    if options.is_save_download_history:
+        with DB() as db:
+            data = map(int, db.get_all())
 
-            doujinshi_ids = list(set(doujinshi_ids) - set(data))
+        doujinshi_ids = list(set(map(int, doujinshi_ids)) - set(data))
 
     if doujinshi_ids:
         for i, id_ in enumerate(doujinshi_ids):
