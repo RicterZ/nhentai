@@ -36,9 +36,10 @@ CONFIG = {
     'language': '',
     'template': '',
 }
- LANGUAGEISO ={
+
+LANGUAGEISO ={
     'english' : 'en',
     'chinese' : 'zh',
     'japanese' : 'ja',
     'translated' : 'translated'
- }
+}
