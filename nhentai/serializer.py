@@ -2,7 +2,7 @@
 import json
 import os
 from xml.sax.saxutils import escape
-from constant import LANGUAGEISO
+from nhentai.constant import LANGUAGEISO
 
 def serialize_json(doujinshi, dir):
     metadata = {'title': doujinshi.name,
