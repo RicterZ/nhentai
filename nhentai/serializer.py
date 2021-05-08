@@ -66,7 +66,7 @@ def serialize_comicxml(doujinshi, dir):
             languages = [i.strip() for i in doujinshi.info.languages.split(',')]
             xml_write_simple_tag(f, 'Translated', 'Yes' if 'translated' in languages else 'No')
             [xml_write_simple_tag(f, 'LanguageISO', LANGUAGEISO[i]) for i in languages \
-                if (i != 'translated' & i in LANGUAGEISO)]
+                if (i != 'translated' and i in LANGUAGEISO)]
 
         f.write('</ComicInfo>')
 
