@@ -70,6 +70,13 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
     else:
         doujinshi_dir = '.'
 
+    if not os.path.exists(doujinshi_dir):
+        logger.warning('Path \'{0}\' does not exist, creating.'.format(doujinshi_dir))
+        try:
+            os.makedirs(doujinshi_dir)
+        except EnvironmentError as e:
+            logger.critical('{0}'.format(str(e)))
+
     file_list = os.listdir(doujinshi_dir)
     file_list.sort()
 
@@ -194,7 +201,7 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
 def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
     try:
         import img2pdf
-        
+
         """Write images to a PDF file using img2pdf."""
         if doujinshi_obj is not None:
             doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
@@ -220,7 +227,7 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
             shutil.rmtree(doujinshi_dir, ignore_errors=True)
 
         logger.log(15, 'PDF file has been written to \'{0}\''.format(doujinshi_dir))
-        
+
     except ImportError:
         logger.error("Please install img2pdf package by using pip.")
 
@@ -236,7 +243,7 @@ def format_filename(s):
     It used to be a whitelist approach allowed only alphabet and a part of symbols.
     but most doujinshi's names include Japanese 2-byte characters and these was rejected.
     so it is using blacklist approach now.
-    if filename include forbidden characters (\'/:,;*?"<>|) ,it replace space character(' '). 
+    if filename include forbidden characters (\'/:,;*?"<>|) ,it replace space character(' ').
     """
     # maybe you can use `--format` to select a suitable filename
     ban_chars = '\\\'/:,;*?"<>|\t'
