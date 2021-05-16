@@ -243,7 +243,7 @@ def format_filename(s):
     It used to be a whitelist approach allowed only alphabet and a part of symbols.
     but most doujinshi's names include Japanese 2-byte characters and these was rejected.
     so it is using blacklist approach now.
-    if filename include forbidden characters (\'/:,;*?"<>|) ,it replace space character(' ').
+    if filename include forbidden characters (\'/:,;*?"<>|) ,it replace space character(' '). 
     """
     # maybe you can use `--format` to select a suitable filename
     ban_chars = '\\\'/:,;*?"<>|\t'
