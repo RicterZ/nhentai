@@ -20,7 +20,11 @@ def request(method, url, **kwargs):
         'User-Agent': 'nhentai command line client (https://github.com/RicterZ/nhentai)',
         'Cookie': constant.CONFIG['cookie']
     })
-    return getattr(session, method)(url, proxies=constant.CONFIG['proxy'], verify=False, **kwargs)
+
+    if not kwargs.get('proxies', None):
+        kwargs['proxies'] = constant.CONFIG['proxy']
+
+    return getattr(session, method)(url, verify=False, **kwargs)
 
 
 def check_cookie():
