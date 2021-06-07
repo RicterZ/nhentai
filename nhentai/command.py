@@ -91,7 +91,9 @@ def main():
                                 timeout=options.timeout, delay=options.delay)
 
         for doujinshi in doujinshi_list:
-
+            if not options.dryrun:
+                doujinshi.downloader = downloader
+                doujinshi.download()
            					
             doujinshi.downloader = downloader
             doujinshi.download()
@@ -100,6 +102,7 @@ def main():
               table=doujinshi.table            
               generate_metadatafile(options.output_dir,table,doujinshi)
 			
+
             if options.is_save_download_history:
                 with DB() as db:
                     db.add_one(doujinshi.id)

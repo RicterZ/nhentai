@@ -14,6 +14,7 @@ try:
 except ImportError:
     from urlparse import urlparse
 
+from nhentai import constant
 from nhentai.logger import logger
 from nhentai.parser import request
 from nhentai.utils import Singleton
@@ -34,7 +35,7 @@ class Downloader(Singleton):
         self.timeout = timeout
         self.delay = delay
 
-    def download_(self, url, folder='', filename='', retried=0):
+    def download_(self, url, folder='', filename='', retried=0, proxy=None):
         if self.delay:
             time.sleep(self.delay)
         logger.info('Starting to download {0} ...'.format(url))
@@ -51,7 +52,7 @@ class Downloader(Singleton):
                 i = 0
                 while i < 10:
                     try:
-                        response = request('get', url, stream=True, timeout=self.timeout)
+                        response = request('get', url, stream=True, timeout=self.timeout, proxies=proxy)
                         if response.status_code != 200:
                             raise NHentaiImageNotExistException
 
@@ -77,7 +78,8 @@ class Downloader(Singleton):
         except (requests.HTTPError, requests.Timeout) as e:
             if retried < 3:
                 logger.warning('Warning: {0}, retrying({1}) ...'.format(str(e), retried))
-                return 0, self.download_(url=url, folder=folder, filename=filename, retried=retried+1)
+                return 0, self.download_(url=url, folder=folder, filename=filename,
+                                         retried=retried+1, proxy=proxy)
             else:
                 return 0, None
 
@@ -128,7 +130,7 @@ class Downloader(Singleton):
         else:
             logger.warning('Path \'{0}\' already exist.'.format(folder))
 
-        queue = [(self, url, folder) for url in queue]
+        queue = [(self, url, folder, constant.CONFIG['proxy']) for url in queue]
 
         pool = multiprocessing.Pool(self.size, init_worker)
         [pool.apply_async(download_wrapper, args=item) for item in queue]
@@ -137,9 +139,9 @@ class Downloader(Singleton):
         pool.join()
 
 
-def download_wrapper(obj, url, folder=''):
+def download_wrapper(obj, url, folder='', proxy=None):
     if sys.platform == 'darwin' or semaphore.get_value():
-        return Downloader.download_(obj, url=url, folder=folder)
+        return Downloader.download_(obj, url=url, folder=folder, proxy=proxy)
     else:
         return -3, None
 

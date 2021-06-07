@@ -20,7 +20,11 @@ def request(method, url, **kwargs):
         'User-Agent': 'nhentai command line client (https://github.com/RicterZ/nhentai)',
         'Cookie': constant.CONFIG['cookie']
     })
-    return getattr(session, method)(url, proxies=constant.CONFIG['proxy'], verify=False, **kwargs)
+
+    if not kwargs.get('proxies', None):
+        kwargs['proxies'] = constant.CONFIG['proxy']
+
+    return getattr(session, method)(url, verify=False, **kwargs)
 
 
 def check_cookie():
@@ -69,6 +73,13 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
     else:
         doujinshi_dir = '.'
+
+    if not os.path.exists(doujinshi_dir):
+        logger.warning('Path \'{0}\' does not exist, creating.'.format(doujinshi_dir))
+        try:
+            os.makedirs(doujinshi_dir)
+        except EnvironmentError as e:
+            logger.critical('{0}'.format(str(e)))
 
     file_list = os.listdir(doujinshi_dir)
     file_list.sort()
@@ -194,7 +205,7 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
 def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
     try:
         import img2pdf
-        
+
         """Write images to a PDF file using img2pdf."""
         if doujinshi_obj is not None:
             doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
@@ -220,7 +231,7 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
             shutil.rmtree(doujinshi_dir, ignore_errors=True)
 
         logger.log(15, 'PDF file has been written to \'{0}\''.format(doujinshi_dir))
-        
+
     except ImportError:
         logger.error("Please install img2pdf package by using pip.")
 

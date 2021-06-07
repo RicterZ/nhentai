@@ -29,7 +29,6 @@ NHENTAI_HOME = os.path.join(os.getenv('HOME', tempfile.gettempdir()), '.nhentai'
 NHENTAI_HISTORY = os.path.join(NHENTAI_HOME, 'history.sqlite3')
 NHENTAI_CONFIG_FILE = os.path.join(NHENTAI_HOME, 'config.json')
 
-
 CONFIG = {
     'proxy': {'http': '', 'https': ''},
     'cookie': '',
