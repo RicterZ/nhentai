@@ -89,6 +89,7 @@ def cmd_parser():
     parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
                       help='format the saved folder name', default='[%i][%a][%t]')
+    parser.add_option('--dry-run', '-r', action='store_true', dest='dryrun', help='Dry run, skip file download.')
 
     # generate options
     parser.add_option('--html', dest='html_viewer', action='store_true',
@@ -212,6 +213,10 @@ def cmd_parser():
 
     elif args.threads > 15:
         logger.critical('Maximum number of used threads is 15')
+        exit(1)
+
+    if args.dryrun and (args.is_cbz or args.is_pdf):
+        logger.critical('Cannot generate PDF or CBZ during dry-run')
         exit(1)
 
     return args
