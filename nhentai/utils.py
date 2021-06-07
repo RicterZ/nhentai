@@ -290,6 +290,58 @@ def paging(page_string):
 
     return page_list
 
+def generate_metadatafile(output_dir, table, doujinshi_obj=None):
+    logger.info("Writing Metadata Info")
+   
+	
+    if doujinshi_obj is not None:
+      doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
+    else:
+      doujinshi_dir = '.'
+    
+    logger.info(doujinshi_dir)	
+	
+    f = open(os.path.join(doujinshi_dir, 'info.txt'), "w", encoding="utf-8")
+
+    fields = ["TITLE", "ORIGINAL TITLE", "AUTHOR", "ARTIST", "CIRCLE", "SCANLATOR", "TRANSLATOR", "PUBLISHER", "DESCRIPTION", "STATUS", "CHAPTERS", "PAGES", "TAGS", "TYPE", "LANGUAGE", "RELEASED", "READING DIRECTION", "CHARACTERS", "SERIES", "PARODY", "URL"]
+
+               
+    for i in range(21):
+      f.write("%s: " % fields[i])
+        
+      if(i==19):
+        f.write("%s" % table[0][1])
+
+      if(i==0):
+        f.write("%s" % table[1][1])
+    
+      if(i==1):
+        f.write("%s" % table[2][1])
+    
+      if(i==17):
+        f.write("%s" % table[3][1])
+    
+      if(i==2):
+        f.write("%s" % table[4][1])
+    
+      if(i==14):
+        f.write("%s" % table[5][1])
+    
+      if(i==12):
+        f.write("%s" % table[6][1])
+    
+      if(i==20):
+        f.write("%s" % table[7][1])
+    
+      if(i==11):
+        f.write("%s" % table[8][1])
+    
+      f.write("\n")
+    
+    f.close()
+    
+    
+    
 
 class DB(object):
     conn = None
@@ -316,3 +368,6 @@ class DB(object):
     def get_all(self):
         data = self.cur.execute('SELECT id FROM download_history')
         return [i[0] for i in data]
+
+        
+        

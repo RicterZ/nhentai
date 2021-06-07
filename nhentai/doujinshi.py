@@ -41,12 +41,9 @@ class Doujinshi(object):
         name_format = name_format.replace('%t', self.name)
         name_format = name_format.replace('%s', self.info.subtitle)
         self.filename = format_filename(name_format)
-
-    def __repr__(self):
-        return '<Doujinshi: {0}>'.format(self.name)
-
-    def show(self):
-        table = [
+		
+		
+        self.table =[
             ["Parodies", self.info.parodies],
             ["Doujinshi", self.name],
             ["Subtitle", self.info.subtitle],
@@ -57,7 +54,15 @@ class Doujinshi(object):
             ["URL", self.url],
             ["Pages", self.pages],
         ]
-        logger.info(u'Print doujinshi information of {0}\n{1}'.format(self.id, tabulate(table)))
+		
+
+    def __repr__(self):
+        return '<Doujinshi: {0}>'.format(self.name)
+
+    def show(self):
+        
+        logger.info(u'Print doujinshi information of {0}\n{1}'.format(self.id, tabulate(self.table)))
+        
 
     def download(self):
         logger.info('Starting to download doujinshi: %s' % self.name)

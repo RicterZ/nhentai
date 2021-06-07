@@ -118,6 +118,9 @@ def cmd_parser():
                       help='clean download history')
     parser.add_option('--template', dest='viewer_template', action='store',
                       help='set viewer template', default='')
+	
+    parser.add_option('--meta', dest='generate_metadata', action='store_true', help='generate a Metadata File in HDoujin Format')	
+					  
 
     try:
         sys.argv = [unicode(i.decode(sys.stdin.encoding)) for i in sys.argv]
