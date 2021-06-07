@@ -26,8 +26,10 @@ class DoujinshiInfo(dict):
 
 
 class Doujinshi(object):
-    def __init__(self, name=None, id=None, img_id=None, ext='', pages=0, name_format='[%i][%a][%t]', **kwargs):
+    def __init__(self, name=None, pretty_name=None, id=None, img_id=None,
+                 ext='', pages=0, name_format='[%i][%a][%t]', **kwargs):
         self.name = name
+        self.pretty_name = pretty_name
         self.id = id
         self.img_id = img_id
         self.ext = ext
@@ -39,6 +41,7 @@ class Doujinshi(object):
         name_format = name_format.replace('%i', str(self.id))
         name_format = name_format.replace('%a', self.info.artists)
         name_format = name_format.replace('%t', self.name)
+        name_format = name_format.replace('%p', self.pretty_name)
         name_format = name_format.replace('%s', self.info.subtitle)
         self.filename = format_filename(name_format)
 
@@ -63,7 +66,6 @@ class Doujinshi(object):
         logger.info('Starting to download doujinshi: %s' % self.name)
         if self.downloader:
             download_queue = []
-
             if len(self.ext) != self.pages:
                 logger.warning('Page count and ext count do not equal')
 
@@ -71,12 +73,6 @@ class Doujinshi(object):
                 download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext[i-1]))
 
             self.downloader.download(download_queue, self.filename)
-
-            '''
-            for i in range(len(self.ext)):
-                download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i+1, EXT_MAP[self.ext[i]]))
-            '''
-
         else:
             logger.critical('Downloader has not been loaded')
 

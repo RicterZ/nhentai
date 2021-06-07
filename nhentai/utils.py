@@ -10,7 +10,7 @@ import sqlite3
 
 from nhentai import constant
 from nhentai.logger import logger
-from nhentai.serializer import serialize_json, serialize_comicxml, set_js_database
+from nhentai.serializer import serialize_json, serialize_comic_xml, set_js_database
 
 
 def request(method, url, **kwargs):
@@ -174,7 +174,7 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
         if write_comic_info:
-            serialize_comicxml(doujinshi_obj, doujinshi_dir)
+            serialize_comic_xml(doujinshi_obj, doujinshi_dir)
         cbz_filename = os.path.join(os.path.join(doujinshi_dir, '..'), '{}.cbz'.format(doujinshi_obj.filename))
     else:
         cbz_filename = './doujinshi.cbz'
@@ -246,7 +246,6 @@ def format_filename(s):
     ban_chars = '\\\'/:,;*?"<>|\t'
     filename = s.translate(str.maketrans(ban_chars, ' '*len(ban_chars))).strip()
     filename = ' '.join(filename.split())
-    print(repr(filename))
 
     while filename.endswith('.'):
         filename = filename[:-1]

@@ -4,6 +4,7 @@ import os
 from xml.sax.saxutils import escape
 from nhentai.constant import LANGUAGEISO
 
+
 def serialize_json(doujinshi, dir):
     metadata = {'title': doujinshi.name,
                 'subtitle': doujinshi.info.subtitle}
@@ -26,10 +27,10 @@ def serialize_json(doujinshi, dir):
     metadata['Pages'] = doujinshi.pages
 
     with open(os.path.join(dir, 'metadata.json'), 'w') as f:
-        json.dump(metadata, f, separators=','':')
+        json.dump(metadata, f, separators=(',', ':'))
 
 
-def serialize_comicxml(doujinshi, dir):
+def serialize_comic_xml(doujinshi, dir):
     from iso8601 import parse_date
     with open(os.path.join(dir, 'ComicInfo.xml'), 'w') as f:
         f.write('<?xml version="1.0" encoding="utf-8"?>\n')
@@ -45,7 +46,8 @@ def serialize_comicxml(doujinshi, dir):
         xml_write_simple_tag(f, 'NhentaiId', doujinshi.id)
         xml_write_simple_tag(f, 'Genre', doujinshi.info.categories)
 
-        xml_write_simple_tag(f, 'BlackAndWhite', 'No' if doujinshi.info.tags and 'full color' in doujinshi.info.tags else 'Yes')
+        xml_write_simple_tag(f, 'BlackAndWhite', 'No' if doujinshi.info.tags and
+                             'full color' in doujinshi.info.tags else 'Yes')
 
         if doujinshi.info.date:
             dt = parse_date(doujinshi.info.date)
@@ -59,13 +61,13 @@ def serialize_comicxml(doujinshi, dir):
         if doujinshi.info.tags:
             xml_write_simple_tag(f, 'Tags', doujinshi.info.tags)
         if doujinshi.info.artists:
-            xml_write_simple_tag(f, 'Writer', ' & '.join([i.strip() for i in doujinshi.info.artists.split(',')]))
-        # if doujinshi.info.groups:
-        #     metadata['group'] = [i.strip() for i in doujinshi.info.groups.split(',')]
+            xml_write_simple_tag(f, 'Writer', ' & '.join([i.strip() for i in
+                                                          doujinshi.info.artists.split(',')]))
+
         if doujinshi.info.languages:
             languages = [i.strip() for i in doujinshi.info.languages.split(',')]
             xml_write_simple_tag(f, 'Translated', 'Yes' if 'translated' in languages else 'No')
-            [xml_write_simple_tag(f, 'LanguageISO', LANGUAGEISO[i]) for i in languages \
+            [xml_write_simple_tag(f, 'LanguageISO', LANGUAGEISO[i]) for i in languages
                 if (i != 'translated' and i in LANGUAGEISO)]
 
         f.write('</ComicInfo>')
@@ -121,7 +123,7 @@ def serialize_unique(lst):
 def set_js_database():
     with open('data.js', 'w') as f:
         indexed_json = merge_json()
-        unique_json = json.dumps(serialize_unique(indexed_json), separators=','':')
-        indexed_json = json.dumps(indexed_json, separators=','':')
+        unique_json = json.dumps(serialize_unique(indexed_json), separators=(',', ':'))
+        indexed_json = json.dumps(indexed_json, separators=(',', ':'))
         f.write('var data = ' + indexed_json)
         f.write(';\nvar tags = ' + unique_json)

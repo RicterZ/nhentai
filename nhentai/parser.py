@@ -133,13 +133,16 @@ def doujinshi_parser(id_):
     doujinshi_info = html.find('div', attrs={'id': 'info'})
 
     title = doujinshi_info.find('h1').text
+    pretty_name = doujinshi_info.find('h1').find('span', attrs={'class': 'pretty'}).text
     subtitle = doujinshi_info.find('h2')
 
     doujinshi['name'] = title
+    doujinshi['pretty_name'] = pretty_name
     doujinshi['subtitle'] = subtitle.text if subtitle else ''
 
     doujinshi_cover = html.find('div', attrs={'id': 'cover'})
-    img_id = re.search('/galleries/([\d]+)/cover\.(jpg|png|gif)$', doujinshi_cover.a.img.attrs['data-src'])
+    img_id = re.search('/galleries/([0-9]+)/cover.(jpg|png|gif)$',
+                       doujinshi_cover.a.img.attrs['data-src'])
 
     ext = []
     for i in html.find_all('div', attrs={'class': 'thumb-container'}):
