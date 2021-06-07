@@ -13,7 +13,7 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_cbz, generate_main_html, generate_pdf, generate_metadatafile, \
+from nhentai.utils import generate_html, generate_cbz, generate_main_html, generate_pdf, generate_metadata_file, \
     paging, check_cookie, signal_handler, DB
 
 
@@ -84,8 +84,6 @@ def main():
             if (i + 1) % 10 == 0:
                 logger.info('Progress: %d / %d' % (i + 1, len(doujinshi_ids)))
 
-	
-    		
     if not options.is_show:
         downloader = Downloader(path=options.output_dir, size=options.threads,
                                 timeout=options.timeout, delay=options.delay)
@@ -94,14 +92,13 @@ def main():
             if not options.dryrun:
                 doujinshi.downloader = downloader
                 doujinshi.download()
-           					
+
             doujinshi.downloader = downloader
             doujinshi.download()
-			
+
             if options.generate_metadata:
-              table=doujinshi.table            
-              generate_metadatafile(options.output_dir,table,doujinshi)
-			
+                table = doujinshi.table
+                generate_metadata_file(options.output_dir, table, doujinshi)
 
             if options.is_save_download_history:
                 with DB() as db:
@@ -124,11 +121,9 @@ def main():
 
     else:
         [doujinshi.show() for doujinshi in doujinshi_list]
-        
 
 
 signal.signal(signal.SIGINT, signal_handler)
-
 
 if __name__ == '__main__':
     main()

@@ -6,7 +6,6 @@ from nhentai.constant import DETAIL_URL, IMAGE_URL
 from nhentai.logger import logger
 from nhentai.utils import format_filename
 
-
 EXT_MAP = {
     'j': 'jpg',
     'p': 'png',
@@ -41,9 +40,8 @@ class Doujinshi(object):
         name_format = name_format.replace('%t', self.name)
         name_format = name_format.replace('%s', self.info.subtitle)
         self.filename = format_filename(name_format)
-		
-		
-        self.table =[
+
+        self.table = [
             ["Parodies", self.info.parodies],
             ["Doujinshi", self.name],
             ["Subtitle", self.info.subtitle],
@@ -54,15 +52,13 @@ class Doujinshi(object):
             ["URL", self.url],
             ["Pages", self.pages],
         ]
-		
 
     def __repr__(self):
         return '<Doujinshi: {0}>'.format(self.name)
 
     def show(self):
-        
+
         logger.info(u'Print doujinshi information of {0}\n{1}'.format(self.id, tabulate(self.table)))
-        
 
     def download(self):
         logger.info('Starting to download doujinshi: %s' % self.name)
@@ -73,7 +69,7 @@ class Doujinshi(object):
                 logger.warning('Page count and ext count do not equal')
 
             for i in range(1, min(self.pages, len(self.ext)) + 1):
-                download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext[i-1]))
+                download_queue.append('%s/%d/%d.%s' % (IMAGE_URL, int(self.img_id), i, self.ext[i - 1]))
 
             self.downloader.download(download_queue, self.filename)
 
