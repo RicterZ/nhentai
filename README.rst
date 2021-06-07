@@ -121,6 +121,7 @@ Supported doujinshi folder formatter:
 - %t: Doujinshi name
 - %s: Doujinshi subtitle (translated name)
 - %a: Doujinshi authors' name
+- %p: Doujinshi pretty name
 
 
 Other options:
