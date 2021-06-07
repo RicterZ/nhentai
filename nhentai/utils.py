@@ -88,7 +88,7 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
         if not os.path.splitext(image)[1] in ('.jpg', '.png'):
             continue
 
-        image_html += '<img src="{0}" class="image-item"/>\n'\
+        image_html += '<img src="{0}" class="image-item"/>\n' \
             .format(image)
     html = readfile('viewer/{}/index.html'.format(template))
     css = readfile('viewer/{}/styles.css'.format(template))
@@ -169,7 +169,7 @@ def generate_main_html(output_dir='./'):
         else:
             with open('./main.html', 'wb') as f:
                 f.write(data.encode('utf-8'))
-        shutil.copy(os.path.dirname(__file__)+'/viewer/logo.png', './')
+        shutil.copy(os.path.dirname(__file__) + '/viewer/logo.png', './')
         set_js_database()
         logger.log(
             15, 'Main Viewer has been written to \'{0}main.html\''.format(output_dir))
@@ -235,6 +235,7 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
     except ImportError:
         logger.error("Please install img2pdf package by using pip.")
 
+
 def unicode_truncate(s, length, encoding='utf-8'):
     """https://stackoverflow.com/questions/1809531/truncating-unicode-so-it-fits-a-maximum-size-when-encoded-for-wire-transfer
     """
@@ -251,7 +252,7 @@ def format_filename(s):
     """
     # maybe you can use `--format` to select a suitable filename
     ban_chars = '\\\'/:,;*?"<>|\t'
-    filename = s.translate(str.maketrans(ban_chars, ' '*len(ban_chars))).strip()
+    filename = s.translate(str.maketrans(ban_chars, ' ' * len(ban_chars))).strip()
     filename = ' '.join(filename.split())
 
     while filename.endswith('.'):
@@ -281,13 +282,41 @@ def paging(page_string):
             start, end = i.split('-')
             if not (start.isdigit() and end.isdigit()):
                 raise Exception('Invalid page number')
-            page_list.extend(list(range(int(start), int(end)+1)))
+            page_list.extend(list(range(int(start), int(end) + 1)))
         else:
             if not i.isdigit():
                 raise Exception('Invalid page number')
             page_list.append(int(i))
 
     return page_list
+
+
+def generate_metadata_file(output_dir, table, doujinshi_obj=None):
+    logger.info('Writing Metadata Info')
+
+    if doujinshi_obj is not None:
+        doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
+    else:
+        doujinshi_dir = '.'
+
+    logger.info(doujinshi_dir)
+
+    f = open(os.path.join(doujinshi_dir, 'info.txt'), 'w', encoding='utf-8')
+
+    fields = ['TITLE', 'ORIGINAL TITLE', 'AUTHOR', 'ARTIST', 'CIRCLE', 'SCANLATOR',
+              'TRANSLATOR', 'PUBLISHER', 'DESCRIPTION', 'STATUS', 'CHAPTERS', 'PAGES',
+              'TAGS', 'TYPE', 'LANGUAGE', 'RELEASED', 'READING DIRECTION', 'CHARACTERS',
+              'SERIES', 'PARODY', 'URL']
+    special_fields = ['PARODY', 'TITLE', 'ORIGINAL TITLE', 'CHARACTERS', 'AUTHOR',
+                      'LANGUAGE', 'TAGS', 'URL', 'PAGES']
+
+    for i in range(len(fields)):
+        f.write('{}: '.format(fields[i]))
+        if fields[i] in special_fields:
+            f.write(str(table[special_fields.index(fields[i])][1]))
+        f.write('\n')
+
+    f.close()
 
 
 class DB(object):

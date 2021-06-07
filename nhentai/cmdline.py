@@ -86,7 +86,7 @@ def cmd_parser():
                       help='slow down between downloading every doujinshi')
     parser.add_option('--proxy', type='string', dest='proxy', action='store',
                       help='store a proxy, for example: -p \'http://127.0.0.1:1080\'')
-    parser.add_option('--file',  '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
+    parser.add_option('--file', '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
                       help='format the saved folder name', default='[%i][%a][%t]')
     parser.add_option('--dry-run', '-r', action='store_true', dest='dryrun', help='Dry run, skip file download.')
@@ -104,6 +104,8 @@ def cmd_parser():
                       help='generate PDF file')
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
                       help='remove downloaded doujinshi dir when generated CBZ or PDF file.')
+    parser.add_option('--meta', dest='generate_metadata', action='store_true',
+                      help='generate a metadata file in doujinshi format')
 
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
@@ -204,7 +206,7 @@ def cmd_parser():
         parser.print_help()
         exit(1)
 
-    if not args.keyword and not args.id and not  args.favorites:
+    if not args.keyword and not args.id and not args.favorites:
         parser.print_help()
         exit(1)
 
