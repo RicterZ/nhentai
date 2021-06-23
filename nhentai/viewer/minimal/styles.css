@@ -1,0 +1,75 @@
+  
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+img {
+    vertical-align: middle;
+}
+
+html, body {
+    display: flex;
+    background-color: #e8e6e6;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+#list {
+    height: 2000px;
+    overflow: scroll;
+    width: 260px;
+    text-align: center;
+}
+
+#list img {
+    width: 200px;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 15px 0;
+    cursor: pointer;
+}
+
+#list img.current {
+    background: #0003;
+}
+
+#image-container {
+    flex: auto;
+    height: 100%;
+    background: rgb(0, 0, 0);
+    color: rgb(100, 100, 100);
+    text-align: center;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    position: relative;
+}
+
+#image-container #dest {
+    height: 2000px;
+    width: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    max-height: 100vh;
+    margin: auto;
+}
+
+#image-container #page-num {
+    position: static;
+    font-size: 9pt;
+    left: 10px;
+    bottom: 5px;
+    font-weight: bold;
+    opacity: 0.9;
+    text-shadow: /* Duplicate the same shadow to make it very strong */
+        0 0 2px #222,
+        0 0 2px #222,
+        0 0 2px #222;
+}

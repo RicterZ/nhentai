@@ -2,3 +2,4 @@ include README.md
 include requirements.txt
 include nhentai/viewer/*
 include nhentai/viewer/default/*
+include nhentai/viewer/minimal/*
