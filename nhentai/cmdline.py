@@ -131,7 +131,7 @@ def cmd_parser():
     args, _ = parser.parse_args(sys.argv[1:])
 
     if args.html_viewer:
-        generate_html()
+        generate_html(template=constant.CONFIG['template'])
         exit(0)
 
     if args.main_viewer and not args.id and not args.keyword and not args.favorites:
