@@ -32,7 +32,7 @@ def serialize_json(doujinshi, dir):
 
 def serialize_comic_xml(doujinshi, dir):
     from iso8601 import parse_date
-    with open(os.path.join(dir, 'ComicInfo.xml'), 'w') as f:
+    with open(os.path.join(dir, 'ComicInfo.xml'), 'w', encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="utf-8"?>\n')
         f.write('<ComicInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" '
                 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n')
