@@ -50,7 +50,14 @@ Installation (Gentoo)
 
     layman -fa glicOne
     sudo emerge net-misc/nhentai
+    
+=====================
+Installation (NixOs)
+=====================
+.. code-block::
 
+    nix-env -iA nixos.nhentai
+    
 =====
 Usage
 =====
