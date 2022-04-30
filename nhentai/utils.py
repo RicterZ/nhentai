@@ -17,7 +17,7 @@ def request(method, url, **kwargs):
     session = requests.Session()
     session.headers.update({
         'Referer': constant.LOGIN_URL,
-        'User-Agent': 'nhentai command line client (https://github.com/RicterZ/nhentai)',
+        'User-Agent': constant.CONFIG['useragent'],
         'Cookie': constant.CONFIG['cookie']
     })
 
@@ -28,10 +28,14 @@ def request(method, url, **kwargs):
 
 
 def check_cookie():
-    response = request('get', constant.BASE_URL).text
-    username = re.findall('"/users/\d+/(.*?)"', response)
+    response = request('get', constant.BASE_URL)
+    if response.status_code == 503 and 'cf-browser-verification' in response.text:
+        logger.error('Blocked by Cloudflare captcha, please set your cookie and useragent')
+        exit(-1)
+
+    username = re.findall('"/users/\d+/(.*?)"', response.text)
     if not username:
-        logger.error('Cannot get your username, please check your cookie or use `nhentai --cookie` to set your cookie')
+        logger.warning('Cannot get your username, please check your cookie or use `nhentai --cookie` to set your cookie')
     else:
         logger.info('Login successfully! Your username: {}'.format(username[0]))
 

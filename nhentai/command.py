@@ -93,9 +93,6 @@ def main():
                 doujinshi.downloader = downloader
                 doujinshi.download()
 
-            doujinshi.downloader = downloader
-            doujinshi.download()
-
             if options.generate_metadata:
                 table = doujinshi.table
                 generate_metadata_file(options.output_dir, table, doujinshi)

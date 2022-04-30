@@ -109,7 +109,9 @@ def cmd_parser():
 
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
-                      help='set cookie of nhentai to bypass Google recaptcha')
+                      help='set cookie of nhentai to bypass Cloudflare captcha')
+    parser.add_option('--useragent', type='str', dest='useragent', action='store',
+                      help='set useragent to bypass Cloudflare captcha')
     parser.add_option('--language', type='str', dest='language', action='store',
                       help='set default language to parse doujinshis')
     parser.add_option('--clean-language', dest='clean_language', action='store_true', default=False,
@@ -148,20 +150,24 @@ def cmd_parser():
     # --- set config ---
     if args.cookie is not None:
         constant.CONFIG['cookie'] = args.cookie
+        write_config()
         logger.info('Cookie saved.')
-        write_config()
         exit(0)
-
-    if args.language is not None:
-        constant.CONFIG['language'] = args.language
-        logger.info('Default language now set to \'{0}\''.format(args.language))
+    elif args.useragent is not None:
+        constant.CONFIG['useragent'] = args.useragent
         write_config()
+        logger.info('Useragent saved.')
+        exit(0)
+    elif args.language is not None:
+        constant.CONFIG['language'] = args.language
+        write_config()
+        logger.info('Default language now set to \'{0}\''.format(args.language))
         exit(0)
         # TODO: search without language
 
     if args.proxy is not None:
         proxy_url = urlparse(args.proxy)
-        if not args.proxy == '' and proxy_url.scheme not in ('http', 'https'):
+        if not args.proxy == '' and proxy_url.scheme not in ('http', 'https', 'socks5', 'socks5h', 'socks4', 'socks4a'):
             logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
             exit(0)
         else:
