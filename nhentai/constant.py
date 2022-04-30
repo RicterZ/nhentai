@@ -34,6 +34,7 @@ CONFIG = {
     'cookie': '',
     'language': '',
     'template': '',
+    'useragent': 'nhentai command line client (https://github.com/RicterZ/nhentai)'
 }
 
 LANGUAGEISO ={

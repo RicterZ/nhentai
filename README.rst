@@ -72,7 +72,7 @@ Set your nhentai cookie against captcha:
 
     nhentai --cookie "YOUR COOKIE FROM nhentai.net"
 
-**NOTE**: The format of the cookie is `"csrftoken=TOKEN; sessionid=ID"`
+**NOTE**: The format of the cookie is `"csrftoken=TOKEN; sessionid=ID; cf_chl_2=CLOUDFLARE; cf_chl_prog=CLOUDFLARE; cf_clearance=CLOUDFLARE"`
 
 | To get csrftoken and sessionid, first login to your nhentai account in web browser, then:
 | (Chrome) |ve| |ld| More tools    |ld| Developer tools     |ld| Application |ld| Storage |ld| Cookies |ld| https://nhentai.net
