@@ -147,18 +147,25 @@ Other options:
       NHENTAI                 nhentai mirror url
 
     Options:
+      # Operation options, control the program behaviors
       -h, --help            show this help message and exit
       -D, --download        download doujinshi (for search results)
       -S, --show            just show the doujinshi information
+
+      # Doujinshi options, specify id, keyword, etc.
       --id=ID               doujinshi ids set, e.g. 1,2,3
       -s KEYWORD, --search=KEYWORD
                             search doujinshi by keyword
       -F, --favorites       list or download your favorites.
+
+      # Page options, control the page to fetch / download
       --page-all            all search results
       --page=PAGE, --page-range=PAGE
                             page number of search results. e.g. 1,2-5,14
       --sorting=SORTING     sorting of doujinshi (recent / popular /
                             popular-[today|week])
+
+      # Download options, the output directory, threads, timeout, delay, etc.
       -o OUTPUT_DIR, --output=OUTPUT_DIR
                             output dir
       -t THREADS, --threads=THREADS
@@ -171,6 +178,8 @@ Other options:
       -f FILE, --file=FILE  read gallery IDs from file.
       --format=NAME_FORMAT  format the saved folder name
       -r, --dry-run         Dry run, skip file download.
+
+      # Generate options, for generate html viewer, cbz file, pdf file, etc
       --html                generate a html viewer at current directory
       --no-html             don't generate HTML after downloading
       --gen-main            generate a main viewer contain all the doujin in the
@@ -181,6 +190,8 @@ Other options:
                             PDF file.
       --meta                generate a metadata file in doujinshi format
       --regenerate-cbz      regenerate the cbz file if exists
+
+      # nhentai options, set cookie, user-agent, language, remove caches, histories, etc
       --cookie=COOKIE       set cookie of nhentai to bypass Cloudflare captcha
       --useragent=USERAGENT
                             set useragent to bypass Cloudflare captcha
