@@ -262,8 +262,9 @@ def format_filename(s):
     while filename.endswith('.'):
         filename = filename[:-1]
 
-    if len(filename) > 100:
-        filename = filename[:100] + u'…'
+    # limit 254 chars
+    if len(filename) >= 255:
+        filename = filename[:254] + u'…'
 
     # Remove [] from filename
     filename = filename.replace('[]', '').strip()
