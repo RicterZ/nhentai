@@ -113,12 +113,17 @@ class Downloader(Singleton):
         else:
             logger.log(15, '{0} downloaded successfully'.format(data))
 
-    def download(self, queue, folder=''):
+    def download(self, queue, folder='', regenerate_cbz=False):
         if not isinstance(folder, text):
             folder = str(folder)
 
         if self.path:
             folder = os.path.join(self.path, folder)
+
+        if os.path.exists(folder + '.cbz'):
+            if not regenerate_cbz:
+                logger.warning('CBZ file \'{}.cbz\' exists, ignored download request'.format(folder))
+                return
 
         if not os.path.exists(folder):
             logger.warning('Path \'{0}\' does not exist, creating.'.format(folder))

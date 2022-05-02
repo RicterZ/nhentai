@@ -106,6 +106,8 @@ def cmd_parser():
                       help='remove downloaded doujinshi dir when generated CBZ or PDF file.')
     parser.add_option('--meta', dest='generate_metadata', action='store_true',
                       help='generate a metadata file in doujinshi format')
+    parser.add_option('--regenerate-cbz', dest='regenerate_cbz', action='store_true', default=False,
+                      help='regenerate the cbz file if exists')
 
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
