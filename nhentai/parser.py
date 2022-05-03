@@ -218,7 +218,6 @@ def search_parser(keyword, sorting, page, is_page_all=False):
             try:
                 url = request('get', url=constant.SEARCH_URL, params={'query': keyword,
                                                                       'page': p, 'sort': sorting}).url
-                print(url)
                 response = request('get', url.replace('%2B', '+')).json()
             except Exception as e:
                 logger.critical(str(e))
