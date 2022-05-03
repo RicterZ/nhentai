@@ -71,9 +71,9 @@ def cmd_parser():
                       help='all search results')
     parser.add_option('--page', '--page-range', type='string', dest='page', action='store', default='',
                       help='page number of search results. e.g. 1,2-5,14')
-    parser.add_option('--sorting', dest='sorting', action='store', default='recent',
+    parser.add_option('--sorting', dest='sorting', action='store', default='date',
                       help='sorting of doujinshi (recent / popular / popular-[today|week])',
-                      choices=['recent', 'popular', 'popular-today', 'popular-week'])
+                      choices=['recent', 'popular', 'popular-today', 'popular-week', 'date'])
 
     # download options
     parser.add_option('--output', '-o', type='string', dest='output_dir', action='store', default='./',
@@ -112,7 +112,7 @@ def cmd_parser():
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
                       help='set cookie of nhentai to bypass Cloudflare captcha')
-    parser.add_option('--useragent', type='str', dest='useragent', action='store',
+    parser.add_option('--useragent', '--user-agent', type='str', dest='useragent', action='store',
                       help='set useragent to bypass Cloudflare captcha')
     parser.add_option('--language', type='str', dest='language', action='store',
                       help='set default language to parse doujinshis')
@@ -158,7 +158,7 @@ def cmd_parser():
     elif args.useragent is not None:
         constant.CONFIG['useragent'] = args.useragent
         write_config()
-        logger.info('Useragent saved.')
+        logger.info('User-Agent saved.')
         exit(0)
     elif args.language is not None:
         constant.CONFIG['language'] = args.language
