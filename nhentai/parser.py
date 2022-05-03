@@ -210,6 +210,7 @@ def search_parser(keyword, sorting, page, is_page_all=False):
         page = range(1, init_response['num_pages']+1)
 
     total = '/{0}'.format(page[-1]) if is_page_all else ''
+    not_exists_persist = False
     for p in page:
         i = 0
 
@@ -226,13 +227,16 @@ def search_parser(keyword, sorting, page, is_page_all=False):
 
         if response is None or 'result' not in response:
             logger.warning('No result in response in page {}'.format(p))
-            break
+            if not_exists_persist is True:
+                break
+            continue
 
         for row in response['result']:
             title = row['title']['english']
             title = title[:85] + '..' if len(title) > 85 else title
             result.append({'id': row['id'], 'title': title})
 
+        not_exists_persist = False
         if not result:
             logger.warning('No results for keywords {}'.format(keyword))
 
