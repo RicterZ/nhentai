@@ -156,6 +156,7 @@ def doujinshi_parser(id_):
     doujinshi['img_id'] = img_id.group(1)
     doujinshi['ext'] = ext
 
+    pages = 0
     for _ in doujinshi_info.find_all('div', class_='tag-container field-name'):
         if re.search('Pages:', _.text):
             pages = _.find('span', class_='name').string
@@ -177,15 +178,38 @@ def doujinshi_parser(id_):
     return doujinshi
 
 
-def legacy_search_parser(keyword, sorting='date', page=1, is_page_all=False):
-    logger.warning('Using legacy searching method, `--all` options will not be supported')
+def legacy_search_parser(keyword, sorting, page, is_page_all=False):
     logger.debug('Searching doujinshis of keyword {0}'.format(keyword))
-    response = request('get', url=constant.LEGACY_SEARCH_URL,
-                       params={'q': keyword, 'page': page, 'sort': sorting}).content
 
-    result = _get_title_and_id(response)
+    response = None
+    result = []
+
+    if is_page_all:
+        # `--page-all` option will override the `--page` option
+        page = [1]
+
+    for p in page:
+        logger.debug('Fetching page {} ...'.format(p))
+        response = request('get', url=constant.LEGACY_SEARCH_URL,
+                           params={'q': keyword, 'page': p, 'sort': sorting}).content
+        result.extend(_get_title_and_id(response))
+
     if not result:
-        logger.warning('Not found anything of keyword {}'.format(keyword))
+        logger.warning('Not found anything of keyword {} on page {}'.format(keyword, page[0]))
+        return result
+
+    if is_page_all:
+        html = BeautifulSoup(response, 'lxml')
+        pagination = html.find(attrs={'class': 'pagination'})
+        next_page = pagination.find(attrs={'class': 'next'})
+
+        if next_page is None:
+            logger.warning('Reached the last page')
+            return result
+        else:
+            next_page = re.findall('page=([0-9]+)', next_page.attrs['href'])[0]
+            result.extend(legacy_search_parser(keyword, sorting, next_page, is_page_all))
+            return result
 
     return result
 
