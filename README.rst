@@ -61,7 +61,7 @@ Installation (NixOs)
 =====
 Usage
 =====
-**IMPORTANT**: To bypass the nhentai frequency limit, you should use `--cookie` option to store your cookie.
+**⚠️IMPORTANT⚠️**: To bypass the nhentai frequency limit, you should use `--cookie` and `--useragent` options to store your cookie and your user-agent.
 
 *The default download folder will be the path where you run the command (CLI path).*
 
@@ -70,6 +70,7 @@ Set your nhentai cookie against captcha:
 
 .. code-block:: bash
 
+    nhentai --useragent "USER AGENT of YOUR BROWSER"
     nhentai --cookie "YOUR COOKIE FROM nhentai.net"
 
 **NOTE**
@@ -85,6 +86,10 @@ Set your nhentai cookie against captcha:
 .. |hv| unicode:: U+2630 .. https://www.compart.com/en/unicode/U+2630
 .. |ve| unicode:: U+22EE .. https://www.compart.com/en/unicode/U+22EE
 .. |ld| unicode:: U+2014 .. https://www.compart.com/en/unicode/U+2014
+
+.. image:: ./images/usage.png?raw=true
+    :alt: nhentai
+    :align: center
 
 Download specified doujinshi:
 
@@ -232,7 +237,6 @@ Set `NHENTAI` env var to your nhentai mirror.
 .. image:: ./images/viewer.png?raw=true
     :alt: nhentai
     :align: center
-
 
 
 .. |travis| image:: https://travis-ci.org/RicterZ/nhentai.svg?branch=master
