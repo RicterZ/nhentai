@@ -8,7 +8,7 @@ import time
 
 from nhentai import constant
 from nhentai.cmdline import cmd_parser, banner
-from nhentai.parser import doujinshi_parser, search_parser, print_doujinshi, favorites_parser
+from nhentai.parser import doujinshi_parser, search_parser, legacy_search_parser, print_doujinshi, favorites_parser
 from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
@@ -55,8 +55,10 @@ def main():
         if constant.CONFIG['language']:
             logger.info('Using default language: {0}'.format(constant.CONFIG['language']))
             options.keyword += ' language:{}'.format(constant.CONFIG['language'])
-        doujinshis = search_parser(options.keyword, sorting=options.sorting, page=page_list,
-                                   is_page_all=options.page_all)
+
+        _search_parser = legacy_search_parser if options.legacy else search_parser
+        doujinshis = _search_parser(options.keyword, sorting=options.sorting, page=page_list,
+                                    is_page_all=options.page_all)
 
     elif not doujinshi_ids:
         doujinshi_ids = options.id

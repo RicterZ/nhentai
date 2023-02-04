@@ -14,6 +14,7 @@ BASE_URL = os.getenv('NHENTAI', 'https://nhentai.net')
 __api_suspended_DETAIL_URL = '%s/api/gallery' % BASE_URL
 
 DETAIL_URL = '%s/g' % BASE_URL
+LEGACY_SEARCH_URL = '%s/search/' % BASE_URL
 SEARCH_URL = '%s/api/galleries/search' % BASE_URL
 
 

@@ -177,9 +177,11 @@ def doujinshi_parser(id_):
     return doujinshi
 
 
-def old_search_parser(keyword, sorting='date', page=1):
+def legacy_search_parser(keyword, sorting='date', page=1, is_page_all=False):
+    logger.warning('Using legacy searching method, `--all` options will not be supported')
     logger.debug('Searching doujinshis of keyword {0}'.format(keyword))
-    response = request('get', url=constant.SEARCH_URL, params={'q': keyword, 'page': page, 'sort': sorting}).content
+    response = request('get', url=constant.LEGACY_SEARCH_URL,
+                       params={'q': keyword, 'page': page, 'sort': sorting}).content
 
     result = _get_title_and_id(response)
     if not result:

@@ -124,6 +124,8 @@ def cmd_parser():
                       help='clean download history')
     parser.add_option('--template', dest='viewer_template', action='store',
                       help='set viewer template', default='')
+    parser.add_option('--legacy', dest='legacy', action='store_true', default=False,
+                      help='use legacy searching method')
 
     try:
         sys.argv = [unicode(i.decode(sys.stdin.encoding)) for i in sys.argv]
