@@ -6,7 +6,7 @@ from nhentai.constant import DETAIL_URL, IMAGE_URL
 from nhentai.logger import logger
 from nhentai.utils import format_filename
 
-MAX_FIELD_LENGTH = 100
+
 EXT_MAP = {
     'j': 'jpg',
     'p': 'png',
@@ -25,13 +25,6 @@ class DoujinshiInfo(dict):
             return ''
 
 
-def trunk_string(string):
-    if len(string) >= MAX_FIELD_LENGTH:
-        string = string[:MAX_FIELD_LENGTH] + u'…'
-
-    return string
-
-
 class Doujinshi(object):
     def __init__(self, name=None, pretty_name=None, id=None, img_id=None,
                  ext='', pages=0, name_format='[%i][%a][%t]', **kwargs):
@@ -45,13 +38,13 @@ class Doujinshi(object):
         self.url = '%s/%d' % (DETAIL_URL, self.id)
         self.info = DoujinshiInfo(**kwargs)
 
-        name_format = name_format.replace('%i', str(self.id))
-        name_format = name_format.replace('%a', self.info.artists)
+        name_format = name_format.replace('%i', format_filename(str(self.id)))
+        name_format = name_format.replace('%a', format_filename(self.info.artists))
 
-        name_format = name_format.replace('%t', trunk_string(self.name))
-        name_format = name_format.replace('%p', trunk_string(self.pretty_name))
-        name_format = name_format.replace('%s', trunk_string(self.info.subtitle))
-        self.filename = format_filename(name_format)
+        name_format = name_format.replace('%t', format_filename(self.name))
+        name_format = name_format.replace('%p', format_filename(self.pretty_name))
+        name_format = name_format.replace('%s', format_filename(self.info.subtitle))
+        self.filename = format_filename(name_format, 255, True)
 
         self.table = [
             ["Parodies", self.info.parodies],

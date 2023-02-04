@@ -13,6 +13,9 @@ from nhentai.logger import logger
 from nhentai.serializer import serialize_json, serialize_comic_xml, set_js_database
 
 
+MAX_FIELD_LENGTH = 100
+
+
 def request(method, url, **kwargs):
     session = requests.Session()
     session.headers.update({
@@ -247,7 +250,7 @@ def unicode_truncate(s, length, encoding='utf-8'):
     return encoded.decode(encoding, 'ignore')
 
 
-def format_filename(s):
+def format_filename(s, length=MAX_FIELD_LENGTH, _truncate_only=False):
     """
     It used to be a whitelist approach allowed only alphabet and a part of symbols.
     but most doujinshi's names include Japanese 2-byte characters and these was rejected.
@@ -255,16 +258,20 @@ def format_filename(s):
     if filename include forbidden characters (\'/:,;*?"<>|) ,it replace space character(' '). 
     """
     # maybe you can use `--format` to select a suitable filename
-    ban_chars = '\\\'/:,;*?"<>|\t'
-    filename = s.translate(str.maketrans(ban_chars, ' ' * len(ban_chars))).strip()
-    filename = ' '.join(filename.split())
 
-    while filename.endswith('.'):
-        filename = filename[:-1]
+    if not _truncate_only:
+        ban_chars = '\\\'/:,;*?"<>|\t'
+        filename = s.translate(str.maketrans(ban_chars, ' ' * len(ban_chars))).strip()
+        filename = ' '.join(filename.split())
 
-    # limit 254 chars
-    if len(filename) >= 255:
-        filename = filename[:254] + u'…'
+        while filename.endswith('.'):
+            filename = filename[:-1]
+    else:
+        filename = s
+
+    # limit `length` chars
+    if len(filename) >= length:
+        filename = filename[:length - 1] + u'…'
 
     # Remove [] from filename
     filename = filename.replace('[]', '').strip()
