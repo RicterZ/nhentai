@@ -163,7 +163,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
 logging.addLevelName(15, "INFO")
 logger = logging.getLogger('nhentai')
 LOGGER_HANDLER = ColorizingStreamHandler(sys.stdout)
-FORMATTER = logging.Formatter("\r[%(asctime)s] [%(levelname)s] %(message)s", "%H:%M:%S")
+FORMATTER = logging.Formatter("\r[%(asctime)s] %(funcName)s: %(message)s", "%H:%M:%S")
 LOGGER_HANDLER.setFormatter(FORMATTER)
 LOGGER_HANDLER.level_map[logging.getLevelName("INFO")] = (None, "cyan", False)
 logger.addHandler(LOGGER_HANDLER)
