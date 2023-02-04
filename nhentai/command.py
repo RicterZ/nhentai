@@ -73,24 +73,17 @@ def main():
 
         doujinshi_ids = list(set(map(int, doujinshi_ids)) - set(data))
 
-    if doujinshi_ids:
-        for i, id_ in enumerate(doujinshi_ids):
-            if options.delay:
-                time.sleep(options.delay)
-
-            doujinshi_info = doujinshi_parser(id_)
-
-            if doujinshi_info:
-                doujinshi_list.append(Doujinshi(name_format=options.name_format, **doujinshi_info))
-
-            if (i + 1) % 10 == 0:
-                logger.info('Progress: %d / %d' % (i + 1, len(doujinshi_ids)))
-
     if not options.is_show:
         downloader = Downloader(path=options.output_dir, size=options.threads,
                                 timeout=options.timeout, delay=options.delay)
 
-        for doujinshi in doujinshi_list:
+        for doujinshi_id in doujinshi_ids:
+            doujinshi_info = doujinshi_parser(doujinshi_id)
+            if doujinshi_info:
+                doujinshi = Doujinshi(name_format=options.name_format, **doujinshi_info)
+            else:
+                continue
+
             if not options.dryrun:
                 doujinshi.downloader = downloader
                 doujinshi.download(regenerate_cbz=options.regenerate_cbz)
@@ -119,7 +112,13 @@ def main():
             logger.log(15, 'All done.')
 
     else:
-        [doujinshi.show() for doujinshi in doujinshi_list]
+        for doujinshi_id in doujinshi_ids:
+            doujinshi_info = doujinshi_parser(doujinshi_id)
+            if doujinshi_info:
+                doujinshi = Doujinshi(name_format=options.name_format, **doujinshi_info)
+            else:
+                continue
+            doujinshi.show()
 
 
 signal.signal(signal.SIGINT, signal_handler)
