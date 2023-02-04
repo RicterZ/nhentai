@@ -184,7 +184,7 @@ def legacy_search_parser(keyword, sorting, page, is_page_all=False):
     response = None
     result = []
 
-    if is_page_all:
+    if is_page_all and len(page) != 1:
         # `--page-all` option will override the `--page` option
         page = [1]
 
@@ -208,7 +208,7 @@ def legacy_search_parser(keyword, sorting, page, is_page_all=False):
             return result
         else:
             next_page = re.findall('page=([0-9]+)', next_page.attrs['href'])[0]
-            result.extend(legacy_search_parser(keyword, sorting, next_page, is_page_all))
+            result.extend(legacy_search_parser(keyword, sorting, [next_page], is_page_all))
             return result
 
     return result
