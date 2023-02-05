@@ -38,13 +38,20 @@ Alternatively, install from PyPI with pip:
 
 .. code-block::
 
-           pip install nhentai
+   pip install nhentai
 
 For a self-contained installation, use `Pipx <https://github.com/pipxproject/pipx/>`_:
 
 .. code-block::
 
-           pipx install nhentai
+   pipx install nhentai
+
+From docker hub:
+
+.. code-block::
+
+    docker pull ricterz/nhentai
+    docker run -v ~/Downloads/doujinshi:/output -v ~/.nhentai/:/root/.nhentai ricterz/nhentai --id 123855
 
 =====================
 Installation (Gentoo)
