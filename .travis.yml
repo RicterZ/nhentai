@@ -5,15 +5,19 @@ language: python
 python:
     - 3.7
     - 3.8
+    - 3.9
+    - 3.10
+    - 3.11
 
 install:
     - python setup.py install
 
 script:
     - echo 268642 > /tmp/test.txt
-    - nhentai --cookie "_ga=GA1.2.1651446371.1545407218; __cfduid=d0ed34dfb81167d2a51a1d6392c1768a81601380350; csrftoken=KRN0GR1ft86m3HTefpQA99pp6R1Bo7hUs5QxNGOAIuwB5g4EcJj04fwMB8QKgLaB; sessionid=7hzoowox78c90wi5ud5ibphm4axcck7c"
+    - nhentai --cookie "cf_clearance=xdi9J4Um10.46QzT_S3O13bUgdsGN87yhIBAn7G38HY-1675608138-0-160; csrftoken=zV4qotZJrHKTeEc9uEg5uvXV5qwTcZIHRjF3TgbkvP6OoxZNj8I6RFQeGSSiZT04; sessionid=t2x0ke3u5i1azg2kvepe7w0ej89btc7t"
+    - nhentai --useragent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
     - nhentai --search umaru
-    - nhentai --id=152503,146134 -t 10 --output=/tmp/ --cbz
+    - nhentai --id 152503 146134 -t 10 --output=/tmp/ --cbz
     - nhentai -F
     - nhentai --file /tmp/test.txt
-    - nhentai --id=152503,146134 --gen-main --output=/tmp/
+    - nhentai --id 152503 146134 --gen-main --output=/tmp/
