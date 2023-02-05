@@ -22,7 +22,7 @@ From Github:
     cd nhentai
     python setup.py install
 
-Use Docker :
+Use Docker:
 
 .. code-block::
 
