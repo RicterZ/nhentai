@@ -14,11 +14,22 @@ nHentai is a CLI tool for downloading doujinshi from <http://nhentai.net>
 ===================
 Manual Installation
 ===================
+From Github:
+
 .. code-block::
 
     git clone https://github.com/RicterZ/nhentai
     cd nhentai
     python setup.py install
+
+Use Docker :
+
+.. code-block::
+
+    git clone https://github.com/RicterZ/nhentai
+    cd nhentai
+    docker build -t nhentai:latest .
+    docker run -v ~/Downloads/doujinshi:/output -v ~/.nhentai/:/root/.nhentai nhentai --id 123855
 
 ==================
 Installation (pip)
