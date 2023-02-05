@@ -1,0 +1,10 @@
+.git
+.gitignore
+venv
+*.egg-info
+build
+dist
+images
+LICENSE
+.travis.yml
+.idea

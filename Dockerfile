@@ -8,4 +8,5 @@ COPY . .
 RUN python setup.py install
 
 WORKDIR /output
-ENTRYPOINT ["nhentai"]
+# ENTRYPOINT ["nhentai"]
+CMD bash
