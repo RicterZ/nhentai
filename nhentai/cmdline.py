@@ -17,7 +17,7 @@ from nhentai.logger import logger
 
 
 def banner():
-    logger.debug(u'nHentai ver %s: あなたも変態。 いいね?' % __version__)
+    logger.debug(f'nHentai ver {__version__}: あなたも変態。 いいね?')
 
 
 def load_config():
@@ -40,11 +40,27 @@ def write_config():
         f.write(json.dumps(constant.CONFIG))
 
 
+def callback(option, opt_str, value, parser):
+    if option == '--id':
+        pass
+    value = []
+
+    for arg in parser.rargs:
+        if arg.isdigit():
+            value.append(int(arg))
+        elif arg.startswith('-'):
+            break
+        else:
+            logger.warning(f'Ignore invalid id {arg}')
+
+    setattr(parser.values, option.dest, value)
+
+
 def cmd_parser():
     load_config()
 
     parser = OptionParser('\n  nhentai --search [keyword] --download'
-                          '\n  NHENTAI=http://h.loli.club nhentai --id [ID ...]'
+                          '\n  NHENTAI=https://nhentai-mirror-url/ nhentai --id [ID ...]'
                           '\n  nhentai --file [filename]'
                           '\n\nEnvironment Variable:\n'
                           '  NHENTAI                 nhentai mirror url')
@@ -54,7 +70,8 @@ def cmd_parser():
     parser.add_option('--show', '-S', dest='is_show', action='store_true', help='just show the doujinshi information')
 
     # doujinshi options
-    parser.add_option('--id', type='string', dest='id', action='store', help='doujinshi ids set, e.g. 1,2,3')
+    parser.add_option('--id', dest='id', action='callback', callback=callback,
+                      help='doujinshi ids set, e.g. 167680 167681 167682')
     parser.add_option('--search', '-s', type='string', dest='keyword', action='store',
                       help='search doujinshi by keyword')
     parser.add_option('--favorites', '-F', action='store_true', dest='favorites',
@@ -79,7 +96,7 @@ def cmd_parser():
     parser.add_option('--delay', '-d', type='int', dest='delay', action='store', default=0,
                       help='slow down between downloading every doujinshi')
     parser.add_option('--proxy', type='string', dest='proxy', action='store',
-                      help='store a proxy, for example: -p \'http://127.0.0.1:1080\'')
+                      help='store a proxy, for example: -p "http://127.0.0.1:1080"')
     parser.add_option('--file', '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
                       help='format the saved folder name', default='[%i][%a][%t]')
@@ -121,13 +138,6 @@ def cmd_parser():
     parser.add_option('--legacy', dest='legacy', action='store_true', default=False,
                       help='use legacy searching method')
 
-    try:
-        sys.argv = [unicode(i.decode(sys.stdin.encoding)) for i in sys.argv]
-    except (NameError, TypeError):
-        pass
-    except UnicodeDecodeError:
-        exit(0)
-
     args, _ = parser.parse_args(sys.argv[1:])
 
     if args.html_viewer:
@@ -159,21 +169,22 @@ def cmd_parser():
     elif args.language is not None:
         constant.CONFIG['language'] = args.language
         write_config()
-        logger.info('Default language now set to \'{0}\''.format(args.language))
+        logger.info(f'Default language now set to "{args.language}"')
         exit(0)
         # TODO: search without language
 
     if args.proxy is not None:
         proxy_url = urlparse(args.proxy)
-        if not args.proxy == '' and proxy_url.scheme not in ('http', 'https', 'socks5', 'socks5h', 'socks4', 'socks4a'):
-            logger.error('Invalid protocol \'{0}\' of proxy, ignored'.format(proxy_url.scheme))
+        if not args.proxy == '' and proxy_url.scheme not in ('http', 'https', 'socks5', 'socks5h',
+                                                             'socks4', 'socks4a'):
+            logger.error(f'Invalid protocol "{proxy_url.scheme}" of proxy, ignored')
             exit(0)
         else:
             constant.CONFIG['proxy'] = {
                 'http': args.proxy,
                 'https': args.proxy,
             }
-            logger.info('Proxy now set to \'{0}\'.'.format(args.proxy))
+            logger.info(f'Proxy now set to "{args.proxy}"')
             write_config()
             exit(0)
 
@@ -182,8 +193,8 @@ def cmd_parser():
             args.viewer_template = 'default'
 
         if not os.path.exists(os.path.join(os.path.dirname(__file__),
-                                           'viewer/{}/index.html'.format(args.viewer_template))):
-            logger.error('Template \'{}\' does not exists'.format(args.viewer_template))
+                                           f'viewer/{args.viewer_template}/index.html')):
+            logger.error(f'Template "{args.viewer_template}" does not exists')
             exit(1)
         else:
             constant.CONFIG['template'] = args.viewer_template
@@ -195,10 +206,6 @@ def cmd_parser():
         if not constant.CONFIG['cookie']:
             logger.warning('Cookie has not been set, please use `nhentai --cookie \'COOKIE\'` to set it.')
             exit(1)
-
-    if args.id:
-        _ = [i.strip() for i in args.id.split(',')]
-        args.id = set(int(i) for i in _ if i.isdigit())
 
     if args.file:
         with open(args.file, 'r') as f:

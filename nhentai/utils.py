@@ -36,11 +36,11 @@ def check_cookie():
         logger.error('Blocked by Cloudflare captcha, please set your cookie and useragent')
         exit(-1)
 
-    username = re.findall('"/users/\d+/(.*?)"', response.text)
+    username = re.findall('"/users/[0-9]+/(.*?)"', response.text)
     if not username:
         logger.warning('Cannot get your username, please check your cookie or use `nhentai --cookie` to set your cookie')
     else:
-        logger.info('Login successfully! Your username: {}'.format(username[0]))
+        logger.info(f'Login successfully! Your username: {username[0]}')
 
 
 class _Singleton(type):
@@ -82,7 +82,7 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
         doujinshi_dir = '.'
 
     if not os.path.exists(doujinshi_dir):
-        logger.warning('Path \'{0}\' does not exist, creating.'.format(doujinshi_dir))
+        logger.warning(f'Path "{doujinshi_dir}" does not exist, creating.')
         try:
             os.makedirs(doujinshi_dir)
         except EnvironmentError as e:
@@ -94,9 +94,8 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
     for image in file_list:
         if not os.path.splitext(image)[1] in ('.jpg', '.png'):
             continue
+        image_html += f'<img src="{image}" class="image-item"/>\n'
 
-        image_html += '<img src="{0}" class="image-item"/>\n' \
-            .format(image)
     html = readfile('viewer/{}/index.html'.format(template))
     css = readfile('viewer/{}/styles.css'.format(template))
     js = readfile('viewer/{}/scripts.js'.format(template))
@@ -118,14 +117,14 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
             with open(os.path.join(doujinshi_dir, 'index.html'), 'wb') as f:
                 f.write(data.encode('utf-8'))
 
-        logger.log(15, 'HTML Viewer has been written to \'{0}\''.format(os.path.join(doujinshi_dir, 'index.html')))
+        logger.log(15, f'HTML Viewer has been written to "{os.path.join(doujinshi_dir, "index.html")}"')
     except Exception as e:
-        logger.warning('Writing HTML Viewer failed ({})'.format(str(e)))
+        logger.warning(f'Writing HTML Viewer failed ({e})')
 
 
 def generate_main_html(output_dir='./'):
     """
-    Generate a main html to show all the contain doujinshi.
+    Generate a main html to show all the contains doujinshi.
     With a link to their `index.html`.
     Default output folder will be the CLI path.
     """
@@ -154,7 +153,7 @@ def generate_main_html(output_dir='./'):
         files.sort()
 
         if 'index.html' in files:
-            logger.info('Add doujinshi \'{}\''.format(folder))
+            logger.info(f'Add doujinshi "{folder}"')
         else:
             continue
 
@@ -178,10 +177,9 @@ def generate_main_html(output_dir='./'):
                 f.write(data.encode('utf-8'))
         shutil.copy(os.path.dirname(__file__) + '/viewer/logo.png', './')
         set_js_database()
-        logger.log(
-            15, 'Main Viewer has been written to \'{0}main.html\''.format(output_dir))
+        logger.log(15, f'Main Viewer has been written to "{output_dir}main.html"')
     except Exception as e:
-        logger.warning('Writing Main Viewer failed ({})'.format(str(e)))
+        logger.warning(f'Writing Main Viewer failed ({e})')
 
 
 def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_comic_info=True):
@@ -206,7 +204,7 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
     if rm_origin_dir:
         shutil.rmtree(doujinshi_dir, ignore_errors=True)
 
-    logger.log(15, 'Comic Book CBZ file has been written to \'{0}\''.format(doujinshi_dir))
+    logger.log(15, f'Comic Book CBZ file has been written to "{doujinshi_dir}"')
 
 
 def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
@@ -218,7 +216,7 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
             doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
             pdf_filename = os.path.join(
                 os.path.join(doujinshi_dir, '..'),
-                '{}.pdf'.format(doujinshi_obj.filename)
+                f'{doujinshi_obj.filename}.pdf'
             )
         else:
             pdf_filename = './doujinshi.pdf'
@@ -227,7 +225,7 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
         file_list = os.listdir(doujinshi_dir)
         file_list.sort()
 
-        logger.info('Writing PDF file to path: {}'.format(pdf_filename))
+        logger.info(f'Writing PDF file to path: {pdf_filename}')
         with open(pdf_filename, 'wb') as pdf_f:
             full_path_list = (
                 [os.path.join(doujinshi_dir, image) for image in file_list]
@@ -237,17 +235,10 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
         if rm_origin_dir:
             shutil.rmtree(doujinshi_dir, ignore_errors=True)
 
-        logger.log(15, 'PDF file has been written to \'{0}\''.format(doujinshi_dir))
+        logger.log(15, f'PDF file has been written to "{doujinshi_dir}"')
 
     except ImportError:
         logger.error("Please install img2pdf package by using pip.")
-
-
-def unicode_truncate(s, length, encoding='utf-8'):
-    """https://stackoverflow.com/questions/1809531/truncating-unicode-so-it-fits-a-maximum-size-when-encoded-for-wire-transfer
-    """
-    encoded = s.encode(encoding)[:length]
-    return encoded.decode(encoding, 'ignore')
 
 
 def format_filename(s, length=MAX_FIELD_LENGTH, _truncate_only=False):
@@ -323,7 +314,7 @@ def generate_metadata_file(output_dir, table, doujinshi_obj=None):
                       'LANGUAGE', 'TAGS', 'URL', 'PAGES']
 
     for i in range(len(fields)):
-        f.write('{}: '.format(fields[i]))
+        f.write(f'{fields[i]}: ')
         if fields[i] in special_fields:
             f.write(str(table[special_fields.index(fields[i])][1]))
         f.write('\n')
