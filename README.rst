@@ -9,7 +9,7 @@ nhentai
 |license|
 
 
-nHentai is a CLI tool for downloading doujinshi from <http://nhentai.net>
+nhentai is a CLI tool for downloading doujinshi from `nhentai.net <https://nhentai.net>`_
 
 ===================
 Manual Installation
@@ -22,7 +22,7 @@ From Github:
     cd nhentai
     python setup.py install
 
-Use Docker:
+Build Docker container:
 
 .. code-block::
 
@@ -32,38 +32,36 @@ Use Docker:
     docker run -it -v ~/Downloads/doujinshi:/output -v ~/.nhentai/:/root/.nhentai nhentai --id 123855
 
 ==================
-Installation (pip)
+Installation
 ==================
-Alternatively, install from PyPI with pip:
+From PyPI with pip:
 
 .. code-block::
 
    pip install nhentai
 
-For a self-contained installation, use `Pipx <https://github.com/pipxproject/pipx/>`_:
+For a self-contained installation, use `pipx <https://github.com/pipxproject/pipx/>`_:
 
 .. code-block::
 
    pipx install nhentai
 
-From docker hub:
+Pull from Dockerhub:
 
 .. code-block::
 
     docker pull ricterz/nhentai
     docker run -it -v ~/Downloads/doujinshi:/output -v ~/.nhentai/:/root/.nhentai ricterz/nhentai --id 123855
 
-=====================
-Installation (Gentoo)
-=====================
+On Gentoo Linux:
+
 .. code-block::
 
     layman -fa glicOne
     sudo emerge net-misc/nhentai
-    
-=====================
-Installation (NixOs)
-=====================
+
+On NixOS:
+
 .. code-block::
 
     nix-env -iA nixos.nhentai
@@ -73,17 +71,12 @@ Usage
 =====
 **⚠️IMPORTANT⚠️**: To bypass the nhentai frequency limit, you should use `--cookie` and `--useragent` options to store your cookie and your user-agent.
 
-*The default download folder will be the path where you run the command (CLI path).*
-
-
-Set your nhentai cookie against captcha:
-
 .. code-block:: bash
 
     nhentai --useragent "USER AGENT of YOUR BROWSER"
     nhentai --cookie "YOUR COOKIE FROM nhentai.net"
 
-**NOTE**
+**NOTE:**
 
 - The format of the cookie is `"csrftoken=TOKEN; sessionid=ID; cf_clearance=CLOUDFLARE"`
 - `cf_clearance` cookie and useragent must be set if you encounter "blocked by cloudflare captcha" error. Make sure you use the same IP and useragent as when you got it
@@ -100,6 +93,8 @@ Set your nhentai cookie against captcha:
 .. image:: https://github.com/RicterZ/nhentai/raw/master/images/usage.png
     :alt: nhentai
     :align: center
+
+*The default download folder will be the path where you run the command (CLI path).*
 
 Download specified doujinshi:
 
