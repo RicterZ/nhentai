@@ -29,7 +29,7 @@ Use Docker :
     git clone https://github.com/RicterZ/nhentai
     cd nhentai
     docker build -t nhentai:latest .
-    docker run -v ~/Downloads/doujinshi:/output -v ~/.nhentai/:/root/.nhentai nhentai --id 123855
+    docker run -it -v ~/Downloads/doujinshi:/output -v ~/.nhentai/:/root/.nhentai nhentai --id 123855
 
 ==================
 Installation (pip)
@@ -51,7 +51,7 @@ From docker hub:
 .. code-block::
 
     docker pull ricterz/nhentai
-    docker run -v ~/Downloads/doujinshi:/output -v ~/.nhentai/:/root/.nhentai ricterz/nhentai --id 123855
+    docker run -it -v ~/Downloads/doujinshi:/output -v ~/.nhentai/:/root/.nhentai ricterz/nhentai --id 123855
 
 =====================
 Installation (Gentoo)
