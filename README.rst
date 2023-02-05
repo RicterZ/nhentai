@@ -94,7 +94,7 @@ Usage
     :alt: nhentai
     :align: center
 
-*The default download folder will be the path where you run the command (CLI path).*
+*The default download folder will be the path where you run the command (%cd% or $PWD).*
 
 Download specified doujinshi:
 
