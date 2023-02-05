@@ -1,10 +1,7 @@
-#!/usr/bin/env python2.7
 # coding: utf-8
-
 import sys
 import signal
 import platform
-import time
 
 from nhentai import constant
 from nhentai.cmdline import cmd_parser, banner
@@ -25,16 +22,16 @@ def main():
         exit(1)
 
     options = cmd_parser()
-    logger.info('Using mirror: {0}'.format(BASE_URL))
+    logger.info(f'Using mirror: {BASE_URL}')
 
     # CONFIG['proxy'] will be changed after cmd_parser()
     if constant.CONFIG['proxy']['http']:
-        logger.info('Using proxy: {0}'.format(constant.CONFIG['proxy']['http']))
+        logger.info(f'Using proxy: {constant.CONFIG["proxy"]["http"]}')
 
     if not constant.CONFIG['template']:
         constant.CONFIG['template'] = 'default'
 
-    logger.info('Using viewer template "{}"'.format(constant.CONFIG['template']))
+    logger.info(f'Using viewer template "{constant.CONFIG["template"]}"')
 
     # check your cookie
     check_cookie()
@@ -53,8 +50,8 @@ def main():
 
     elif options.keyword:
         if constant.CONFIG['language']:
-            logger.info('Using default language: {0}'.format(constant.CONFIG['language']))
-            options.keyword += ' language:{}'.format(constant.CONFIG['language'])
+            logger.info(f'Using default language: {constant.CONFIG["language"]}')
+            options.keyword += f' language:{constant.CONFIG["language"]}'
 
         _search_parser = legacy_search_parser if options.legacy else search_parser
         doujinshis = _search_parser(options.keyword, sorting=options.sorting, page=page_list,
@@ -121,7 +118,8 @@ def main():
             doujinshi.show()
 
 
-signal.signal(signal.SIGINT, signal_handler)
-
 if __name__ == '__main__':
+    import urllib3.exceptions
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    signal.signal(signal.SIGINT, signal_handler)
     main()

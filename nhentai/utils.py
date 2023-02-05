@@ -86,7 +86,7 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
         try:
             os.makedirs(doujinshi_dir)
         except EnvironmentError as e:
-            logger.critical('{0}'.format(str(e)))
+            logger.critical(e)
 
     file_list = os.listdir(doujinshi_dir)
     file_list.sort()
@@ -96,15 +96,13 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
             continue
         image_html += f'<img src="{image}" class="image-item"/>\n'
 
-    html = readfile('viewer/{}/index.html'.format(template))
-    css = readfile('viewer/{}/styles.css'.format(template))
-    js = readfile('viewer/{}/scripts.js'.format(template))
+    html = readfile(f'viewer/{template}/index.html')
+    css = readfile(f'viewer/{template}/styles.css')
+    js = readfile(f'viewer/{template}/scripts.js')
 
     if doujinshi_obj is not None:
         serialize_json(doujinshi_obj, doujinshi_dir)
         name = doujinshi_obj.name
-        if sys.version_info < (3, 0):
-            name = doujinshi_obj.name.encode('utf-8')
     else:
         name = {'title': 'nHentai HTML Viewer'}
 
@@ -187,7 +185,7 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
         if write_comic_info:
             serialize_comic_xml(doujinshi_obj, doujinshi_dir)
-        cbz_filename = os.path.join(os.path.join(doujinshi_dir, '..'), '{}.cbz'.format(doujinshi_obj.filename))
+        cbz_filename = os.path.join(os.path.join(doujinshi_dir, '..'), f'{doujinshi_obj.filename}.cbz')
     else:
         cbz_filename = './doujinshi.cbz'
         doujinshi_dir = '.'
@@ -195,7 +193,7 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
     file_list = os.listdir(doujinshi_dir)
     file_list.sort()
 
-    logger.info('Writing CBZ file to path: {}'.format(cbz_filename))
+    logger.info(f'Writing CBZ file to path: {cbz_filename}')
     with zipfile.ZipFile(cbz_filename, 'w') as cbz_pf:
         for image in file_list:
             image_path = os.path.join(doujinshi_dir, image)

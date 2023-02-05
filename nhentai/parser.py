@@ -26,7 +26,7 @@ def login(username, password):
         logger.info('Getting CSRF token ...')
 
     if os.getenv('DEBUG'):
-        logger.info('CSRF token is {}'.format(csrf_token))
+        logger.info(f'CSRF token is {csrf_token}')
 
     login_dict = {
         'csrfmiddlewaretoken': csrf_token,
@@ -56,7 +56,7 @@ def _get_title_and_id(response):
         doujinshi_container = doujinshi.find('div', attrs={'class': 'caption'})
         title = doujinshi_container.text.strip()
         title = title if len(title) < 85 else title[:82] + '...'
-        id_ = re.search('/g/(\d+)/', doujinshi.a['href']).group(1)
+        id_ = re.search('/g/([0-9]+)/', doujinshi.a['href']).group(1)
         result.append({'id': id_, 'title': title})
 
     return result
@@ -67,7 +67,7 @@ def favorites_parser(page=None):
     html = BeautifulSoup(request('get', constant.FAV_URL).content, 'html.parser')
     count = html.find('span', attrs={'class': 'count'})
     if not count:
-        logger.error("Can't get your number of favorited doujins. Did the login failed?")
+        logger.error("Can't get your number of favorite doujinshis. Did the login failed?")
         return []
 
     count = int(count.text.strip('(').strip(')').replace(',', ''))
@@ -84,7 +84,7 @@ def favorites_parser(page=None):
         else:
             pages = 1
 
-        logger.info('You have %d favorites in %d pages.' % (count, pages))
+        logger.info(f'You have {count} favorites in {pages} pages.')
 
         if os.getenv('DEBUG'):
             pages = 1
@@ -93,40 +93,40 @@ def favorites_parser(page=None):
 
     for page in page_range_list:
         try:
-            logger.info('Getting doujinshi ids of page %d' % page)
-            resp = request('get', constant.FAV_URL + '?page=%d' % page).content
+            logger.info(f'Getting doujinshi ids of page {page}')
+            resp = request('get', f'{constant.FAV_URL}?page={page}').content
 
             result.extend(_get_title_and_id(resp))
         except Exception as e:
-            logger.error('Error: %s, continue', str(e))
+            logger.error(f'Error: {e}, continue')
 
     return result
 
 
 def doujinshi_parser(id_):
     if not isinstance(id_, (int,)) and (isinstance(id_, (str,)) and not id_.isdigit()):
-        raise Exception('Doujinshi id({0}) is not valid'.format(id_))
+        raise Exception(f'Doujinshi id({id_}) is not valid')
 
     id_ = int(id_)
-    logger.log(15, 'Fetching doujinshi information of id {0}'.format(id_))
+    logger.log(15, f'Fetching doujinshi information of id {id_}')
     doujinshi = dict()
     doujinshi['id'] = id_
-    url = '{0}/{1}/'.format(constant.DETAIL_URL, id_)
+    url = f'{constant.DETAIL_URL}/{id_}/'
 
     try:
         response = request('get', url)
         if response.status_code in (200, ):
             response = response.content
         elif response.status_code in (404,):
-            logger.error("Doujinshi with id {0} cannot be found".format(id_))
+            logger.error(f'Doujinshi with id {id_} cannot be found')
             return []
         else:
-            logger.debug('Slow down and retry ({}) ...'.format(id_))
+            logger.debug(f'Slow down and retry ({id_}) ...')
             time.sleep(1)
             return doujinshi_parser(str(id_))
 
     except Exception as e:
-        logger.warning('Error: {}, ignored'.format(str(e)))
+        logger.warning(f'Error: {e}, ignored')
         return None
 
     html = BeautifulSoup(response, 'html.parser')
@@ -179,7 +179,7 @@ def doujinshi_parser(id_):
 
 
 def legacy_search_parser(keyword, sorting, page, is_page_all=False):
-    logger.debug('Searching doujinshis of keyword {0}'.format(keyword))
+    logger.debug(f'Searching doujinshis of keyword {keyword}')
 
     response = None
     result = []
@@ -189,13 +189,13 @@ def legacy_search_parser(keyword, sorting, page, is_page_all=False):
         page = [1]
 
     for p in page:
-        logger.debug('Fetching page {} ...'.format(p))
+        logger.debug(f'Fetching page {p} ...')
         response = request('get', url=constant.LEGACY_SEARCH_URL,
                            params={'q': keyword, 'page': p, 'sort': sorting}).content
         result.extend(_get_title_and_id(response))
 
     if not result:
-        logger.warning('Not found anything of keyword {} on page {}'.format(keyword, page[0]))
+        logger.warning(f'Not found anything of keyword {keyword} on page {page[0]}')
         return result
 
     if is_page_all:
@@ -219,12 +219,11 @@ def print_doujinshi(doujinshi_list):
         return
     doujinshi_list = [(i['id'], i['title']) for i in doujinshi_list]
     headers = ['id', 'doujinshi']
-    logger.info('Search Result || Found %i doujinshis \n' % doujinshi_list.__len__() +
+    logger.info(f'Search Result || Found {doujinshi_list.__len__()} doujinshis \n' +
                 tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
 def search_parser(keyword, sorting, page, is_page_all=False):
-    # keyword = '+'.join([i.strip().replace(' ', '-').lower() for i in keyword.split(',')])
     result = []
     response = None
     if not page:
@@ -235,12 +234,12 @@ def search_parser(keyword, sorting, page, is_page_all=False):
         init_response = request('get', url.replace('%2B', '+')).json()
         page = range(1, init_response['num_pages']+1)
 
-    total = '/{0}'.format(page[-1]) if is_page_all else ''
+    total = f'/{page[-1]}' if is_page_all else ''
     not_exists_persist = False
     for p in page:
         i = 0
 
-        logger.info('Searching doujinshis using keywords "{0}" on page {1}{2}'.format(keyword, p, total))
+        logger.info(f'Searching doujinshis using keywords "{keyword}" on page {p}{total}')
         while i < 3:
             try:
                 url = request('get', url=constant.SEARCH_URL, params={'query': keyword,
@@ -252,7 +251,7 @@ def search_parser(keyword, sorting, page, is_page_all=False):
             break
 
         if response is None or 'result' not in response:
-            logger.warning('No result in response in page {}'.format(p))
+            logger.warning(f'No result in response in page {p}')
             if not_exists_persist is True:
                 break
             continue
@@ -264,20 +263,20 @@ def search_parser(keyword, sorting, page, is_page_all=False):
 
         not_exists_persist = False
         if not result:
-            logger.warning('No results for keywords {}'.format(keyword))
+            logger.warning(f'No results for keywords {keyword}')
 
     return result
 
 
 def __api_suspended_doujinshi_parser(id_):
     if not isinstance(id_, (int,)) and (isinstance(id_, (str,)) and not id_.isdigit()):
-        raise Exception('Doujinshi id({0}) is not valid'.format(id_))
+        raise Exception(f'Doujinshi id({id_}) is not valid')
 
     id_ = int(id_)
-    logger.log(15, 'Fetching information of doujinshi id {0}'.format(id_))
+    logger.log(15, f'Fetching information of doujinshi id {id_}')
     doujinshi = dict()
     doujinshi['id'] = id_
-    url = '{0}/{1}'.format(constant.DETAIL_URL, id_)
+    url = f'{constant.DETAIL_URL}/{id_}'
     i = 0
     while 5 > i:
         try:

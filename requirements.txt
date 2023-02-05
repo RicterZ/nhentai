@@ -4,3 +4,6 @@ BeautifulSoup4>=4.0.0
 tabulate>=0.7.5
 future>=0.15.2
 iso8601 >= 0.1
+
+urllib3~=1.26.9
+setuptools~=60.2.0
