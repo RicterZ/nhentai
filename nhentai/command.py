@@ -2,6 +2,7 @@
 import sys
 import signal
 import platform
+import urllib3.exceptions
 
 from nhentai import constant
 from nhentai.cmdline import cmd_parser, banner
@@ -118,8 +119,8 @@ def main():
             doujinshi.show()
 
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+signal.signal(signal.SIGINT, signal_handler)
+
 if __name__ == '__main__':
-    import urllib3.exceptions
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    signal.signal(signal.SIGINT, signal_handler)
     main()

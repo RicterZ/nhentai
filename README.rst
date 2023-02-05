@@ -95,7 +95,7 @@ Download specified doujinshi:
 
 .. code-block:: bash
 
-    nhentai --id=123855,123866
+    nhentai --id 123855 123866 123877
 
 Download doujinshi with ids specified in a file (doujinshi ids split by line):
 
@@ -145,7 +145,7 @@ Other options:
 
     Usage:
       nhentai --search [keyword] --download
-      NHENTAI=http://h.loli.club nhentai --id [ID ...]
+      NHENTAI=https://nhentai-mirror-url/ nhentai --id [ID ...]
       nhentai --file [filename]
 
     Environment Variable:
@@ -158,10 +158,10 @@ Other options:
       -S, --show            just show the doujinshi information
 
       # Doujinshi options, specify id, keyword, etc.
-      --id=ID               doujinshi ids set, e.g. 1,2,3
+      --id                  doujinshi ids set, e.g. 167680 167681 167682
       -s KEYWORD, --search=KEYWORD
                             search doujinshi by keyword
-      -F, --favorites       list or download your favorites.
+      -F, --favorites       list or download your favorites
 
       # Page options, control the page to fetch / download
       --page-all            all search results
@@ -179,10 +179,10 @@ Other options:
                             timeout for downloading doujinshi
       -d DELAY, --delay=DELAY
                             slow down between downloading every doujinshi
-      --proxy=PROXY         store a proxy, for example: -p 'http://127.0.0.1:1080'
+      --proxy=PROXY         store a proxy, for example: -p "http://127.0.0.1:1080"
       -f FILE, --file=FILE  read gallery IDs from file.
       --format=NAME_FORMAT  format the saved folder name
-      -r, --dry-run         Dry run, skip file download.
+      --dry-run             Dry run, skip file download
 
       # Generate options, for generate html viewer, cbz file, pdf file, etc
       --html                generate a html viewer at current directory
@@ -192,13 +192,13 @@ Other options:
       -C, --cbz             generate Comic Book CBZ File
       -P, --pdf             generate PDF file
       --rm-origin-dir       remove downloaded doujinshi dir when generated CBZ or
-                            PDF file.
+                            PDF file
       --meta                generate a metadata file in doujinshi format
       --regenerate-cbz      regenerate the cbz file if exists
 
       # nhentai options, set cookie, user-agent, language, remove caches, histories, etc
       --cookie=COOKIE       set cookie of nhentai to bypass Cloudflare captcha
-      --useragent=USERAGENT
+      --useragent=USERAGENT, --user-agent=USERAGENT
                             set useragent to bypass Cloudflare captcha
       --language=LANGUAGE   set default language to parse doujinshis
       --clean-language      set DEFAULT as language to parse doujinshis
@@ -209,6 +209,7 @@ Other options:
                             clean download history
       --template=VIEWER_TEMPLATE
                             set viewer template
+      --legacy              use legacy searching method
 
 ==============
 nHentai Mirror
@@ -225,7 +226,7 @@ Set `NHENTAI` env var to your nhentai mirror.
 
 .. code-block:: bash
 
-    NHENTAI=http://h.loli.club nhentai --id 123456
+    NHENTAI=https://h.loli.club nhentai --id 123456
 
 
 .. image:: ./images/search.png?raw=true
