@@ -79,7 +79,7 @@ Set your nhentai cookie against captcha:
 .. |ve| unicode:: U+22EE .. https://www.compart.com/en/unicode/U+22EE
 .. |ld| unicode:: U+2014 .. https://www.compart.com/en/unicode/U+2014
 
-.. image:: ./images/usage.png?raw=true
+.. image:: https://github.com/RicterZ/nhentai/raw/master/images/usage.png
     :alt: nhentai
     :align: center
 
@@ -221,13 +221,13 @@ Set `NHENTAI` env var to your nhentai mirror.
     NHENTAI=https://h.loli.club nhentai --id 123456
 
 
-.. image:: ./images/search.png?raw=true
+.. image:: https://github.com/RicterZ/nhentai/raw/master/images/search.png
     :alt: nhentai
     :align: center
-.. image:: ./images/download.png?raw=true
+.. image:: https://github.com/RicterZ/nhentai/raw/master/images/download.png
     :alt: nhentai
     :align: center
-.. image:: ./images/viewer.png?raw=true
+.. image:: https://github.com/RicterZ/nhentai/raw/master/images/viewer.png
     :alt: nhentai
     :align: center
 
