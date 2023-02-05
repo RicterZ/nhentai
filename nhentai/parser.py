@@ -108,7 +108,7 @@ def doujinshi_parser(id_):
         raise Exception(f'Doujinshi id({id_}) is not valid')
 
     id_ = int(id_)
-    logger.log(15, f'Fetching doujinshi information of id {id_}')
+    logger.info(f'Fetching doujinshi information of id {id_}')
     doujinshi = dict()
     doujinshi['id'] = id_
     url = f'{constant.DETAIL_URL}/{id_}/'
@@ -219,8 +219,8 @@ def print_doujinshi(doujinshi_list):
         return
     doujinshi_list = [(i['id'], i['title']) for i in doujinshi_list]
     headers = ['id', 'doujinshi']
-    logger.info(f'Search Result || Found {doujinshi_list.__len__()} doujinshis \n' +
-                tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
+    logger.info(f'Search Result || Found {doujinshi_list.__len__()} doujinshis')
+    print(tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
 def search_parser(keyword, sorting, page, is_page_all=False):
@@ -273,7 +273,7 @@ def __api_suspended_doujinshi_parser(id_):
         raise Exception(f'Doujinshi id({id_}) is not valid')
 
     id_ = int(id_)
-    logger.log(15, f'Fetching information of doujinshi id {id_}')
+    logger.info(f'Fetching information of doujinshi id {id_}')
     doujinshi = dict()
     doujinshi['id'] = id_
     url = f'{constant.DETAIL_URL}/{id_}'

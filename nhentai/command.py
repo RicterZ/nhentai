@@ -105,9 +105,9 @@ def main():
             generate_main_html(options.output_dir)
 
         if not platform.system() == 'Windows':
-            logger.log(15, '🍻 All done.')
+            logger.log(16, '🍻 All done.')
         else:
-            logger.log(15, 'All done.')
+            logger.log(16, 'All done.')
 
     else:
         for doujinshi_id in doujinshi_ids:

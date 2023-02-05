@@ -7,6 +7,7 @@ import sys
 import os
 import requests
 import time
+import urllib3.exceptions
 
 from urllib.parse import urlparse
 from nhentai import constant
@@ -15,6 +16,7 @@ from nhentai.parser import request
 from nhentai.utils import Singleton
 
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 semaphore = multiprocessing.Semaphore(1)
 
 
@@ -26,7 +28,6 @@ def download_callback(result):
     result, data = result
     if result == 0:
         logger.warning('fatal errors occurred, ignored')
-        # exit(1)
     elif result == -1:
         logger.warning(f'url {data} return status code 404')
     elif result == -2:
@@ -35,7 +36,7 @@ def download_callback(result):
         # workers won't be run, just pass
         pass
     else:
-        logger.log(15, f'{data} downloaded successfully')
+        logger.log(16, f'{data} downloaded successfully')
 
 
 class Downloader(Singleton):

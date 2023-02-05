@@ -40,7 +40,7 @@ def check_cookie():
     if not username:
         logger.warning('Cannot get your username, please check your cookie or use `nhentai --cookie` to set your cookie')
     else:
-        logger.info(f'Login successfully! Your username: {username[0]}')
+        logger.log(16, f'Login successfully! Your username: {username[0]}')
 
 
 class _Singleton(type):
@@ -115,7 +115,7 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
             with open(os.path.join(doujinshi_dir, 'index.html'), 'wb') as f:
                 f.write(data.encode('utf-8'))
 
-        logger.log(15, f'HTML Viewer has been written to "{os.path.join(doujinshi_dir, "index.html")}"')
+        logger.log(16, f'HTML Viewer has been written to "{os.path.join(doujinshi_dir, "index.html")}"')
     except Exception as e:
         logger.warning(f'Writing HTML Viewer failed ({e})')
 
@@ -175,7 +175,7 @@ def generate_main_html(output_dir='./'):
                 f.write(data.encode('utf-8'))
         shutil.copy(os.path.dirname(__file__) + '/viewer/logo.png', './')
         set_js_database()
-        logger.log(15, f'Main Viewer has been written to "{output_dir}main.html"')
+        logger.log(16, f'Main Viewer has been written to "{output_dir}main.html"')
     except Exception as e:
         logger.warning(f'Writing Main Viewer failed ({e})')
 
@@ -202,7 +202,7 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
     if rm_origin_dir:
         shutil.rmtree(doujinshi_dir, ignore_errors=True)
 
-    logger.log(15, f'Comic Book CBZ file has been written to "{doujinshi_dir}"')
+    logger.log(16, f'Comic Book CBZ file has been written to "{doujinshi_dir}"')
 
 
 def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
@@ -233,7 +233,7 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
         if rm_origin_dir:
             shutil.rmtree(doujinshi_dir, ignore_errors=True)
 
-        logger.log(15, f'PDF file has been written to "{doujinshi_dir}"')
+        logger.log(16, f'PDF file has been written to "{doujinshi_dir}"')
 
     except ImportError:
         logger.error("Please install img2pdf package by using pip.")
