@@ -9,8 +9,8 @@ with open('requirements.txt') as f:
 
 
 def long_description():
-    with codecs.open('README.rst', 'r') as readme:
-        return readme.read()
+    with codecs.open('README.rst', 'rb') as readme:
+        return readme.read().decode('utf-8')
 
 
 setup(
