@@ -2,7 +2,7 @@
 import json
 import os
 from xml.sax.saxutils import escape
-from nhentai.constant import LANGUAGEISO
+from nhentai.constant import LANGUAGE_ISO
 
 
 def serialize_json(doujinshi, output_dir):
@@ -67,8 +67,8 @@ def serialize_comic_xml(doujinshi, output_dir):
         if doujinshi.info.languages:
             languages = [i.strip() for i in doujinshi.info.languages.split(',')]
             xml_write_simple_tag(f, 'Translated', 'Yes' if 'translated' in languages else 'No')
-            [xml_write_simple_tag(f, 'LanguageISO', LANGUAGEISO[i]) for i in languages
-                if (i != 'translated' and i in LANGUAGEISO)]
+            [xml_write_simple_tag(f, 'LanguageISO', LANGUAGE_ISO[i]) for i in languages
+             if (i != 'translated' and i in LANGUAGE_ISO)]
 
         f.write('</ComicInfo>')
 
