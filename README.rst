@@ -1,19 +1,11 @@
 nhentai
 =======
 
-.. code-block::
-
-           _   _            _        _
-     _ __ | | | | ___ _ __ | |_ __ _(_)
-    | '_ \| |_| |/ _ \ '_ \| __/ _` | |
-    | | | |  _  |  __/ | | | || (_| | |
-    |_| |_|_| |_|\___|_| |_|\__\__,_|_|
-
-
 あなたも変態。 いいね?
 
 |travis|
 |pypi|
+|version|
 |license|
 
 
@@ -244,6 +236,9 @@ Set `NHENTAI` env var to your nhentai mirror.
    :target: https://travis-ci.org/RicterZ/nhentai
 
 .. |pypi| image:: https://img.shields.io/pypi/dm/nhentai.svg
+   :target: https://pypi.org/project/nhentai/
+
+.. |version| image:: https://img.shields.io/pypi/v/nhentai
    :target: https://pypi.org/project/nhentai/
 
 .. |license| image:: https://img.shields.io/github/license/ricterz/nhentai.svg
