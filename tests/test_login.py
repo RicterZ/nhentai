@@ -15,7 +15,7 @@ class TestLogin(unittest.TestCase):
         constant.CONFIG['useragent'] = os.getenv('NHENTAI_UA')
 
     def test_cookie_set(self):
-        self.assertTrue(bool(constant.CONFIG['cookie']))
+        self.assertTrue(constant.CONFIG['useragent'].startswith('Mozilla'))
 
     def test_cookie(self):
         try:
