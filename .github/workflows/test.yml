@@ -20,8 +20,8 @@ jobs:
     steps:
     - name: Set env
       run: |
-        echo 'NHENTAI_COOKIE="csrftoken=zV4qotZJrHKTeEc9uEg5uvXV5qwTcZIHRjF3TgbkvP6OoxZNj8I6RFQeGSSiZT04; sessionid=t2x0ke3u5i1azg2kvepe7w0ej89btc7t; cf_chl_2=eff13178a8d7814; cf_clearance=Gti8UaeKBbXj2A7V0XFSGydeWbLj2VnqP83FnGx_wIU-1675675191-0-160"' >> $GITHUB_ENV
-        echo 'NHENTAI_UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"' >> $GITHUB_ENV
+        echo "NHENTAI_COOKIE=csrftoken=zV4qotZJrHKTeEc9uEg5uvXV5qwTcZIHRjF3TgbkvP6OoxZNj8I6RFQeGSSiZT04; sessionid=t2x0ke3u5i1azg2kvepe7w0ej89btc7t; cf_chl_2=eff13178a8d7814; cf_clearance=Gti8UaeKBbXj2A7V0XFSGydeWbLj2VnqP83FnGx_wIU-1675675191-0-160" >> $GITHUB_ENV
+        echo "NHENTAI_UA=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36" >> $GITHUB_ENV
 
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
