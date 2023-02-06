@@ -14,9 +14,6 @@ class TestLogin(unittest.TestCase):
         constant.CONFIG['cookie'] = os.getenv('NHENTAI_COOKIE')
         constant.CONFIG['useragent'] = os.getenv('NHENTAI_UA')
 
-    def test_cookie_set(self):
-        raise Exception(constant.CONFIG['useragent'])
-
     def test_cookie(self):
         try:
             check_cookie()
