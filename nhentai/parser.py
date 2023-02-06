@@ -112,6 +112,7 @@ def doujinshi_parser(id_):
     doujinshi = dict()
     doujinshi['id'] = id_
     url = f'{constant.DETAIL_URL}/{id_}/'
+    counter = 0
 
     try:
         response = request('get', url)
@@ -121,6 +122,12 @@ def doujinshi_parser(id_):
             logger.error(f'Doujinshi with id {id_} cannot be found')
             return []
         else:
+            counter += 1
+
+            if counter == 10:
+                logger.critical(f'Failed to fetch doujinshi information of id {id_}')
+                sys.exit(1)
+
             logger.debug(f'Slow down and retry ({id_}) ...')
             time.sleep(1)
             return doujinshi_parser(str(id_))
