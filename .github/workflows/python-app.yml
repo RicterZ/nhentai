@@ -17,8 +17,7 @@ jobs:
 
     runs-on: ubuntu-latest
     
-    environment:
-      name: nhentai_test
+    environment: nhentai_test
       
     steps:
     - uses: actions/checkout@v3
