@@ -3,16 +3,13 @@
 import os
 import sys
 import json
+import nhentai.constant as constant
+
+from urllib.parse import urlparse
 from optparse import OptionParser
 
-try:
-    from itertools import ifilter as filter
-except ImportError:
-    pass
-
-import nhentai.constant as constant
 from nhentai import __version__
-from nhentai.utils import urlparse, generate_html, generate_main_html, DB
+from nhentai.utils import generate_html, generate_main_html, DB
 from nhentai.logger import logger
 
 
@@ -142,35 +139,35 @@ def cmd_parser():
 
     if args.html_viewer:
         generate_html(template=constant.CONFIG['template'])
-        exit(0)
+        sys.exit(0)
 
     if args.main_viewer and not args.id and not args.keyword and not args.favorites:
         generate_main_html()
-        exit(0)
+        sys.exit(0)
 
     if args.clean_download_history:
         with DB() as db:
             db.clean_all()
 
         logger.info('Download history cleaned.')
-        exit(0)
+        sys.exit(0)
 
     # --- set config ---
     if args.cookie is not None:
         constant.CONFIG['cookie'] = args.cookie
         write_config()
         logger.info('Cookie saved.')
-        exit(0)
+        sys.exit(0)
     elif args.useragent is not None:
         constant.CONFIG['useragent'] = args.useragent
         write_config()
         logger.info('User-Agent saved.')
-        exit(0)
+        sys.exit(0)
     elif args.language is not None:
         constant.CONFIG['language'] = args.language
         write_config()
         logger.info(f'Default language now set to "{args.language}"')
-        exit(0)
+        sys.exit(0)
         # TODO: search without language
 
     if args.proxy is not None:
@@ -178,7 +175,7 @@ def cmd_parser():
         if not args.proxy == '' and proxy_url.scheme not in ('http', 'https', 'socks5', 'socks5h',
                                                              'socks4', 'socks4a'):
             logger.error(f'Invalid protocol "{proxy_url.scheme}" of proxy, ignored')
-            exit(0)
+            sys.exit(0)
         else:
             constant.CONFIG['proxy'] = {
                 'http': args.proxy,
@@ -186,7 +183,7 @@ def cmd_parser():
             }
             logger.info(f'Proxy now set to "{args.proxy}"')
             write_config()
-            exit(0)
+            sys.exit(0)
 
     if args.viewer_template is not None:
         if not args.viewer_template:
@@ -195,7 +192,7 @@ def cmd_parser():
         if not os.path.exists(os.path.join(os.path.dirname(__file__),
                                            f'viewer/{args.viewer_template}/index.html')):
             logger.error(f'Template "{args.viewer_template}" does not exists')
-            exit(1)
+            sys.exit(1)
         else:
             constant.CONFIG['template'] = args.viewer_template
             write_config()
@@ -205,7 +202,7 @@ def cmd_parser():
     if args.favorites:
         if not constant.CONFIG['cookie']:
             logger.warning('Cookie has not been set, please use `nhentai --cookie \'COOKIE\'` to set it.')
-            exit(1)
+            sys.exit(1)
 
     if args.file:
         with open(args.file, 'r') as f:
@@ -215,21 +212,21 @@ def cmd_parser():
     if (args.is_download or args.is_show) and not args.id and not args.keyword and not args.favorites:
         logger.critical('Doujinshi id(s) are required for downloading')
         parser.print_help()
-        exit(1)
+        sys.exit(1)
 
     if not args.keyword and not args.id and not args.favorites:
         parser.print_help()
-        exit(1)
+        sys.exit(1)
 
     if args.threads <= 0:
         args.threads = 1
 
     elif args.threads > 15:
         logger.critical('Maximum number of used threads is 15')
-        exit(1)
+        sys.exit(1)
 
     if args.dryrun and (args.is_cbz or args.is_pdf):
         logger.critical('Cannot generate PDF or CBZ during dry-run')
-        exit(1)
+        sys.exit(1)
 
     return args

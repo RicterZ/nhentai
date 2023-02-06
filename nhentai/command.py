@@ -20,7 +20,7 @@ def main():
 
     if sys.version_info < (3, 0, 0):
         logger.error('nhentai now only support Python 3.x')
-        exit(1)
+        sys.exit(1)
 
     options = cmd_parser()
     logger.info(f'Using mirror: {BASE_URL}')

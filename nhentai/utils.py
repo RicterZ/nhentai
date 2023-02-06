@@ -32,9 +32,9 @@ def request(method, url, **kwargs):
 
 def check_cookie():
     response = request('get', constant.BASE_URL)
-    if response.status_code == 503 and 'cf-browser-verification' in response.text:
+    if response.status_code == 403 and 'Just a moment...' in response.text:
         logger.error('Blocked by Cloudflare captcha, please set your cookie and useragent')
-        exit(-1)
+        sys.exit(1)
 
     username = re.findall('"/users/[0-9]+/(.*?)"', response.text)
     if not username:
@@ -55,15 +55,6 @@ class _Singleton(type):
 
 class Singleton(_Singleton(str('SingletonMeta'), (object,), {})):
     pass
-
-
-def urlparse(url):
-    try:
-        from urlparse import urlparse
-    except ImportError:
-        from urllib.parse import urlparse
-
-    return urlparse(url)
 
 
 def readfile(path):
@@ -108,12 +99,8 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
 
     data = html.format(TITLE=name, IMAGES=image_html, SCRIPTS=js, STYLES=css)
     try:
-        if sys.version_info < (3, 0):
-            with open(os.path.join(doujinshi_dir, 'index.html'), 'w') as f:
-                f.write(data)
-        else:
-            with open(os.path.join(doujinshi_dir, 'index.html'), 'wb') as f:
-                f.write(data.encode('utf-8'))
+        with open(os.path.join(doujinshi_dir, 'index.html'), 'wb') as f:
+            f.write(data.encode('utf-8'))
 
         logger.log(16, f'HTML Viewer has been written to "{os.path.join(doujinshi_dir, "index.html")}"')
     except Exception as e:
@@ -167,12 +154,8 @@ def generate_main_html(output_dir='./'):
         return
     try:
         data = main.format(STYLES=css, SCRIPTS=js, PICTURE=image_html)
-        if sys.version_info < (3, 0):
-            with open('./main.html', 'w') as f:
-                f.write(data)
-        else:
-            with open('./main.html', 'wb') as f:
-                f.write(data.encode('utf-8'))
+        with open('./main.html', 'wb') as f:
+            f.write(data.encode('utf-8'))
         shutil.copy(os.path.dirname(__file__) + '/viewer/logo.png', './')
         set_js_database()
         logger.log(16, f'Main Viewer has been written to "{output_dir}main.html"')
@@ -269,7 +252,7 @@ def format_filename(s, length=MAX_FIELD_LENGTH, _truncate_only=False):
 
 def signal_handler(signal, frame):
     logger.error('Ctrl-C signal received. Stopping...')
-    exit(1)
+    sys.exit(1)
 
 
 def paging(page_string):
