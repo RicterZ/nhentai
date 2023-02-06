@@ -103,7 +103,7 @@ def favorites_parser(page=None):
     return result
 
 
-def doujinshi_parser(id_):
+def doujinshi_parser(id_, counter=0):
     if not isinstance(id_, (int,)) and (isinstance(id_, (str,)) and not id_.isdigit()):
         raise Exception(f'Doujinshi id({id_}) is not valid')
 
@@ -112,7 +112,6 @@ def doujinshi_parser(id_):
     doujinshi = dict()
     doujinshi['id'] = id_
     url = f'{constant.DETAIL_URL}/{id_}/'
-    counter = 0
 
     try:
         response = request('get', url)
@@ -126,11 +125,11 @@ def doujinshi_parser(id_):
 
             if counter == 10:
                 logger.critical(f'Failed to fetch doujinshi information of id {id_}')
-                sys.exit(1)
+                return None
 
             logger.debug(f'Slow down and retry ({id_}) ...')
             time.sleep(1)
-            return doujinshi_parser(str(id_))
+            return doujinshi_parser(str(id_), counter)
 
     except Exception as e:
         logger.warning(f'Error: {e}, ignored')
