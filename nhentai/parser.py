@@ -241,37 +241,32 @@ def print_doujinshi(doujinshi_list):
 
 
 def legacy_search_parser(keyword, sorting, page, is_page_all=False):
-    logger.debug(f'Searching doujinshis of keyword {keyword}')
-
-    response = None
+    logger.info(f'Searching doujinshis of keyword {keyword}')
     result = []
 
-    if is_page_all and len(page) != 1:
-        # `--page-all` option will override the `--page` option
-        page = [1]
+    if is_page_all:
+        response = request('get', url=constant.LEGACY_SEARCH_URL,
+                           params={'q': keyword, 'page': 1, 'sort': sorting}).content
+        html = BeautifulSoup(response, 'lxml')
+        pagination = html.find(attrs={'class': 'pagination'})
+        last_page = pagination.find(attrs={'class': 'last'})
+        last_page = re.findall('page=([0-9]+)', last_page.attrs['href'])[0]
+        logger.info(f'Getting doujinshi ids of {last_page} pages')
+        pages = range(1, int(last_page))
+    else:
+        pages = page
 
-    for p in page:
-        logger.debug(f'Fetching page {p} ...')
+    for p in pages:
+        logger.info(f'Fetching page {p} ...')
         response = request('get', url=constant.LEGACY_SEARCH_URL,
                            params={'q': keyword, 'page': p, 'sort': sorting}).content
+        if response is None:
+            logger.warning(f'No result in response in page {p}')
+            continue
         result.extend(_get_title_and_id(response))
 
     if not result:
-        logger.warning(f'Not found anything of keyword {keyword} on page {page[0]}')
-        return result
-
-    if is_page_all:
-        html = BeautifulSoup(response, 'lxml')
-        pagination = html.find(attrs={'class': 'pagination'})
-        next_page = pagination.find(attrs={'class': 'next'})
-
-        if next_page is None:
-            logger.warning('Reached the last page')
-            return result
-        else:
-            next_page = re.findall('page=([0-9]+)', next_page.attrs['href'])[0]
-            result.extend(legacy_search_parser(keyword, sorting, [next_page], is_page_all))
-            return result
+        logger.warning(f'No results for keywords {keyword}')
 
     return result
 
