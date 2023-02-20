@@ -287,11 +287,11 @@ def generate_metadata_file(output_dir, table, doujinshi_obj=None):
 
     f = open(os.path.join(doujinshi_dir, 'info.txt'), 'w', encoding='utf-8')
 
-    fields = ['TITLE', 'ORIGINAL TITLE', 'AUTHOR', 'ARTIST', 'CIRCLE', 'SCANLATOR',
+    fields = ['TITLE', 'ORIGINAL TITLE', 'AUTHOR', 'ARTIST', 'GROUPS', 'CIRCLE', 'SCANLATOR',
               'TRANSLATOR', 'PUBLISHER', 'DESCRIPTION', 'STATUS', 'CHAPTERS', 'PAGES',
               'TAGS', 'TYPE', 'LANGUAGE', 'RELEASED', 'READING DIRECTION', 'CHARACTERS',
               'SERIES', 'PARODY', 'URL']
-    special_fields = ['PARODY', 'TITLE', 'ORIGINAL TITLE', 'CHARACTERS', 'AUTHOR',
+    special_fields = ['PARODY', 'TITLE', 'ORIGINAL TITLE', 'CHARACTERS', 'AUTHOR', 'GROUPS',
                       'LANGUAGE', 'TAGS', 'URL', 'PAGES']
 
     for i in range(len(fields)):
