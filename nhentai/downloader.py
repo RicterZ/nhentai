@@ -123,6 +123,7 @@ class Downloader(Singleton):
                 logger.warning(f'CBZ file "{folder}.cbz" exists, ignored download request')
                 return
 
+        logger.info(f'Doujinshi will be saved at "{folder}"')
         if not os.path.exists(folder):
             try:
                 os.makedirs(folder)
