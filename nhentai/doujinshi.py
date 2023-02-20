@@ -20,9 +20,10 @@ class DoujinshiInfo(dict):
 
     def __getattr__(self, item):
         try:
-            return dict.__getitem__(self, item)
+            ret = dict.__getitem__(self, item)
+            return ret if ret else 'Unknown'
         except KeyError:
-            return ''
+            return 'Unknown'
 
 
 class Doujinshi(object):
