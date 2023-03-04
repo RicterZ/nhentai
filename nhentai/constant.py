@@ -5,6 +5,7 @@ import tempfile
 from urllib.parse import urlparse
 
 
+DEBUG = os.getenv('DEBUG', False)
 BASE_URL = os.getenv('NHENTAI', 'https://nhentai.net')
 
 DETAIL_URL = f'{BASE_URL}/g'
