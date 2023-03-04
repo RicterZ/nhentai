@@ -1,6 +1,6 @@
-requests>=2.5.0
+requests
 soupsieve
-BeautifulSoup4>=4.0.0
-tabulate>=0.7.5
-iso8601 >= 0.1
+BeautifulSoup4
+tabulate
+iso8601
 urllib3
