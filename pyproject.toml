@@ -4,7 +4,7 @@ version = "0.5.2"
 description = "nhentai doujinshi downloader"
 authors = ["Ricter Z <ricterzheng@gmail.com>"]
 license = "MIT"
-readme = "README.md"
+readme = "README.rst"
 
 [tool.poetry.dependencies]
 python = "^3.8"
