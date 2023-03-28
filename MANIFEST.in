@@ -1,4 +1,4 @@
-include README.md
+include README.rst
 include requirements.txt
 include nhentai/viewer/*
 include nhentai/viewer/default/*
