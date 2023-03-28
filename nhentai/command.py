@@ -39,7 +39,6 @@ def main():
 
     doujinshis = []
     doujinshi_ids = []
-    doujinshi_list = []
 
     page_list = paging(options.page)
 

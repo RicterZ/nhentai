@@ -292,11 +292,18 @@ def search_parser(keyword, sorting, page, is_page_all=False):
             try:
                 url = request('get', url=constant.SEARCH_URL, params={'query': keyword,
                                                                       'page': p, 'sort': sorting}).url
+
+                if constant.DEBUG:
+                    logger.debug(f'Request URL: {url}')
+
                 response = request('get', url.replace('%2B', '+')).json()
             except Exception as e:
                 logger.critical(str(e))
                 response = None
             break
+
+        if constant.DEBUG:
+            logger.debug(f'Response: {response}')
 
         if response is None or 'result' not in response:
             logger.warning(f'No result in response in page {p}')
