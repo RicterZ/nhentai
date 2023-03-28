@@ -294,7 +294,7 @@ def search_parser(keyword, sorting, page, is_page_all=False):
                                                                       'page': p, 'sort': sorting}).url
 
                 if constant.DEBUG:
-                    logger.debug(f'Request URL: {url}?query={keyword}&page={p}&sort={sorting}')
+                    logger.debug(f'Request URL: {url}')
 
                 response = request('get', url.replace('%2B', '+')).json()
             except Exception as e:
