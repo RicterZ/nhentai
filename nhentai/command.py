@@ -46,7 +46,7 @@ def main():
         if not options.is_download:
             logger.warning('You do not specify --download option')
 
-        doujinshis = favorites_parser(page=page_list)
+        doujinshis = favorites_parser() if options.page_all else favorites_parser(page=page_list)
 
     elif options.keyword:
         if constant.CONFIG['language']:
