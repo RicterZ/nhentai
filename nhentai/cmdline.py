@@ -112,6 +112,8 @@ def cmd_parser():
                       help='generate PDF file')
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
                       help='remove downloaded doujinshi dir when generated CBZ or PDF file')
+    parser.add_option('--move-to-folder', dest='move_to_folder', action='store_true', default=False,
+                      help='remove files in doujinshi dir then move new file to folder when generated CBZ or PDF file')
     parser.add_option('--meta', dest='generate_metadata', action='store_true',
                       help='generate a metadata file in doujinshi format')
     parser.add_option('--regenerate-cbz', dest='regenerate_cbz', action='store_true', default=False,

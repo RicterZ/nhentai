@@ -163,7 +163,7 @@ def generate_main_html(output_dir='./'):
         logger.warning(f'Writing Main Viewer failed ({e})')
 
 
-def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_comic_info=True):
+def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_comic_info=True, move_to_folder=False):
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
         if write_comic_info:
@@ -185,10 +185,21 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
     if rm_origin_dir:
         shutil.rmtree(doujinshi_dir, ignore_errors=True)
 
+    if move_to_folder:
+            for filename in os.listdir(doujinshi_dir):
+                file_path = os.path.join(doujinshi_dir, filename)
+                if os.path.isfile(file_path):
+                    try:
+                        os.remove(file_path)
+                    except Exception as e:
+                        print(f"Error deleting file: {e}")
+
+            shutil.move(cbz_filename, doujinshi_dir)
+
     logger.log(16, f'Comic Book CBZ file has been written to "{doujinshi_dir}"')
 
 
-def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
+def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, move_to_folder=False):
     try:
         import img2pdf
 
@@ -215,6 +226,17 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False):
 
         if rm_origin_dir:
             shutil.rmtree(doujinshi_dir, ignore_errors=True)
+
+        if move_to_folder:
+            for filename in os.listdir(doujinshi_dir):
+                file_path = os.path.join(doujinshi_dir, filename)
+                if os.path.isfile(file_path):
+                    try:
+                        os.remove(file_path)
+                    except Exception as e:
+                        print(f"Error deleting file: {e}")
+
+            shutil.move(pdf_filename, doujinshi_dir)
 
         logger.log(16, f'PDF file has been written to "{doujinshi_dir}"')
 

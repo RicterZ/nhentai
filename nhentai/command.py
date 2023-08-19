@@ -96,9 +96,9 @@ def main():
             if not options.is_nohtml and not options.is_cbz and not options.is_pdf:
                 generate_html(options.output_dir, doujinshi, template=constant.CONFIG['template'])
             elif options.is_cbz:
-                generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir)
+                generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir, True, options.move_to_folder)
             elif options.is_pdf:
-                generate_pdf(options.output_dir, doujinshi, options.rm_origin_dir)
+                generate_pdf(options.output_dir, doujinshi, options.rm_origin_dir, options.move_to_folder)
 
         if options.main_viewer:
             generate_main_html(options.output_dir)

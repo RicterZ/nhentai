@@ -200,6 +200,8 @@ Other options:
       -P, --pdf             generate PDF file
       --rm-origin-dir       remove downloaded doujinshi dir when generated CBZ or
                             PDF file
+      --move-to-folder      remove files in doujinshi dir then move new file to folder 
+                            when generated CBZ or PDF file  
       --meta                generate a metadata file in doujinshi format
       --regenerate-cbz      regenerate the cbz file if exists
 
