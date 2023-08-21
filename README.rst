@@ -11,6 +11,8 @@ nhentai
 
 nhentai is a CLI tool for downloading doujinshi from `nhentai.net <https://nhentai.net>`_
 
+GUI version: `https://github.com/edgar1016/nhentai-GUI <https://github.com/edgar1016/nhentai-GUI>`_
+
 ===================
 Manual Installation
 ===================
