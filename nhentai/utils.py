@@ -254,7 +254,7 @@ def format_filename(s, length=MAX_FIELD_LENGTH, _truncate_only=False):
     # maybe you can use `--format` to select a suitable filename
 
     if not _truncate_only:
-        ban_chars = '\\\'/:,;*?"<>|\t'
+        ban_chars = '\\\'/:,;*?"<>|\t\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b'
         filename = s.translate(str.maketrans(ban_chars, ' ' * len(ban_chars))).strip()
         filename = ' '.join(filename.split())
 
