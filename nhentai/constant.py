@@ -11,11 +11,13 @@ BASE_URL = os.getenv('NHENTAI', 'https://nhentai.net')
 DETAIL_URL = f'{BASE_URL}/g'
 LEGACY_SEARCH_URL = f'{BASE_URL}/search/'
 SEARCH_URL = f'{BASE_URL}/api/galleries/search'
+ARTIST_URL = f'{BASE_URL}/artist/'
 
 TAG_API_URL = f'{BASE_URL}/api/galleries/tagged'
 LOGIN_URL = f'{BASE_URL}/login/'
 CHALLENGE_URL = f'{BASE_URL}/challenge'
 FAV_URL = f'{BASE_URL}/favorites/'
+
 
 IMAGE_URL = f'{urlparse(BASE_URL).scheme}://i.{urlparse(BASE_URL).hostname}/galleries'
 

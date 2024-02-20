@@ -135,6 +135,7 @@ def doujinshi_parser(id_, counter=0):
         logger.warning(f'Error: {e}, ignored')
         return None
 
+    print(response)
     html = BeautifulSoup(response, 'html.parser')
     doujinshi_info = html.find('div', attrs={'id': 'info'})
 
@@ -240,13 +241,21 @@ def print_doujinshi(doujinshi_list):
     print(tabulate(tabular_data=doujinshi_list, headers=headers, tablefmt='rst'))
 
 
-def legacy_search_parser(keyword, sorting, page, is_page_all=False):
+def legacy_search_parser(keyword, sorting, page, is_page_all=False, type_='SEARCH'):
     logger.info(f'Searching doujinshis of keyword {keyword}')
     result = []
 
+    if type_ not in ('SEARCH', 'ARTIST', ):
+        raise ValueError('Invalid type')
+
     if is_page_all:
-        response = request('get', url=constant.LEGACY_SEARCH_URL,
-                           params={'q': keyword, 'page': 1, 'sort': sorting}).content
+        if type_ == 'SEARCH':
+            response = request('get', url=constant.LEGACY_SEARCH_URL,
+                               params={'q': keyword, 'page': 1, 'sort': sorting}).content
+        else:
+            url = constant.ARTIST_URL + keyword + '/' + ('' if sorting == 'recent' else sorting)
+            response = request('get', url=url, params={'page': 1}).content
+
         html = BeautifulSoup(response, 'lxml')
         pagination = html.find(attrs={'class': 'pagination'})
         last_page = pagination.find(attrs={'class': 'last'})
@@ -258,8 +267,14 @@ def legacy_search_parser(keyword, sorting, page, is_page_all=False):
 
     for p in pages:
         logger.info(f'Fetching page {p} ...')
-        response = request('get', url=constant.LEGACY_SEARCH_URL,
-                           params={'q': keyword, 'page': p, 'sort': sorting}).content
+        if type_ == 'SEARCH':
+            response = request('get', url=constant.LEGACY_SEARCH_URL,
+                               params={'q': keyword, 'page': p, 'sort': sorting}).content
+        else:
+            url = constant.ARTIST_URL + keyword + '/' + ('' if sorting == 'recent' else sorting)
+            print(url)
+            response = request('get', url=url, params={'page': p}).content
+
         if response is None:
             logger.warning(f'No result in response in page {p}')
             continue

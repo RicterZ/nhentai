@@ -73,6 +73,8 @@ def cmd_parser():
                       help='search doujinshi by keyword')
     parser.add_option('--favorites', '-F', action='store_true', dest='favorites',
                       help='list or download your favorites')
+    parser.add_option('--artist', '-a', action='store', dest='artist',
+                      help='list doujinshi by artist name')
 
     # page options
     parser.add_option('--page-all', dest='page_all', action='store_true', default=False,
@@ -216,7 +218,7 @@ def cmd_parser():
         parser.print_help()
         sys.exit(1)
 
-    if not args.keyword and not args.id and not args.favorites:
+    if not args.keyword and not args.id and not args.favorites and not args.artist:
         parser.print_help()
         sys.exit(1)
 
