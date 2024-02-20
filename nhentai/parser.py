@@ -272,7 +272,6 @@ def legacy_search_parser(keyword, sorting, page, is_page_all=False, type_='SEARC
                                params={'q': keyword, 'page': p, 'sort': sorting}).content
         else:
             url = constant.ARTIST_URL + keyword + '/' + ('' if sorting == 'recent' else sorting)
-            print(url)
             response = request('get', url=url, params={'page': p}).content
 
         if response is None:
