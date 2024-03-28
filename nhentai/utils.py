@@ -166,6 +166,9 @@ def generate_main_html(output_dir='./'):
 def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_comic_info=True, move_to_folder=False):
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
+        if os.path.exists(doujinshi_dir+".cbz"):
+            logger.warning(f'Comic Book CBZ file exists, skip "{doujinshi_dir}"')
+            return
         if write_comic_info:
             serialize_comic_xml(doujinshi_obj, doujinshi_dir)
         cbz_filename = os.path.join(os.path.join(doujinshi_dir, '..'), f'{doujinshi_obj.filename}.cbz')

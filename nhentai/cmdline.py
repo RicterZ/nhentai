@@ -213,7 +213,7 @@ def cmd_parser():
             _ = [i.strip() for i in f.readlines()]
             args.id = set(int(i) for i in _ if i.isdigit())
 
-    if (args.is_download or args.is_show) and not args.id and not args.keyword and not args.favorites:
+    if (args.is_download or args.is_show) and not args.id and not args.keyword and not args.favorites and not args.artist:
         logger.critical('Doujinshi id(s) are required for downloading')
         parser.print_help()
         sys.exit(1)
