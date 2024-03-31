@@ -81,9 +81,9 @@ def cmd_parser():
                       help='all search results')
     parser.add_option('--page', '--page-range', type='string', dest='page', action='store', default='1',
                       help='page number of search results. e.g. 1,2-5,14')
-    parser.add_option('--sorting', '--sort', dest='sorting', action='store', default='popular',
-                      help='sorting of doujinshi (recent / popular / popular-[today|week])',
-                      choices=['recent', 'popular', 'popular-today', 'popular-week', 'date'])
+    parser.add_option('--sorting', '--sort', dest='sorting', action='store', default='popular-all',
+                      help='sorting of doujinshi (recent / popular-all / popular-[today|week])',
+                      choices=['recent', 'popular-all', 'popular-today', 'popular-week', 'date'])
 
     # download options
     parser.add_option('--output', '-o', type='string', dest='output_dir', action='store', default='./',
