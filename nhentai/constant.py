@@ -35,6 +35,11 @@ FAV_URL = f'{BASE_URL}/favorites/'
 
 
 IMAGE_URL = f'{urlparse(BASE_URL).scheme}://i.{urlparse(BASE_URL).hostname}/galleries'
+IMAGE_URL_MIRRORS = [
+    f'{urlparse(BASE_URL).scheme}://i3.{urlparse(BASE_URL).hostname}'
+    f'{urlparse(BASE_URL).scheme}://i5.{urlparse(BASE_URL).hostname}'
+    f'{urlparse(BASE_URL).scheme}://i7.{urlparse(BASE_URL).hostname}'
+]
 
 NHENTAI_HOME = get_nhentai_home()
 NHENTAI_HISTORY = os.path.join(NHENTAI_HOME, 'history.sqlite3')

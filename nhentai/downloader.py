@@ -67,10 +67,14 @@ class Downloader(Singleton):
                     try:
                         response = request('get', url, stream=True, timeout=self.timeout, proxies=proxy)
                         if response.status_code != 200:
-                            raise NHentaiImageNotExistException
-
-                    except NHentaiImageNotExistException as e:
-                        raise e
+                            path = urlparse(url).path
+                            for mirror in constant.IMAGE_URL_MIRRORS:
+                                print(f'{mirror}{path}')
+                                mirror_url = f'{mirror}{path}'
+                                response = request('get', mirror_url, stream=True,
+                                                   timeout=self.timeout, proxies=proxy)
+                                if response.status_code == 200:
+                                    break
 
                     except Exception as e:
                         i += 1
