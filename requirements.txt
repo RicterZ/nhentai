@@ -1,5 +1,6 @@
 requests
 soupsieve
+setuptools
 BeautifulSoup4
 tabulate
 iso8601
