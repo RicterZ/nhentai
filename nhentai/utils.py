@@ -209,9 +209,10 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, move_t
         """Write images to a PDF file using img2pdf."""
         if doujinshi_obj is not None:
             doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
+            filename = doujinshi_obj.filename.replace('/', '-')
             pdf_filename = os.path.join(
                 os.path.join(doujinshi_dir, '..'),
-                f'{doujinshi_obj.filename}.pdf'
+                f'{filename}.pdf'
             )
         else:
             pdf_filename = './doujinshi.pdf'
