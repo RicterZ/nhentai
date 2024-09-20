@@ -137,6 +137,8 @@ class Downloader(Singleton):
         else:
             logger.warning(f'Path "{folder}" already exist.')
 
+        if os.getenv('DEBUG', None) == 'NODOWNLOAD':
+            return
         queue = [(self, url, folder, constant.CONFIG['proxy']) for url in queue]
 
         pool = multiprocessing.Pool(self.size, init_worker)
