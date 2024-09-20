@@ -1,4 +1,5 @@
 # coding: utf-8
+import datetime
 
 from tabulate import tabulate
 
@@ -55,6 +56,7 @@ class Doujinshi(object):
             ['Parodies', self.info.parodies],
             ['Doujinshi', self.name],
             ['Subtitle', self.info.subtitle],
+            ['Date', self.info.date],
             ['Characters', self.info.characters],
             ['Authors', self.info.artists],
             ['Groups', self.info.groups],
