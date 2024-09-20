@@ -226,7 +226,7 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, move_t
             full_path_list = (
                 [os.path.join(doujinshi_dir, image) for image in file_list]
             )
-            pdf_f.write(img2pdf.convert(full_path_list))
+            pdf_f.write(img2pdf.convert(full_path_list, rotation=img2pdf.Rotation.ifvalid))
 
         if rm_origin_dir:
             shutil.rmtree(doujinshi_dir, ignore_errors=True)
