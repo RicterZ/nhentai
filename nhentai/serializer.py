@@ -22,7 +22,7 @@ def serialize_json(doujinshi, output_dir):
         metadata['group'] = [i.strip() for i in doujinshi.info.groups.split(',')]
     if doujinshi.info.languages:
         metadata['language'] = [i.strip() for i in doujinshi.info.languages.split(',')]
-    metadata['category'] = doujinshi.info.categories
+    metadata['category'] = [i.strip() for i in doujinshi.info.categories.split(',')]
     metadata['URL'] = doujinshi.url
     metadata['Pages'] = doujinshi.pages
 
