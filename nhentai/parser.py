@@ -135,7 +135,7 @@ def doujinshi_parser(id_, counter=0):
         logger.warning(f'Error: {e}, ignored')
         return None
 
-    print(response)
+    # print(response)
     html = BeautifulSoup(response, 'html.parser')
     doujinshi_info = html.find('div', attrs={'id': 'info'})
 
@@ -327,7 +327,9 @@ def search_parser(keyword, sorting, page, is_page_all=False):
 
         for row in response['result']:
             title = row['title']['english']
-            title = title[:85] + '..' if len(title) > 85 else title
+            title = title[:constant.CONFIG['max_filename']] + '..' if \
+                len(title) > constant.CONFIG['max_filename'] else title
+
             result.append({'id': row['id'], 'title': title})
 
         not_exists_persist = False

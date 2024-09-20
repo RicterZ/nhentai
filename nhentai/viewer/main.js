@@ -139,7 +139,7 @@ function filter_searcher(){
 					break
 			}
 		}
-		if (verifier){doujinshi_id.push(data[i].Folder);}
+		if (verifier){doujinshi_id.push(data[i].Folder.replace("_", " "));}
 	}
 	var gallery = document.getElementsByClassName("gallery-favorite");
 	for (var i = 0; i < gallery.length; i++){
