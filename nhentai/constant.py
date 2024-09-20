@@ -5,6 +5,7 @@ import tempfile
 from urllib.parse import urlparse
 from platform import system
 
+
 def get_nhentai_home() -> str:
     home = os.getenv('HOME', tempfile.gettempdir())
 
@@ -19,6 +20,7 @@ def get_nhentai_home() -> str:
 
     # Use old default path in other systems
     return os.path.join(home, '.nhentai')
+
 
 DEBUG = os.getenv('DEBUG', False)
 BASE_URL = os.getenv('NHENTAI', 'https://nhentai.net')
@@ -52,7 +54,8 @@ CONFIG = {
     'cookie': '',
     'language': '',
     'template': '',
-    'useragent': 'nhentai command line client (https://github.com/RicterZ/nhentai)'
+    'useragent': 'nhentai command line client (https://github.com/RicterZ/nhentai)',
+    'max_filename': 85
 }
 
 LANGUAGE_ISO = {

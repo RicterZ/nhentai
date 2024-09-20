@@ -327,7 +327,9 @@ def search_parser(keyword, sorting, page, is_page_all=False):
 
         for row in response['result']:
             title = row['title']['english']
-            title = title[:85] + '..' if len(title) > 85 else title
+            title = title[:constant.CONFIG['max_filename']] + '..' if \
+                len(title) > constant.CONFIG['max_filename'] else title
+
             result.append({'id': row['id'], 'title': title})
 
         not_exists_persist = False
