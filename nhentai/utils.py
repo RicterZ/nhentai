@@ -7,6 +7,7 @@ import zipfile
 import shutil
 import requests
 import sqlite3
+import urllib.parse
 
 from nhentai import constant
 from nhentai.logger import logger
@@ -148,7 +149,7 @@ def generate_main_html(output_dir='./'):
         else:
             title = 'nHentai HTML Viewer'
 
-        image_html += element.format(FOLDER=folder, IMAGE=image, TITLE=title)
+        image_html += element.format(FOLDER=urllib.parse.quote(folder), IMAGE=image, TITLE=title)
     if image_html == '':
         logger.warning('No index.html found, --gen-main paused.')
         return
@@ -158,7 +159,8 @@ def generate_main_html(output_dir='./'):
             f.write(data.encode('utf-8'))
         shutil.copy(os.path.dirname(__file__) + '/viewer/logo.png', './')
         set_js_database()
-        logger.log(16, f'Main Viewer has been written to "{output_dir}main.html"')
+        output_dir = output_dir[:-1] if output_dir.endswith('/') else output_dir
+        logger.log(16, f'Main Viewer has been written to "{output_dir}/main.html"')
     except Exception as e:
         logger.warning(f'Writing Main Viewer failed ({e})')
 
