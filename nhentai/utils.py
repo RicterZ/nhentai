@@ -237,7 +237,7 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, move_t
             logger.info(f'Skipped download: {doujinshi_dir} already exists')
             return
 
-        file_list = os.listdir(doujinshi_dir)
+        file_list = [f for f in os.listdir(doujinshi_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
         file_list.sort()
 
         logger.info(f'Writing PDF file to path: {filename}')
