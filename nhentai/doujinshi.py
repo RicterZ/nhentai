@@ -74,26 +74,28 @@ class Doujinshi(object):
 
     def check_if_need_download(self, options):
         base_path = os.path.join(self.downloader.path, self.filename)
+        file_ext = None
 
-        # doujinshi directory is not exist, we need to download definitely
-        if not (os.path.exists(base_path) and os.path.isdir(base_path)):
-            return True
-
-        # regenerate, we need to re-download from nhentai
+        # regenerate, re-download
         if options.regenerate:
             return True
 
+        # detect file extensions
         if options.is_pdf:
             file_ext = 'pdf'
         elif options.is_cbz:
             file_ext = 'cbz'
-        else:
-            # re-download
-            return True
 
-        # pdf or cbz file exists, we needn't to re-download it
-        if os.path.exists(f'{base_path}.{file_ext}') or os.path.exists(f'{base_path}/{self.filename}.{file_ext}'):
-            return False
+        # pdf or cbz file exists, skip re-download
+        # doujinshi directory may not exist b/c of --rm-origin-dir option set.
+        # user should pass --regenerate option to get back origin dir.
+        if file_ext is not None:
+            if os.path.exists(f'{base_path}.{file_ext}') or os.path.exists(f'{base_path}/{self.filename}.{file_ext}'):
+                return False
+
+        # doujinshi directory doesn't exist, re-download
+        if not (os.path.exists(base_path) and os.path.isdir(base_path)):
+            return True
 
         # fallback
         return True
