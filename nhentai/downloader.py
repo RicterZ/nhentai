@@ -135,9 +135,6 @@ class Downloader(Singleton):
             except EnvironmentError as e:
                 logger.critical(str(e))
 
-        else:
-            logger.warning(f'Path "{folder}" already exist.')
-
         if os.getenv('DEBUG', None) == 'NODOWNLOAD':
             # Assuming we want to continue with rest of process?
             return True
