@@ -85,21 +85,19 @@ def main():
             else:
                 continue
 
+            file_type = ''
+            if options.is_cbz: file_type = '.cbz'
+            elif options.is_pdf: file_type = '.pdf'
+
             if not options.dryrun:
                 doujinshi.downloader = downloader
-                result = doujinshi.download(regenerate_cbz=options.regenerate_cbz)
+                result = doujinshi.download(regenerate_cbz=options.regenerate_cbz, file_type=file_type)
                 # Already downloaded; continue on with the other doujins.
                 if not result: continue
 
             if options.generate_metadata:
                 table = doujinshi.table
-
-                # Skip downloading metadata if archived file is already generated.
-                check_file_type = ''
-                if options.is_cbz: check_file_type = '.cbz'
-                elif options.is_pdf: check_file_type = '.pdf'
-
-                result = generate_metadata_file(options.output_dir, table, doujinshi, check_file_type)
+                result = generate_metadata_file(options.output_dir, table, doujinshi, file_type)
                 # Already downloaded; continue on with the other doujins.
                 if not result: continue
 

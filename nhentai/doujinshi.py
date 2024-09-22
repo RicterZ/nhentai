@@ -72,7 +72,7 @@ class Doujinshi(object):
     def show(self):
         logger.info(f'Print doujinshi information of {self.id}\n{tabulate(self.table)}')
 
-    def download(self, regenerate_cbz=False):
+    def download(self, regenerate_cbz=False, file_type=''):
         logger.info(f'Starting to download doujinshi: {self.name}')
         if self.downloader:
             download_queue = []
@@ -82,9 +82,10 @@ class Doujinshi(object):
             for i in range(1, min(self.pages, len(self.ext)) + 1):
                 download_queue.append(f'{IMAGE_URL}/{self.img_id}/{i}.{self.ext[i-1]}')
 
-            self.downloader.start_download(download_queue, self.filename, regenerate_cbz=regenerate_cbz)
+            return self.downloader.start_download(download_queue, self.filename, regenerate_cbz=regenerate_cbz, file_type=file_type)
         else:
             logger.critical('Downloader has not been loaded')
+            return False
 
 
 if __name__ == '__main__':
