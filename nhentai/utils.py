@@ -72,8 +72,8 @@ def parse_doujinshi_obj(
         doujinshi_obj=None,
         file_type: str = ''
 ) -> Tuple[str, str]:
-    filename = './doujinshi' + file_type
 
+    filename = f'./doujinshi.{file_type}'
     doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
     if doujinshi_obj is not None:
         _filename = f'{doujinshi_obj.filename}.{file_type}'
@@ -126,6 +126,27 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
         logger.log(16, f'HTML Viewer has been written to "{os.path.join(doujinshi_dir, "index.html")}"')
     except Exception as e:
         logger.warning(f'Writing HTML Viewer failed ({e})')
+
+
+def move_to_folder(output_dir='.', doujinshi_obj=None, file_type=None):
+    if not file_type:
+        raise RuntimeError('no file_type specified')
+
+    doujinshi_dir, filename = parse_doujinshi_obj(output_dir, doujinshi_obj, file_type)
+
+    for fn in os.listdir(doujinshi_dir):
+        file_path = os.path.join(doujinshi_dir, fn)
+        _, ext = os.path.splitext(file_path)
+        if ext in ['.pdf', '.cbz']:
+            continue
+
+        if os.path.isfile(file_path):
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                print(f"Error deleting file: {e}")
+
+    shutil.move(filename, os.path.join(doujinshi_dir, os.path.basename(filename)))
 
 
 def generate_main_html(output_dir='./'):
@@ -185,8 +206,7 @@ def generate_main_html(output_dir='./'):
         logger.warning(f'Writing Main Viewer failed ({e})')
 
 
-def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, rm_origin_dir=False,
-                 move_to_folder=False, regenerate=False):
+def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, regenerate=False):
 
     doujinshi_dir, filename = parse_doujinshi_obj(output_dir, doujinshi_obj, file_type)
 
@@ -224,20 +244,6 @@ def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, rm_origin_dir
 
         except ImportError:
             logger.error("Please install img2pdf package by using pip.")
-
-    if rm_origin_dir:
-        shutil.rmtree(doujinshi_dir, ignore_errors=True)
-
-    if move_to_folder:
-        for filename in os.listdir(doujinshi_dir):
-            file_path = os.path.join(doujinshi_dir, filename)
-            if os.path.isfile(file_path):
-                try:
-                    os.remove(file_path)
-                except Exception as e:
-                    print(f"Error deleting file: {e}")
-
-        shutil.move(filename, doujinshi_dir)
 
 
 def format_filename(s, length=MAX_FIELD_LENGTH, _truncate_only=False):

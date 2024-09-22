@@ -1,4 +1,6 @@
 # coding: utf-8
+import os
+import shutil
 import sys
 import signal
 import platform
@@ -12,7 +14,7 @@ from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
 from nhentai.utils import generate_html, generate_doc, generate_main_html, generate_metadata_file, \
-    paging, check_cookie, signal_handler, DB
+    paging, check_cookie, signal_handler, DB, move_to_folder
 
 
 def main():
@@ -104,12 +106,22 @@ def main():
                 generate_html(options.output_dir, doujinshi, template=constant.CONFIG['template'])
 
             if options.is_cbz:
-                generate_doc('cbz', options.output_dir, doujinshi, options.rm_origin_dir, options.move_to_folder,
-                             options.regenerate)
+                generate_doc('cbz', options.output_dir, doujinshi, options.rm_origin_dir)
 
             if options.is_pdf:
-                generate_doc('pdf', options.output_dir, doujinshi, options.rm_origin_dir, options.move_to_folder,
-                             options.regenerate)
+                generate_doc('pdf', options.output_dir, doujinshi, options.rm_origin_dir)
+
+            if options.move_to_folder:
+                if options.is_cbz:
+                    move_to_folder(options.output_dir, doujinshi, 'cbz')
+                if options.is_pdf:
+                    move_to_folder(options.output_dir, doujinshi, 'pdf')
+
+            if options.rm_origin_dir:
+                if options.move_to_folder:
+                    logger.critical('You specified both --move-to-folder and --rm-origin-dir options, '
+                                    'you will not get anything :(')
+                shutil.rmtree(os.path.join(options.output_dir, doujinshi.filename), ignore_errors=True)
 
         if options.main_viewer:
             generate_main_html(options.output_dir)
