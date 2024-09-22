@@ -1,5 +1,5 @@
 # coding: utf-8
-import datetime
+import os
 
 from tabulate import tabulate
 
@@ -72,7 +72,33 @@ class Doujinshi(object):
     def show(self):
         logger.info(f'Print doujinshi information of {self.id}\n{tabulate(self.table)}')
 
-    def download(self, regenerate_cbz=False, file_type=''):
+    def check_if_need_download(self, options):
+        base_path = os.path.join(self.downloader.path, self.filename)
+
+        # doujinshi directory is not exist, we need to download definitely
+        if not (os.path.exists(base_path) and os.path.isdir(base_path)):
+            return True
+
+        # regenerate, we need to re-download from nhentai
+        if options.regenerate:
+            return True
+
+        if options.is_pdf:
+            file_ext = 'pdf'
+        elif options.is_cbz:
+            file_ext = 'cbz'
+        else:
+            # re-download
+            return True
+
+        # pdf or cbz file exists, we needn't to re-download it
+        if os.path.exists(f'{base_path}.{file_ext}') or os.path.exists(f'{base_path}/{self.filename}.{file_ext}'):
+            return False
+
+        # fallback
+        return True
+
+    def download(self):
         logger.info(f'Starting to download doujinshi: {self.name}')
         if self.downloader:
             download_queue = []
@@ -82,7 +108,7 @@ class Doujinshi(object):
             for i in range(1, min(self.pages, len(self.ext)) + 1):
                 download_queue.append(f'{IMAGE_URL}/{self.img_id}/{i}.{self.ext[i-1]}')
 
-            return self.downloader.start_download(download_queue, self.filename, regenerate_cbz=regenerate_cbz, file_type=file_type)
+            return self.downloader.start_download(download_queue, self.filename)
         else:
             logger.critical('Downloader has not been loaded')
             return False
