@@ -107,10 +107,10 @@ def main():
                 generate_html(options.output_dir, doujinshi, template=constant.CONFIG['template'])
 
             if options.is_cbz:
-                generate_doc('cbz', options.output_dir, doujinshi, options.rm_origin_dir)
+                generate_doc('cbz', options.output_dir, doujinshi, options.regenerate)
 
             if options.is_pdf:
-                generate_doc('pdf', options.output_dir, doujinshi, options.rm_origin_dir)
+                generate_doc('pdf', options.output_dir, doujinshi, options.regenerate)
 
             if options.move_to_folder:
                 if options.is_cbz:
