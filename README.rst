@@ -223,6 +223,9 @@ For example:
 .. code-block::
 
     i.h.loli.club -> i.nhentai.net
+    i3.h.loli.club -> i3.nhentai.net
+    i5.h.loli.club -> i5.nhentai.net
+    i7.h.loli.club -> i7.nhentai.net
     h.loli.club -> nhentai.net
 
 Set `NHENTAI` env var to your nhentai mirror.
