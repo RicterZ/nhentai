@@ -94,6 +94,7 @@ def main():
                     doujinshi.download()
                 else:
                     logger.info(f'Skip download doujinshi because a PDF/CBZ file exists of doujinshi {doujinshi.name}')
+                    continue
 
             if options.generate_metadata:
                 generate_metadata_file(options.output_dir, doujinshi)
