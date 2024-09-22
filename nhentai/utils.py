@@ -70,36 +70,36 @@ def readfile(path):
 def parse_doujinshi_obj(
     output_dir: str,
     doujinshi_obj = None,
-    file_extension: str = '',
+    file_type: str = '',
     write_comic_info = False
 ) -> Tuple[str, str, bool]:
     doujinshi_dir = '.'
-    filename = './doujinshi' + file_extension
+    filename = './doujinshi' + file_type
     already_downloaded = False
 
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
-        if os.path.exists(doujinshi_dir + file_extension):
-            logger.warning(f'File already exists, skipping "{doujinshi_dir}"')
+        if os.path.exists(doujinshi_dir + file_type):
             already_downloaded = True
-        elif file_extension is not None:
-            _filename = f'{doujinshi_obj.filename}{file_extension}'
+        elif file_type != '':
+            _filename = f'{doujinshi_obj.filename}{file_type}'
 
-            if file_extension == '.cbz' and write_comic_info:
+            if file_type == '.cbz' and write_comic_info:
                 serialize_comic_xml(doujinshi_obj, doujinshi_dir)
 
-            if file_extension == '.pdf':
+            if file_type == '.pdf':
                 _filename = _filename.replace('/', '-')
 
-            # Isn't os.path.join(doujinshi_dir, '..') equivalent to output_dir?
-            filename = os.path.join(os.path.join(doujinshi_dir, '..'), _filename)
+            filename = os.path.join(output_dir, _filename)
 
     return doujinshi_dir, filename, already_downloaded
 
 
 def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
     doujinshi_dir, filename, already_downloaded = parse_doujinshi_obj(output_dir, doujinshi_obj)
-    if already_downloaded: return
+    if already_downloaded:
+        logger.info(f'Skipped download: {doujinshi_dir} already exists')
+        return
 
     image_html = ''
 
@@ -196,8 +196,10 @@ def generate_main_html(output_dir='./'):
 
 
 def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_comic_info=True, move_to_folder=False):
-    doujinshi_dir, filename, already_downloaded = parse_doujinshi_obj(output_dir, doujinshi_obj, 'cbz', write_comic_info)
-    if already_downloaded: return
+    doujinshi_dir, filename, already_downloaded = parse_doujinshi_obj(output_dir, doujinshi_obj, '.cbz', write_comic_info)
+    if already_downloaded:
+        logger.info(f'Skipped download: {doujinshi_dir} already exists')
+        return
 
     file_list = os.listdir(doujinshi_dir)
     file_list.sort()
@@ -212,17 +214,17 @@ def generate_cbz(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, write_
         shutil.rmtree(doujinshi_dir, ignore_errors=True)
 
     if move_to_folder:
-            for filename in os.listdir(doujinshi_dir):
-                file_path = os.path.join(doujinshi_dir, filename)
-                if os.path.isfile(file_path):
-                    try:
-                        os.remove(file_path)
-                    except Exception as e:
-                        print(f"Error deleting file: {e}")
+        for filename in os.listdir(doujinshi_dir):
+            file_path = os.path.join(doujinshi_dir, filename)
+            if os.path.isfile(file_path):
+                try:
+                    os.remove(file_path)
+                except Exception as e:
+                    print(f"Error deleting file: {e}")
 
-            shutil.move(filename, doujinshi_dir)
+        shutil.move(filename, doujinshi_dir)
 
-    logger.log(16, f'Comic Book CBZ file has been written to "{doujinshi_dir}"')
+    logger.log(16, f'Comic Book CBZ file has been written to "{filename}"')
 
 
 def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, move_to_folder=False):
@@ -230,8 +232,10 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, move_t
         import img2pdf
 
         """Write images to a PDF file using img2pdf."""
-        doujinshi_dir, filename, already_downloaded = parse_doujinshi_obj(output_dir, doujinshi_obj, 'pdf')
-        if already_downloaded: return
+        doujinshi_dir, filename, already_downloaded = parse_doujinshi_obj(output_dir, doujinshi_obj, '.pdf')
+        if already_downloaded:
+            logger.info(f'Skipped download: {doujinshi_dir} already exists')
+            return
 
         file_list = os.listdir(doujinshi_dir)
         file_list.sort()
@@ -257,7 +261,7 @@ def generate_pdf(output_dir='.', doujinshi_obj=None, rm_origin_dir=False, move_t
 
             shutil.move(filename, doujinshi_dir)
 
-        logger.log(16, f'PDF file has been written to "{doujinshi_dir}"')
+        logger.log(16, f'PDF file has been written to "{filename}"')
 
     except ImportError:
         logger.error("Please install img2pdf package by using pip.")
@@ -319,12 +323,18 @@ def paging(page_string):
 def generate_metadata_file(output_dir, table, doujinshi_obj=None, check_file_type=''):
     logger.info('Writing Metadata Info')
 
-    doujinshi_dir, filename, already_downloaded = parse_doujinshi_obj(output_dir, doujinshi_obj, file_extension=check_file_type)
-    if already_downloaded: return False
+    doujinshi_dir, filename, already_downloaded = parse_doujinshi_obj(output_dir, doujinshi_obj, file_type=check_file_type)
+    info_txt_path = os.path.join(doujinshi_dir, 'info.txt')
+
+    if already_downloaded:
+        # Ensure that info.txt was generated for the folder (if it exists) before exiting.
+        if os.path.exists(doujinshi_dir) and os.path.exists(info_txt_path):
+            logger.info(f'Skipped download: {info_txt_path} already exists')
+            return False
 
     logger.info(doujinshi_dir)
 
-    f = open(os.path.join(doujinshi_dir, 'info.txt'), 'w', encoding='utf-8')
+    f = open(info_txt_path, 'w', encoding='utf-8')
 
     fields = ['TITLE', 'ORIGINAL TITLE', 'AUTHOR', 'ARTIST', 'GROUPS', 'CIRCLE', 'SCANLATOR',
               'TRANSLATOR', 'PUBLISHER', 'DESCRIPTION', 'STATUS', 'CHAPTERS', 'PAGES',
