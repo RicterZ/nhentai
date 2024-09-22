@@ -87,7 +87,9 @@ def main():
 
             if not options.dryrun:
                 doujinshi.downloader = downloader
-                doujinshi.download(regenerate_cbz=options.regenerate_cbz)
+                result = doujinshi.download(regenerate_cbz=options.regenerate_cbz)
+                # Already downloaded; continue on with the other doujins.
+                if not result: continue
 
             if options.generate_metadata:
                 table = doujinshi.table

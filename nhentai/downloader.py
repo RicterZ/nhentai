@@ -115,7 +115,8 @@ class Downloader(Singleton):
 
         return 1, url
 
-    def start_download(self, queue, folder='', regenerate_cbz=False):
+
+    def start_download(self, queue, folder='', regenerate_cbz=False) -> bool:
         if not isinstance(folder, (str, )):
             folder = str(folder)
 
@@ -125,7 +126,7 @@ class Downloader(Singleton):
         if os.path.exists(folder + '.cbz'):
             if not regenerate_cbz:
                 logger.warning(f'CBZ file "{folder}.cbz" exists, ignored download request')
-                return
+                return False
 
         logger.info(f'Doujinshi will be saved at "{folder}"')
         if not os.path.exists(folder):
@@ -138,7 +139,8 @@ class Downloader(Singleton):
             logger.warning(f'Path "{folder}" already exist.')
 
         if os.getenv('DEBUG', None) == 'NODOWNLOAD':
-            return
+            # Assuming we want to continue with rest of process?
+            return True
         queue = [(self, url, folder, constant.CONFIG['proxy']) for url in queue]
 
         pool = multiprocessing.Pool(self.size, init_worker)
@@ -146,6 +148,8 @@ class Downloader(Singleton):
 
         pool.close()
         pool.join()
+
+        return True
 
 
 def download_wrapper(obj, url, folder='', proxy=None):
