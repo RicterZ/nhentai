@@ -77,8 +77,8 @@ def parse_doujinshi_obj(
     filename = './doujinshi' + file_type
     already_downloaded = False
 
-    if doujinshi_obj is not None:
-        doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
+    doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
+    if doujinshi_obj is not None and file_type != '.html':
         if os.path.exists(doujinshi_dir + file_type):
             already_downloaded = True
         elif file_type != '':
@@ -96,7 +96,7 @@ def parse_doujinshi_obj(
 
 
 def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
-    doujinshi_dir, filename, already_downloaded = parse_doujinshi_obj(output_dir, doujinshi_obj)
+    doujinshi_dir, filename, already_downloaded = parse_doujinshi_obj(output_dir, doujinshi_obj, '.html')
     if already_downloaded:
         logger.info(f'Skipped download: {doujinshi_dir} already exists')
         return
