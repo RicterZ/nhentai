@@ -88,10 +88,10 @@ def main():
             if not options.dryrun:
                 doujinshi.downloader = downloader
 
-                result = doujinshi.download(skip_exists=not options.regenerate)
-                # Already downloaded; continue on with the other doujins.
-                if not result:
-                    continue
+                if doujinshi.check_if_need_download(options):
+                    doujinshi.download()
+                else:
+                    logger.info(f'Skip download doujinshi because a PDF/CBZ file exists of doujinshi {doujinshi.name}')
 
             if options.generate_metadata:
                 generate_metadata_file(options.output_dir, doujinshi)

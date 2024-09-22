@@ -191,7 +191,7 @@ def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, rm_origin_dir
     doujinshi_dir, filename = parse_doujinshi_obj(output_dir, doujinshi_obj, file_type)
 
     if os.path.exists(f'{doujinshi_dir}.{file_type}') and not regenerate:
-        logger.info(f'Skipped download: {doujinshi_dir}.{file_type} already exists')
+        logger.info(f'Skipped {file_type} file generation: {doujinshi_dir}.{file_type} already exists')
         return
 
     if file_type == 'cbz':
