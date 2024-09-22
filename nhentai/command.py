@@ -11,7 +11,7 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_cbz, generate_main_html, generate_pdf, generate_metadata_file, \
+from nhentai.utils import generate_html, generate_doc, generate_main_html, generate_metadata_file, \
     paging, check_cookie, signal_handler, DB
 
 
@@ -85,21 +85,22 @@ def main():
             else:
                 continue
 
-            file_type = ''
-            if options.is_cbz: file_type = '.cbz'
-            elif options.is_pdf: file_type = '.pdf'
-
             if not options.dryrun:
                 doujinshi.downloader = downloader
-                result = doujinshi.download(regenerate_cbz=options.regenerate_cbz, file_type=file_type)
+
+                result = doujinshi.download(skip_exists=not options.regenerate)
                 # Already downloaded; continue on with the other doujins.
-                if not result: continue
+                if not result:
+                    continue
 
             if options.generate_metadata:
                 table = doujinshi.table
-                result = generate_metadata_file(options.output_dir, table, doujinshi, file_type)
+                result = generate_metadata_file(options.output_dir, table, doujinshi)
                 # Already downloaded; continue on with the other doujins.
-                if not result: continue
+                # if cbz / pdf file exists, skip the download process?
+                # regenerate but not re-download?
+                if not result:
+                    continue
 
             if options.is_save_download_history:
                 with DB() as db:
@@ -107,10 +108,14 @@ def main():
 
             if not options.is_nohtml and not options.is_cbz and not options.is_pdf:
                 generate_html(options.output_dir, doujinshi, template=constant.CONFIG['template'])
-            elif options.is_cbz:
-                generate_cbz(options.output_dir, doujinshi, options.rm_origin_dir, True, options.move_to_folder)
-            elif options.is_pdf:
-                generate_pdf(options.output_dir, doujinshi, options.rm_origin_dir, options.move_to_folder)
+
+            if options.is_cbz:
+                generate_doc('cbz', options.output_dir, doujinshi, options.rm_origin_dir, options.move_to_folder,
+                             options.regenerate)
+
+            if options.is_pdf:
+                generate_doc('pdf', options.output_dir, doujinshi, options.rm_origin_dir, options.move_to_folder,
+                             options.regenerate)
 
         if options.main_viewer:
             generate_main_html(options.output_dir)

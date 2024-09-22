@@ -1,5 +1,5 @@
 # coding: utf-8
-import datetime
+import os
 
 from tabulate import tabulate
 
@@ -72,8 +72,14 @@ class Doujinshi(object):
     def show(self):
         logger.info(f'Print doujinshi information of {self.id}\n{tabulate(self.table)}')
 
-    def download(self, regenerate_cbz=False, file_type=''):
+    def download(self, skip_exists=True):
         logger.info(f'Starting to download doujinshi: {self.name}')
+
+        base_path = os.path.join(self.downloader.path, self.filename)
+        if (os.path.exists(base_path + '.pdf') or os.path.exists(base_path + '.cbz')) and skip_exists:
+            logger.info(f'Skip download doujinshi because a PDF/CBZ file exists of doujinshi {self.name}')
+            return False
+
         if self.downloader:
             download_queue = []
             if len(self.ext) != self.pages:
@@ -82,7 +88,7 @@ class Doujinshi(object):
             for i in range(1, min(self.pages, len(self.ext)) + 1):
                 download_queue.append(f'{IMAGE_URL}/{self.img_id}/{i}.{self.ext[i-1]}')
 
-            return self.downloader.start_download(download_queue, self.filename, regenerate_cbz=regenerate_cbz, file_type=file_type)
+            return self.downloader.start_download(download_queue, self.filename)
         else:
             logger.critical('Downloader has not been loaded')
             return False

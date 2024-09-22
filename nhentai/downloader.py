@@ -115,17 +115,12 @@ class Downloader(Singleton):
 
         return 1, url
 
-
-    def start_download(self, queue, folder='', regenerate_cbz=False, file_type='') -> bool:
+    def start_download(self, queue, folder='') -> bool:
         if not isinstance(folder, (str, )):
             folder = str(folder)
 
         if self.path:
             folder = os.path.join(self.path, folder)
-
-        if file_type != '' and os.path.exists(folder + file_type) and not regenerate_cbz:
-            logger.warning(f'Skipped download: "{folder}{file_type}" already exists')
-            return False
 
         logger.info(f'Doujinshi will be saved at "{folder}"')
         if not os.path.exists(folder):
