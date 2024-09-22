@@ -293,11 +293,9 @@ def paging(page_string):
     return page_list
 
 
-def generate_metadata_file(output_dir, table, doujinshi_obj=None):
-    logger.info('Writing Metadata Info')
+def generate_metadata_file(output_dir, doujinshi_obj):
 
-    doujinshi_dir, filename = parse_doujinshi_obj(output_dir, doujinshi_obj)
-    info_txt_path = os.path.join(doujinshi_dir, 'info.txt')
+    info_txt_path = os.path.join(output_dir, doujinshi_obj.filename, 'info.txt')
 
     f = open(info_txt_path, 'w', encoding='utf-8')
 
@@ -311,12 +309,11 @@ def generate_metadata_file(output_dir, table, doujinshi_obj=None):
     for i in range(len(fields)):
         f.write(f'{fields[i]}: ')
         if fields[i] in special_fields:
-            f.write(str(table[special_fields.index(fields[i])][1]))
+            f.write(str(doujinshi_obj.table[special_fields.index(fields[i])][1]))
         f.write('\n')
 
     f.close()
-
-    return True
+    logger.log(16, f'Metadata Info has been written to "{info_txt_path}"')
 
 
 class DB(object):

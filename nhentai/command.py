@@ -94,19 +94,13 @@ def main():
                     continue
 
             if options.generate_metadata:
-                table = doujinshi.table
-                result = generate_metadata_file(options.output_dir, table, doujinshi)
-                # Already downloaded; continue on with the other doujins.
-                # if cbz / pdf file exists, skip the download process?
-                # regenerate but not re-download?
-                if not result:
-                    continue
+                generate_metadata_file(options.output_dir, doujinshi)
 
             if options.is_save_download_history:
                 with DB() as db:
                     db.add_one(doujinshi.id)
 
-            if not options.is_nohtml and not options.is_cbz and not options.is_pdf:
+            if not options.is_nohtml:
                 generate_html(options.output_dir, doujinshi, template=constant.CONFIG['template'])
 
             if options.is_cbz:
