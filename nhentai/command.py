@@ -93,7 +93,15 @@ def main():
 
             if options.generate_metadata:
                 table = doujinshi.table
-                generate_metadata_file(options.output_dir, table, doujinshi)
+
+                # Skip downloading metadata if archived file is already generated.
+                check_file_type = ''
+                if options.is_cbz: check_file_type = '.cbz'
+                elif options.is_pdf: check_file_type = '.pdf'
+
+                result = generate_metadata_file(options.output_dir, table, doujinshi, check_file_type)
+                # Already downloaded; continue on with the other doujins.
+                if not result: continue
 
             if options.is_save_download_history:
                 with DB() as db:
