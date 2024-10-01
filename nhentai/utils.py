@@ -309,7 +309,7 @@ def generate_metadata_file(output_dir, doujinshi_obj):
               'TRANSLATOR', 'PUBLISHER', 'DESCRIPTION', 'STATUS', 'CHAPTERS', 'PAGES',
               'TAGS', 'TYPE', 'LANGUAGE', 'RELEASED', 'READING DIRECTION', 'CHARACTERS',
               'SERIES', 'PARODY', 'URL']
-    special_fields = ['PARODY', 'TITLE', 'ORIGINAL TITLE', 'CHARACTERS', 'AUTHOR', 'GROUPS',
+    special_fields = ['PARODY', 'TITLE', 'ORIGINAL TITLE', 'DATE', 'CHARACTERS', 'AUTHOR', 'GROUPS',
                       'LANGUAGE', 'TAGS', 'URL', 'PAGES']
 
     for i in range(len(fields)):
