@@ -89,7 +89,8 @@ class Doujinshi(object):
         if options.is_cbz:
             ret_cbz = os.path.exists(f'{base_path}.cbz') or os.path.exists(f'{base_path}/{self.filename}.cbz')
 
-        if all(filter(lambda s: s is not None, [ret_cbz, ret_pdf])):
+        ret = list(filter(lambda s: s is not None, [ret_cbz, ret_pdf]))
+        if ret and all(ret):
             return False
 
         # doujinshi directory doesn't exist, re-download
