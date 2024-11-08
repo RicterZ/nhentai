@@ -148,7 +148,7 @@ def doujinshi_parser(id_, counter=0):
     doujinshi['subtitle'] = subtitle.text if subtitle else ''
 
     doujinshi_cover = html.find('div', attrs={'id': 'cover'})
-    img_id = re.search('/galleries/([0-9]+)/cover.(jpg|png|gif)$',
+    img_id = re.search('/galleries/([0-9]+)/cover.(jpg|png|gif|webp)$',
                        doujinshi_cover.a.img.attrs['data-src'])
 
     ext = []
