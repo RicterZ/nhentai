@@ -104,7 +104,7 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
     file_list.sort()
 
     for image in file_list:
-        if not os.path.splitext(image)[1] in ('.jpg', '.png'):
+        if not os.path.splitext(image)[1] in ('.jpg', '.png', '.webp'):
             continue
         image_html += f'<img src="{image}" class="image-item"/>\n'
 
@@ -230,7 +230,7 @@ def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, regenerate=Fa
             import img2pdf
 
             """Write images to a PDF file using img2pdf."""
-            file_list = [f for f in os.listdir(doujinshi_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+            file_list = [f for f in os.listdir(doujinshi_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp'))]
             file_list.sort()
 
             logger.info(f'Writing PDF file to path: {filename}')
