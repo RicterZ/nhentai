@@ -69,7 +69,7 @@ class Downloader(Singleton):
                         if response.status_code != 200:
                             path = urlparse(url).path
                             for mirror in constant.IMAGE_URL_MIRRORS:
-                                print(f'{mirror}{path}')
+                                # print(f'{mirror}{path}')
                                 mirror_url = f'{mirror}{path}'
                                 response = request('get', mirror_url, stream=True,
                                                    timeout=self.timeout, proxies=proxy)
