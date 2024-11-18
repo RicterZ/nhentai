@@ -49,14 +49,10 @@ class Downloader(Singleton):
             time.sleep(self.delay)
         logger.info(f'Starting to download {url} ...')
         filename = filename if filename else os.path.basename(urlparse(url).path)
-        base_filename, extension = os.path.splitext(filename)
 
-        save_file_path = os.path.join(folder, base_filename.zfill(3) + extension)
+        save_file_path = os.path.join(self.folder, filename)
 
         try:
-            if not os.path.exists(folder):
-                os.makedirs(folder, exist_ok=True)
-
             if os.path.exists(save_file_path):
                 logger.warning(f'Skipped download: {save_file_path} already exists')
                 return 1, url
@@ -66,20 +62,20 @@ class Downloader(Singleton):
             if response.status_code != 200:
                 path = urlparse(url).path
                 for mirror in constant.IMAGE_URL_MIRRORS:
-                    print(f'{mirror}{path}')
+                    logger.info(f"Try mirror: {mirror}{path}")
                     mirror_url = f'{mirror}{path}'
                     response = await self.async_request(mirror_url, self.timeout)
                     if response.status_code == 200:
                         break
 
-            if not await self.save(save_file_path, response):
+            if not await self.save(filename, response):
                 logger.error(f'Can not download image {url}')
                 return 1, None
 
-        except (httpx.HTTPStatusError, httpx.TimeoutException) as e:
+        except (httpx.HTTPStatusError, httpx.TimeoutException, httpx.ConnectError) as e:
             if retried < 3:
-                logger.warning(f'Warning: {e}, retrying({retried}) ...')
-                return 0, await self.download(
+                logger.info(f'Download {filename} failed, retrying({retried + 1}) times...')
+                return await self.download(
                     url=url,
                     folder=folder,
                     filename=filename,
@@ -96,6 +92,7 @@ class Downloader(Singleton):
         except Exception as e:
             import traceback
 
+            logger.error(f"Exception type: {type(e)}")
             traceback.print_stack()
             logger.critical(str(e))
             return 0, None
@@ -109,7 +106,7 @@ class Downloader(Singleton):
         if response is None:
             logger.error('Error: Response is None')
             return False
-
+        save_file_path = os.path.join(self.folder, save_file_path)
         with open(save_file_path, 'wb') as f:
             if response is not None:
                 length = response.headers.get('content-length')
@@ -125,6 +122,7 @@ class Downloader(Singleton):
             return await client.get(url, timeout=timeout)
 
     def start_download(self, queue, folder='') -> bool:
+        logger.warning("Proxy temporarily unavailable, it will be fixed later. ")
         if not isinstance(folder, (str, )):
             folder = str(folder)
 
@@ -137,12 +135,13 @@ class Downloader(Singleton):
                 os.makedirs(folder)
             except EnvironmentError as e:
                 logger.critical(str(e))
+        self.folder = folder
 
         if os.getenv('DEBUG', None) == 'NODOWNLOAD':
             # Assuming we want to continue with rest of process.
             return True
 
-        async def co_wrapper(tasks):
+        async def fiber(tasks):
             for completed_task in asyncio.as_completed(tasks):
                 try:
                     result = await completed_task
@@ -155,6 +154,6 @@ class Downloader(Singleton):
             for url in queue
         ]
         # Prevent coroutines infection
-        asyncio.run(co_wrapper(tasks))
+        asyncio.run(fiber(tasks))
 
         return True
