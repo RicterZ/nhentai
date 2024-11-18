@@ -1,3 +1,4 @@
+httpx
 requests
 soupsieve
 setuptools
