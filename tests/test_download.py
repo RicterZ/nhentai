@@ -20,7 +20,7 @@ class TestDownload(unittest.TestCase):
     def test_download(self):
         did = 440546
         info = Doujinshi(**doujinshi_parser(did), name_format='%i')
-        info.downloader = Downloader(path='/tmp', size=5)
+        info.downloader = Downloader(path='/tmp', threads=5)
         info.download()
 
         self.assertTrue(os.path.exists(f'/tmp/{did}/001.jpg'))
