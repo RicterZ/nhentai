@@ -77,7 +77,7 @@ def main():
         doujinshi_ids = list(set(map(int, doujinshi_ids)) - set(data))
 
     if not options.is_show:
-        downloader = Downloader(path=options.output_dir, size=options.threads,
+        downloader = Downloader(path=options.output_dir, threads=options.threads,
                                 timeout=options.timeout, delay=options.delay)
 
         for doujinshi_id in doujinshi_ids:
