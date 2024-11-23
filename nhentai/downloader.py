@@ -1,18 +1,17 @@
 # coding: utf-
 
 import os
+import asyncio
+import httpx
 import urllib3.exceptions
 
 from urllib.parse import urlparse
 from nhentai import constant
 from nhentai.logger import logger
-from nhentai.utils import Singleton
+from nhentai.utils import Singleton, async_request
 
-import asyncio
-import httpx
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 
 class NHentaiImageNotExistException(Exception):
     pass
@@ -68,14 +67,14 @@ class Downloader(Singleton):
                 logger.warning(f'Skipped download: {save_file_path} already exists')
                 return 1, url
 
-            response = await self.async_request(url, self.timeout)  # TODO: Add proxy
+            response = await async_request('GET', url, timeout=self.timeout, proxies=proxy)
 
             if response.status_code != 200:
                 path = urlparse(url).path
                 for mirror in constant.IMAGE_URL_MIRRORS:
                     logger.info(f"Try mirror: {mirror}{path}")
                     mirror_url = f'{mirror}{path}'
-                    response = await self.async_request(mirror_url, self.timeout)
+                    response = await async_request('GET', mirror_url, timeout=self.timeout, proxies=proxy)
                     if response.status_code == 200:
                         break
 
@@ -128,12 +127,8 @@ class Downloader(Singleton):
                         f.write(chunk)
         return True
 
-    async def async_request(self, url, timeout):
-        async with httpx.AsyncClient() as client:
-            return await client.get(url, timeout=timeout)
 
     def start_download(self, queue, folder='') -> bool:
-        logger.warning("Proxy temporarily unavailable, it will be fixed later. ")
         if not isinstance(folder, (str,)):
             folder = str(folder)
 

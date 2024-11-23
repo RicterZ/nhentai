@@ -6,6 +6,7 @@ import os
 import zipfile
 import shutil
 
+import httpx
 import requests
 import sqlite3
 import urllib.parse
@@ -32,8 +33,28 @@ def request(method, url, **kwargs):
     return getattr(session, method)(url, verify=False, **kwargs)
 
 
+async def async_request(method, url, proxies = None, **kwargs):
+    headers = {
+        'Referer': constant.LOGIN_URL,
+        'User-Agent': constant.CONFIG['useragent'],
+        'Cookie': constant.CONFIG['cookie'],
+    }
+
+    if proxies is None:
+        proxies = constant.CONFIG['proxy']
+
+    if proxies.get('http') == '' and proxies.get('https') == '':
+        proxies = None
+
+    async with httpx.AsyncClient(headers=headers, verify=False, proxies=proxies, **kwargs) as client:
+        response = await client.request(method, url, **kwargs)
+
+    return response
+
+
 def check_cookie():
     response = request('get', constant.BASE_URL)
+
     if response.status_code == 403 and 'Just a moment...' in response.text:
         logger.error('Blocked by Cloudflare captcha, please set your cookie and useragent')
         sys.exit(1)
