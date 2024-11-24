@@ -1,22 +1,17 @@
 # coding: utf-
 
-import multiprocessing
-
 import os
-import time
+import asyncio
+import httpx
 import urllib3.exceptions
 
 from urllib.parse import urlparse
 from nhentai import constant
 from nhentai.logger import logger
-from nhentai.utils import Singleton
+from nhentai.utils import Singleton, async_request
 
-import asyncio
-import httpx
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-semaphore = multiprocessing.Semaphore(1)
-
 
 class NHentaiImageNotExistException(Exception):
     pass
@@ -37,17 +32,32 @@ def download_callback(result):
         logger.log(16, f'{data} downloaded successfully')
 
 
+async def fiber(tasks):
+    for completed_task in asyncio.as_completed(tasks):
+        try:
+            result = await completed_task
+            logger.info(f'{result[1]} download completed')
+        except Exception as e:
+            logger.error(f'An error occurred: {e}')
+
+
 class Downloader(Singleton):
-    def __init__(self, path='', size=5, timeout=30, delay=0):
-        self.size = size
+    def __init__(self, path='', threads=5, timeout=30, delay=0):
+        self.threads = threads
         self.path = str(path)
         self.timeout = timeout
         self.delay = delay
 
+    async def _semaphore_download(self, semaphore, *args, **kwargs):
+        async with semaphore:
+            return await self.download(*args, **kwargs)
+
     async def download(self, url, folder='', filename='', retried=0, proxy=None):
-        if self.delay:
-            time.sleep(self.delay)
         logger.info(f'Starting to download {url} ...')
+
+        if self.delay:
+            await asyncio.sleep(self.delay)
+
         filename = filename if filename else os.path.basename(urlparse(url).path)
 
         save_file_path = os.path.join(self.folder, filename)
@@ -57,14 +67,14 @@ class Downloader(Singleton):
                 logger.warning(f'Skipped download: {save_file_path} already exists')
                 return 1, url
 
-            response = await self.async_request(url, self.timeout)  # TODO: Add proxy
+            response = await async_request('GET', url, timeout=self.timeout, proxies=proxy)
 
             if response.status_code != 200:
                 path = urlparse(url).path
                 for mirror in constant.IMAGE_URL_MIRRORS:
                     logger.info(f"Try mirror: {mirror}{path}")
                     mirror_url = f'{mirror}{path}'
-                    response = await self.async_request(mirror_url, self.timeout)
+                    response = await async_request('GET', mirror_url, timeout=self.timeout, proxies=proxy)
                     if response.status_code == 200:
                         break
 
@@ -117,13 +127,9 @@ class Downloader(Singleton):
                         f.write(chunk)
         return True
 
-    async def async_request(self, url, timeout):
-        async with httpx.AsyncClient() as client:
-            return await client.get(url, timeout=timeout)
 
     def start_download(self, queue, folder='') -> bool:
-        logger.warning("Proxy temporarily unavailable, it will be fixed later. ")
-        if not isinstance(folder, (str, )):
+        if not isinstance(folder, (str,)):
             folder = str(folder)
 
         if self.path:
@@ -141,19 +147,14 @@ class Downloader(Singleton):
             # Assuming we want to continue with rest of process.
             return True
 
-        async def fiber(tasks):
-            for completed_task in asyncio.as_completed(tasks):
-                try:
-                    result = await completed_task
-                    logger.info(f'{result[1]} download completed')
-                except Exception as e:
-                    logger.error(f'An error occurred: {e}')
+        semaphore = asyncio.Semaphore(self.threads)
 
-        tasks = [
-            self.download(url, filename=os.path.basename(urlparse(url).path))
+        coroutines = [
+            self._semaphore_download(semaphore, url, filename=os.path.basename(urlparse(url).path))
             for url in queue
         ]
+
         # Prevent coroutines infection
-        asyncio.run(fiber(tasks))
+        asyncio.run(fiber(coroutines))
 
         return True
