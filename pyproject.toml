@@ -14,6 +14,7 @@ beautifulsoup4 = "^4.11.2"
 tabulate = "^0.9.0"
 iso8601 = "^1.1.0"
 urllib3 = "^1.26.14"
+httpx = "0.27.2"
 
 
 [build-system]

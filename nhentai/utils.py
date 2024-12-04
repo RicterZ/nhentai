@@ -5,6 +5,7 @@ import re
 import os
 import zipfile
 import shutil
+import copy
 
 import httpx
 import requests
@@ -45,6 +46,10 @@ async def async_request(method, url, proxies = None, **kwargs):
 
     if proxies.get('http') == '' and proxies.get('https') == '':
         proxies = None
+
+    if proxies:
+        _proxies = {f'{k}://': v for k, v in proxies.items() if v}
+        proxies = _proxies
 
     async with httpx.AsyncClient(headers=headers, verify=False, proxies=proxies, **kwargs) as client:
         response = await client.request(method, url, **kwargs)
