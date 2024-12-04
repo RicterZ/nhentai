@@ -32,14 +32,6 @@ def download_callback(result):
         logger.log(16, f'{data} downloaded successfully')
 
 
-async def fiber(tasks):
-    for completed_task in asyncio.as_completed(tasks):
-        try:
-            result = await completed_task
-            logger.info(f'{result[1]} download completed')
-        except Exception as e:
-            logger.error(f'An error occurred: {e}')
-
 
 class Downloader(Singleton):
     def __init__(self, path='', threads=5, timeout=30, delay=0):
@@ -48,8 +40,18 @@ class Downloader(Singleton):
         self.timeout = timeout
         self.delay = delay
 
-    async def _semaphore_download(self, semaphore, *args, **kwargs):
-        async with semaphore:
+    async def fiber(self, tasks):
+        self.semaphore = asyncio.Semaphore(self.threads)
+        for completed_task in asyncio.as_completed(tasks):
+            try:
+                result = await completed_task
+                logger.info(f'{result[1]} download completed')
+            except Exception as e:
+                logger.error(f'An error occurred: {e}')
+
+
+    async def _semaphore_download(self, *args, **kwargs):
+        async with self.semaphore:
             return await self.download(*args, **kwargs)
 
     async def download(self, url, folder='', filename='', retried=0, proxy=None):
@@ -147,14 +149,13 @@ class Downloader(Singleton):
             # Assuming we want to continue with rest of process.
             return True
 
-        semaphore = asyncio.Semaphore(self.threads)
 
         coroutines = [
-            self._semaphore_download(semaphore, url, filename=os.path.basename(urlparse(url).path))
+            self._semaphore_download(url, filename=os.path.basename(urlparse(url).path))
             for url in queue
         ]
 
         # Prevent coroutines infection
-        asyncio.run(fiber(coroutines))
+        asyncio.run(self.fiber(coroutines))
 
         return True
