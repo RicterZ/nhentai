@@ -29,11 +29,12 @@ class DoujinshiInfo(dict):
 
 
 class Doujinshi(object):
-    def __init__(self, name=None, pretty_name=None, id=None, img_id=None,
+    def __init__(self, name=None, pretty_name=None, id=None, favorite_counts=0, img_id=None,
                  ext='', pages=0, name_format='[%i][%a][%t]', **kwargs):
         self.name = name
         self.pretty_name = pretty_name
         self.id = id
+        self.favorite_counts = favorite_counts
         self.img_id = img_id
         self.ext = ext
         self.pages = pages
@@ -45,6 +46,7 @@ class Doujinshi(object):
         name_format = name_format.replace('%ag', format_filename(ag_value))
 
         name_format = name_format.replace('%i', format_filename(str(self.id)))
+        name_format = name_format.replace('%f', format_filename(str(self.favorite_counts)))
         name_format = name_format.replace('%a', format_filename(self.info.artists))
         name_format = name_format.replace('%g', format_filename(self.info.groups))
 
@@ -63,6 +65,7 @@ class Doujinshi(object):
             ['Groups', self.info.groups],
             ['Languages', self.info.languages],
             ['Tags', self.info.tags],
+            ['Favorite Counts', self.info.favorite_counts],
             ['URL', self.url],
             ['Pages', self.pages],
         ]

@@ -8,6 +8,8 @@ from nhentai.constant import LANGUAGE_ISO
 def serialize_json(doujinshi, output_dir):
     metadata = {'title': doujinshi.name,
                 'subtitle': doujinshi.info.subtitle}
+    if doujinshi.info.favorite_counts:
+        metadata['favorite_counts'] = doujinshi.favorite_counts
     if doujinshi.info.date:
         metadata['upload_date'] = doujinshi.info.date
     if doujinshi.info.parodies:
@@ -44,6 +46,7 @@ def serialize_comic_xml(doujinshi, output_dir):
         xml_write_simple_tag(f, 'PageCount', doujinshi.pages)
         xml_write_simple_tag(f, 'URL', doujinshi.url)
         xml_write_simple_tag(f, 'NhentaiId', doujinshi.id)
+        xml_write_simple_tag(f, 'Favorites', doujinshi.favorite_counts)
         xml_write_simple_tag(f, 'Genre', doujinshi.info.categories)
 
         xml_write_simple_tag(f, 'BlackAndWhite', 'No' if doujinshi.info.tags and

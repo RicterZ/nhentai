@@ -140,6 +140,7 @@ Format output doujinshi folder name:
 Supported doujinshi folder formatter:
 
 - %i: Doujinshi id
+- %f: Doujinshi favorite count
 - %t: Doujinshi name
 - %s: Doujinshi subtitle (translated name)
 - %a: Doujinshi authors' name
