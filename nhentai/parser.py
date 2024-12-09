@@ -142,7 +142,7 @@ def doujinshi_parser(id_, counter=0):
     title = doujinshi_info.find('h1').text
     pretty_name = doujinshi_info.find('h1').find('span', attrs={'class': 'pretty'}).text
     subtitle = doujinshi_info.find('h2')
-    favorite_counts = doujinshi_info.find('span', class_='nobold').find('span', class_='count')
+    favorite_counts = str(doujinshi_info.find('span', class_='nobold').find('span', class_='count'))
     if favorite_counts is None:
         favorite_counts = '0'
 
