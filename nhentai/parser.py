@@ -142,11 +142,14 @@ def doujinshi_parser(id_, counter=0):
     title = doujinshi_info.find('h1').text
     pretty_name = doujinshi_info.find('h1').find('span', attrs={'class': 'pretty'}).text
     subtitle = doujinshi_info.find('h2')
-    favorite_counts = doujinshi_info.find('span', class_='nobold').find('span', class_='count').text.strip()
+    favorite_counts = doujinshi_info.find('span', class_='nobold').find('span', class_='count')
+    if favorite_counts is None:
+        favorite_counts = '0'
+
     doujinshi['name'] = title
     doujinshi['pretty_name'] = pretty_name
     doujinshi['subtitle'] = subtitle.text if subtitle else ''
-    doujinshi['favorite_counts'] = favorite_counts
+    doujinshi['favorite_counts'] = favorite_counts.strip()
 
     doujinshi_cover = html.find('div', attrs={'id': 'cover'})
     img_id = re.search('/galleries/([0-9]+)/cover.(jpg|png|gif|webp)$',
