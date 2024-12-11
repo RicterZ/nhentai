@@ -160,8 +160,8 @@ def doujinshi_parser(id_, counter=0):
         ext.append(ext_name)
 
     if not img_id:
-        logger.critical('Tried yo get image id failed')
-        sys.exit(1)
+        logger.critical(f'Tried yo get image id failed of id: {id_}')
+        return None
 
     doujinshi['img_id'] = img_id.group(1)
     doujinshi['ext'] = ext
