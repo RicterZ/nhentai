@@ -4,6 +4,7 @@ import os
 import asyncio
 import httpx
 import urllib3.exceptions
+import math
 
 from urllib.parse import urlparse
 from nhentai import constant
@@ -12,6 +13,7 @@ from nhentai.utils import Singleton, async_request
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 class NHentaiImageNotExistException(Exception):
     pass
@@ -32,13 +34,14 @@ def download_callback(result):
         logger.log(16, f'{data} downloaded successfully')
 
 
-
 class Downloader(Singleton):
     def __init__(self, path='', threads=5, timeout=30, delay=0):
         self.threads = threads
         self.path = str(path)
         self.timeout = timeout
         self.delay = delay
+        self.folder = None
+        self.semaphore = None
 
     async def fiber(self, tasks):
         self.semaphore = asyncio.Semaphore(self.threads)
@@ -49,18 +52,20 @@ class Downloader(Singleton):
             except Exception as e:
                 logger.error(f'An error occurred: {e}')
 
-
     async def _semaphore_download(self, *args, **kwargs):
         async with self.semaphore:
             return await self.download(*args, **kwargs)
 
-    async def download(self, url, folder='', filename='', retried=0, proxy=None):
+    async def download(self, url, folder='', filename='', retried=0, proxy=None, length=0):
         logger.info(f'Starting to download {url} ...')
 
         if self.delay:
             await asyncio.sleep(self.delay)
 
         filename = filename if filename else os.path.basename(urlparse(url).path)
+        base_filename, extension = os.path.splitext(filename)
+        digits = int(math.log10(length)) + 1
+        filename = base_filename.zfill(digits) + extension
 
         save_file_path = os.path.join(self.folder, filename)
 
@@ -129,7 +134,6 @@ class Downloader(Singleton):
                         f.write(chunk)
         return True
 
-
     def start_download(self, queue, folder='') -> bool:
         if not isinstance(folder, (str,)):
             folder = str(folder)
@@ -149,9 +153,8 @@ class Downloader(Singleton):
             # Assuming we want to continue with rest of process.
             return True
 
-
         coroutines = [
-            self._semaphore_download(url, filename=os.path.basename(urlparse(url).path))
+            self._semaphore_download(url, filename=os.path.basename(urlparse(url).path), length=len(queue))
             for url in queue
         ]
 
