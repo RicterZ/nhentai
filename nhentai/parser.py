@@ -135,7 +135,6 @@ def doujinshi_parser(id_, counter=0):
         logger.warning(f'Error: {e}, ignored')
         return None
 
-    # print(response)
     html = BeautifulSoup(response, 'html.parser')
     doujinshi_info = html.find('div', attrs={'id': 'info'})
 

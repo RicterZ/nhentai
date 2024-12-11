@@ -64,8 +64,7 @@ class Downloader(Singleton):
 
         filename = filename if filename else os.path.basename(urlparse(url).path)
         base_filename, extension = os.path.splitext(filename)
-        digits = int(math.log10(length)) + 1
-        filename = base_filename.zfill(digits) + extension
+        filename = base_filename.zfill(length) + extension
 
         save_file_path = os.path.join(self.folder, filename)
 
@@ -153,8 +152,9 @@ class Downloader(Singleton):
             # Assuming we want to continue with rest of process.
             return True
 
+        digit_length = len(str(len(queue)))
         coroutines = [
-            self._semaphore_download(url, filename=os.path.basename(urlparse(url).path), length=len(queue))
+            self._semaphore_download(url, filename=os.path.basename(urlparse(url).path), length=digit_length)
             for url in queue
         ]
 
