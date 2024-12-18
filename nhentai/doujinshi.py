@@ -57,7 +57,7 @@ class Doujinshi(object):
 
         self.table = [
             ['Parodies', self.info.parodies],
-            ['Doujinshi', self.name],
+            ['Title', self.name],
             ['Subtitle', self.info.subtitle],
             ['Date', self.info.date],
             ['Characters', self.info.characters],

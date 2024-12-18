@@ -4,7 +4,6 @@ import os
 import asyncio
 import httpx
 import urllib3.exceptions
-import math
 
 from urllib.parse import urlparse
 from nhentai import constant

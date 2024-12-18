@@ -5,13 +5,13 @@ import re
 import os
 import zipfile
 import shutil
-import copy
 
 import httpx
 import requests
 import sqlite3
 import urllib.parse
-from typing import Optional, Tuple
+from typing import Tuple
+from requests.structures import CaseInsensitiveDict
 
 from nhentai import constant
 from nhentai.logger import logger
@@ -335,14 +335,15 @@ def generate_metadata_file(output_dir, doujinshi_obj):
               'TRANSLATOR', 'PUBLISHER', 'DESCRIPTION', 'STATUS', 'CHAPTERS', 'PAGES',
               'TAGS', 'TYPE', 'LANGUAGE', 'RELEASED', 'READING DIRECTION', 'CHARACTERS',
               'SERIES', 'PARODY', 'URL']
-    special_fields = ['PARODY', 'TITLE', 'ORIGINAL TITLE', 'DATE', 'CHARACTERS', 'AUTHOR', 'GROUPS',
-                      'LANGUAGE', 'TAGS', 'URL', 'PAGES']
 
-    for i in range(len(fields)):
-        f.write(f'{fields[i]}: ')
-        if fields[i] in special_fields:
-            f.write(str(doujinshi_obj.table[special_fields.index(fields[i])][1]))
-        f.write('\n')
+    temp_dict = CaseInsensitiveDict(dict(doujinshi_obj.table))
+    print(doujinshi_obj.info)
+    for i in fields:
+        v = temp_dict.get(i)
+        v = temp_dict.get(f'{i}s') if v is None else v
+        v = doujinshi_obj.info.get(i.lower(), None) if v is None else v
+        v = doujinshi_obj.info.get(f'{i.lower()}s', "Unknown") if v is None else v
+        f.write(f'{i}: {v}\n')
 
     f.close()
     logger.log(16, f'Metadata Info has been written to "{info_txt_path}"')
