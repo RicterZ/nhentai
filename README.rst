@@ -59,7 +59,7 @@ On Gentoo Linux:
 
 .. code-block::
 
-    layman -fa glicOne
+    layman -fa glibOne
     sudo emerge net-misc/nhentai
 
 On NixOS:

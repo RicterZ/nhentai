@@ -188,53 +188,6 @@ def doujinshi_parser(id_, counter=0):
     return doujinshi
 
 
-def legacy_doujinshi_parser(id_):
-    if not isinstance(id_, (int,)) and (isinstance(id_, (str,)) and not id_.isdigit()):
-        raise Exception(f'Doujinshi id({id_}) is not valid')
-
-    id_ = int(id_)
-    logger.info(f'Fetching information of doujinshi id {id_}')
-    doujinshi = dict()
-    doujinshi['id'] = id_
-    url = f'{constant.DETAIL_URL}/{id_}'
-    i = 0
-    while 5 > i:
-        try:
-            response = request('get', url).json()
-        except Exception as e:
-            i += 1
-            if not i < 5:
-                logger.critical(str(e))
-                sys.exit(1)
-            continue
-        break
-
-    doujinshi['name'] = response['title']['english']
-    doujinshi['subtitle'] = response['title']['japanese']
-    doujinshi['img_id'] = response['media_id']
-    doujinshi['ext'] = ''.join([i['t'] for i in response['images']['pages']])
-    doujinshi['pages'] = len(response['images']['pages'])
-
-    # gain information of the doujinshi
-    needed_fields = ['character', 'artist', 'language', 'tag', 'parody', 'group', 'category']
-    for tag in response['tags']:
-        tag_type = tag['type']
-        if tag_type in needed_fields:
-            if tag_type == 'tag':
-                if tag_type not in doujinshi:
-                    doujinshi[tag_type] = {}
-
-                tag['name'] = tag['name'].replace(' ', '-')
-                tag['name'] = tag['name'].lower()
-                doujinshi[tag_type][tag['name']] = tag['id']
-            elif tag_type not in doujinshi:
-                doujinshi[tag_type] = tag['name']
-            else:
-                doujinshi[tag_type] += ', ' + tag['name']
-
-    return doujinshi
-
-
 def print_doujinshi(doujinshi_list):
     if not doujinshi_list:
         return

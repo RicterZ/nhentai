@@ -37,7 +37,7 @@ def write_config():
         f.write(json.dumps(constant.CONFIG))
 
 
-def callback(option, opt_str, value, parser):
+def callback(option, _opt_str, _value, parser):
     if option == '--id':
         pass
     value = []
