@@ -277,7 +277,7 @@ def format_filename(s, length=MAX_FIELD_LENGTH, _truncate_only=False):
     It used to be a whitelist approach allowed only alphabet and a part of symbols.
     but most doujinshi's names include Japanese 2-byte characters and these was rejected.
     so it is using blacklist approach now.
-    if filename include forbidden characters (\'/:,;*?"<>|) ,it replace space character(' '). 
+    if filename include forbidden characters (\'/:,;*?"<>|) ,it replaces space character(" ").
     """
     # maybe you can use `--format` to select a suitable filename
 
@@ -300,7 +300,7 @@ def format_filename(s, length=MAX_FIELD_LENGTH, _truncate_only=False):
     return filename
 
 
-def signal_handler(signal, frame):
+def signal_handler(_signal, _frame):
     logger.error('Ctrl-C signal received. Stopping...')
     sys.exit(1)
 
@@ -337,7 +337,6 @@ def generate_metadata_file(output_dir, doujinshi_obj):
               'SERIES', 'PARODY', 'URL']
 
     temp_dict = CaseInsensitiveDict(dict(doujinshi_obj.table))
-    print(doujinshi_obj.info)
     for i in fields:
         v = temp_dict.get(i)
         v = temp_dict.get(f'{i}s') if v is None else v
