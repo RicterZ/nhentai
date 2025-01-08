@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nhentai"
-version = "0.5.17"
+version = "0.5.17.2"
 description = "nhentai doujinshi downloader"
 authors = ["Ricter Z <ricterzheng@gmail.com>"]
 license = "MIT"
@@ -20,3 +20,6 @@ httpx = "0.27.2"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+nhentai = 'nhentai.command:main'
