@@ -152,6 +152,7 @@ class Downloader(Singleton):
             return True
 
         digit_length = len(str(len(queue)))
+        logger.info(f'Total download pages: {len(queue)}')
         coroutines = [
             self._semaphore_download(url, filename=os.path.basename(urlparse(url).path), length=digit_length)
             for url in queue

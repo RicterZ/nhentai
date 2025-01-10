@@ -18,6 +18,7 @@ from nhentai.logger import logger
 from nhentai.serializer import serialize_json, serialize_comic_xml, set_js_database
 
 MAX_FIELD_LENGTH = 100
+EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.webp')
 
 
 def request(method, url, **kwargs):
@@ -130,7 +131,7 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
     file_list.sort()
 
     for image in file_list:
-        if not os.path.splitext(image)[1] in ('.jpg', '.png', '.webp'):
+        if not os.path.splitext(image)[1] in EXTENSIONS:
             continue
         image_html += f'<img src="{image}" class="image-item"/>\n'
 
@@ -256,7 +257,7 @@ def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, regenerate=Fa
             import img2pdf
 
             """Write images to a PDF file using img2pdf."""
-            file_list = [f for f in os.listdir(doujinshi_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp'))]
+            file_list = [f for f in os.listdir(doujinshi_dir) if f.lower().endswith(EXTENSIONS)]
             file_list.sort()
 
             logger.info(f'Writing PDF file to path: {filename}')
