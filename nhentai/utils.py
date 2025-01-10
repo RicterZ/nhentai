@@ -101,8 +101,8 @@ def parse_doujinshi_obj(
 ) -> Tuple[str, str]:
 
     filename = f'./doujinshi.{file_type}'
-    doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
     if doujinshi_obj is not None:
+        doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
         _filename = f'{doujinshi_obj.filename}.{file_type}'
 
         if file_type == 'cbz':
@@ -112,6 +112,8 @@ def parse_doujinshi_obj(
             _filename = _filename.replace('/', '-')
 
         filename = os.path.join(output_dir, _filename)
+    else:
+        doujinshi_dir = './'
 
     return doujinshi_dir, filename
 
