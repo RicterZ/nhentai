@@ -151,8 +151,9 @@ def doujinshi_parser(id_, counter=0):
     doujinshi['favorite_counts'] = favorite_counts.strip()
 
     doujinshi_cover = html.find('div', attrs={'id': 'cover'})
-    img_id = re.search('/galleries/([0-9]+)/cover.(jpg|png|gif|webp)$',
-                       doujinshi_cover.a.img.attrs['data-src'])
+    # img_id = re.search('/galleries/([0-9]+)/cover.(jpg|png|gif|webp)$',
+    #                   doujinshi_cover.a.img.attrs['data-src'])
+    img_id = re.search(r'/galleries/(\d+)/cover\.\w+$', doujinshi_cover.a.img.attrs['data-src'])
 
     ext = []
     for i in html.find_all('div', attrs={'class': 'thumb-container'}):
