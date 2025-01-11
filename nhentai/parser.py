@@ -159,10 +159,10 @@ def doujinshi_parser(id_, counter=0):
     for i in html.find_all('div', attrs={'class': 'thumb-container'}):
         base_name = os.path.basename(i.img.attrs['data-src'])
         ext_name = base_name.split('.')
-        if len(ext_name) == 2:
-            ext.append(ext_name[-1])
-        elif len(ext_name) == 3:
+        if len(ext_name) == 3:
             ext.append(ext_name[1])
+        else:
+            ext.append(ext_name[-1])
 
     if not img_id:
         logger.critical(f'Tried yo get image id failed of id: {id_}')
