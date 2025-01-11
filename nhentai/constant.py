@@ -35,6 +35,8 @@ LOGIN_URL = f'{BASE_URL}/login/'
 CHALLENGE_URL = f'{BASE_URL}/challenge'
 FAV_URL = f'{BASE_URL}/favorites/'
 
+PATH_SEPARATOR = os.path.sep
+
 
 IMAGE_URL = f'{urlparse(BASE_URL).scheme}://i.{urlparse(BASE_URL).hostname}/galleries'
 IMAGE_URL_MIRRORS = [

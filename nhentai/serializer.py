@@ -1,6 +1,8 @@
 # coding: utf-8
 import json
 import os
+
+from nhentai.constant import PATH_SEPARATOR
 from xml.sax.saxutils import escape
 from nhentai.constant import LANGUAGE_ISO
 
@@ -82,7 +84,7 @@ def xml_write_simple_tag(f, name, val, indent=1):
 
 def merge_json():
     lst = []
-    output_dir = "./"
+    output_dir = f".{PATH_SEPARATOR}"
     os.chdir(output_dir)
     doujinshi_dirs = next(os.walk('.'))[1]
     for folder in doujinshi_dirs:

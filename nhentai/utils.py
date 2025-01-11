@@ -14,6 +14,7 @@ from typing import Tuple
 from requests.structures import CaseInsensitiveDict
 
 from nhentai import constant
+from nhentai.constant import PATH_SEPARATOR
 from nhentai.logger import logger
 from nhentai.serializer import serialize_json, serialize_comic_xml, set_js_database
 
@@ -100,7 +101,7 @@ def parse_doujinshi_obj(
         file_type: str = ''
 ) -> Tuple[str, str]:
 
-    filename = f'./doujinshi.{file_type}'
+    filename = f'.{PATH_SEPARATOR}doujinshi.{file_type}'
     if doujinshi_obj is not None:
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
         _filename = f'{doujinshi_obj.filename}.{file_type}'
@@ -113,7 +114,7 @@ def parse_doujinshi_obj(
 
         filename = os.path.join(output_dir, _filename)
     else:
-        doujinshi_dir = './'
+        doujinshi_dir = f'.{PATH_SEPARATOR}'
 
     return doujinshi_dir, filename
 
@@ -178,7 +179,7 @@ def move_to_folder(output_dir='.', doujinshi_obj=None, file_type=None):
     shutil.move(filename, os.path.join(doujinshi_dir, os.path.basename(filename)))
 
 
-def generate_main_html(output_dir='./'):
+def generate_main_html(output_dir=f'.{PATH_SEPARATOR}'):
     """
     Generate a main html to show all the contains doujinshi.
     With a link to their `index.html`.

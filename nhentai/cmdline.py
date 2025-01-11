@@ -11,6 +11,7 @@ from optparse import OptionParser
 from nhentai import __version__
 from nhentai.utils import generate_html, generate_main_html, DB
 from nhentai.logger import logger
+from nhentai.constant import PATH_SEPARATOR
 
 
 def banner():
@@ -64,7 +65,8 @@ def cmd_parser():
     # operation options
     parser.add_option('--download', '-D', dest='is_download', action='store_true',
                       help='download doujinshi (for search results)')
-    parser.add_option('--show', '-S', dest='is_show', action='store_true', help='just show the doujinshi information')
+    parser.add_option('--show', '-S', dest='is_show', action='store_true',
+                      help='just show the doujinshi information')
 
     # doujinshi options
     parser.add_option('--id', dest='id', action='callback', callback=callback,
@@ -86,7 +88,8 @@ def cmd_parser():
                       choices=['recent', 'popular', 'popular-today', 'popular-week', 'date'])
 
     # download options
-    parser.add_option('--output', '-o', type='string', dest='output_dir', action='store', default='./',
+    parser.add_option('--output', '-o', type='string', dest='output_dir', action='store',
+                      default=f'.{PATH_SEPARATOR}',
                       help='output dir')
     parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=5,
                       help='thread count for downloading doujinshi')
@@ -96,7 +99,8 @@ def cmd_parser():
                       help='slow down between downloading every doujinshi')
     parser.add_option('--proxy', type='string', dest='proxy', action='store',
                       help='store a proxy, for example: -p "http://127.0.0.1:1080"')
-    parser.add_option('--file', '-f', type='string', dest='file', action='store', help='read gallery IDs from file.')
+    parser.add_option('--file', '-f', type='string', dest='file', action='store',
+                      help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
                       help='format the saved folder name', default='[%i][%a][%t]')
     parser.add_option('--dry-run', action='store_true', dest='dryrun', help='Dry run, skip file download')
