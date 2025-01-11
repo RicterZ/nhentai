@@ -47,7 +47,10 @@ class Downloader(Singleton):
         for completed_task in asyncio.as_completed(tasks):
             try:
                 result = await completed_task
-                logger.info(f'{result[1]} download completed')
+                if result[1]:
+                    logger.info(f'{result[1]} download completed')
+                else:
+                    logger.warning(f'{result[1]} download failed, return value {result[0]}')
             except Exception as e:
                 logger.error(f'An error occurred: {e}')
 
@@ -85,11 +88,11 @@ class Downloader(Singleton):
 
             if not await self.save(filename, response):
                 logger.error(f'Can not download image {url}')
-                return 1, None
+                return 1, url
 
         except (httpx.HTTPStatusError, httpx.TimeoutException, httpx.ConnectError) as e:
             if retried < 3:
-                logger.info(f'Download {filename} failed, retrying({retried + 1}) times...')
+                logger.warning(f'Download {filename} failed, retrying({retried + 1}) times...')
                 return await self.download(
                     url=url,
                     folder=folder,
@@ -98,7 +101,8 @@ class Downloader(Singleton):
                     proxy=proxy,
                 )
             else:
-                return 0, None
+                logger.warning(f'Download {filename} failed with 3 times retried, skipped')
+                return 0, url
 
         except NHentaiImageNotExistException as e:
             os.remove(save_file_path)
@@ -110,10 +114,10 @@ class Downloader(Singleton):
             logger.error(f"Exception type: {type(e)}")
             traceback.print_stack()
             logger.critical(str(e))
-            return 0, None
+            return 0, url
 
         except KeyboardInterrupt:
-            return -3, None
+            return -3, url
 
         return 1, url
 
