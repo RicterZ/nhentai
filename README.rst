@@ -129,7 +129,7 @@ Download your favorites with delay:
 
 .. code-block:: bash
 
-    nhentai --favorites --download --delay 1
+    nhentai --favorites --download --delay 1 --page 3-5,7
 
 Format output doujinshi folder name:
 

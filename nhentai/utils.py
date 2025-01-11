@@ -311,7 +311,8 @@ def signal_handler(_signal, _frame):
 def paging(page_string):
     # 1,3-5,14 -> [1, 3, 4, 5, 14]
     if not page_string:
-        return []
+        # default, the first page
+        return [1]
 
     page_list = []
     for i in page_string.split(','):
