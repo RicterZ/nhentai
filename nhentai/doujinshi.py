@@ -65,7 +65,7 @@ class Doujinshi(object):
             ['Groups', self.info.groups],
             ['Languages', self.info.languages],
             ['Tags', self.info.tags],
-            ['Favorite Counts', self.info.favorite_counts],
+            ['Favorite Counts', self.favorite_counts],
             ['URL', self.url],
             ['Pages', self.pages],
         ]

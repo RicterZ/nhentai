@@ -338,7 +338,7 @@ def generate_metadata_file(output_dir, doujinshi_obj):
 
     fields = ['TITLE', 'ORIGINAL TITLE', 'AUTHOR', 'ARTIST', 'GROUPS', 'CIRCLE', 'SCANLATOR',
               'TRANSLATOR', 'PUBLISHER', 'DESCRIPTION', 'STATUS', 'CHAPTERS', 'PAGES',
-              'TAGS', 'TYPE', 'LANGUAGE', 'RELEASED', 'READING DIRECTION', 'CHARACTERS',
+              'TAGS',  'FAVORITE COUNTS', 'TYPE', 'LANGUAGE', 'RELEASED', 'READING DIRECTION', 'CHARACTERS',
               'SERIES', 'PARODY', 'URL']
 
     temp_dict = CaseInsensitiveDict(dict(doujinshi_obj.table))
