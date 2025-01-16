@@ -49,8 +49,8 @@ document.onkeypress = event => {
     switch (event.key.toLowerCase()) {
         // Previous Image
         case 'w':
-	   scrollBy(0, -40);
-	   break;
+            scrollBy(0, -40);
+            break;
         case 'a':
             changePage(currentPage - 1);
             break;
@@ -61,7 +61,7 @@ document.onkeypress = event => {
         // Next Image
         case ' ':
         case 's':
-	    scrollBy(0, 40);
+            scrollBy(0, 40);
             break;
         case 'd':
             changePage(currentPage + 1);
@@ -75,11 +75,13 @@ document.onkeydown = event =>{
             changePage(currentPage - 1);
             break;
         case 38: //up
+            changePage(currentPage - 1);
             break;
         case 39: //right
             changePage(currentPage + 1);
             break;
         case 40: //down
+            changePage(currentPage + 1);
             break;
     }
 };
