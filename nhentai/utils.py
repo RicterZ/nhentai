@@ -36,24 +36,20 @@ def request(method, url, **kwargs):
     return getattr(session, method)(url, verify=False, **kwargs)
 
 
-async def async_request(method, url, proxies = None, **kwargs):
+async def async_request(method, url, proxy = None, **kwargs):
     headers = {
         'Referer': constant.LOGIN_URL,
         'User-Agent': constant.CONFIG['useragent'],
         'Cookie': constant.CONFIG['cookie'],
     }
 
-    if proxies is None:
-        proxies = constant.CONFIG['proxy']
+    if proxy is None:
+        proxy = constant.CONFIG['proxy']
 
-    if proxies.get('http') == '' and proxies.get('https') == '':
-        proxies = None
+    if proxy is not None and proxy.get('http') == '' and proxy.get('https') == '':
+        proxy = None
 
-    if proxies:
-        _proxies = {f'{k}://': v for k, v in proxies.items() if v}
-        proxies = _proxies
-
-    async with httpx.AsyncClient(headers=headers, verify=False, proxies=proxies, **kwargs) as client:
+    async with httpx.AsyncClient(headers=headers, verify=False, proxy=proxy, **kwargs) as client:
         response = await client.request(method, url, **kwargs)
 
     return response

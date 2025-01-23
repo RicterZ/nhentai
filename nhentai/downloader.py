@@ -75,7 +75,7 @@ class Downloader(Singleton):
                 logger.warning(f'Skipped download: {save_file_path} already exists')
                 return 1, url
 
-            response = await async_request('GET', url, timeout=self.timeout, proxies=proxy)
+            response = await async_request('GET', url, timeout=self.timeout, proxy=proxy)
 
             if response.status_code != 200:
                 path = urlparse(url).path
