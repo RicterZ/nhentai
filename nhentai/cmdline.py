@@ -97,6 +97,10 @@ def cmd_parser():
                       help='timeout for downloading doujinshi')
     parser.add_option('--delay', '-d', type='int', dest='delay', action='store', default=0,
                       help='slow down between downloading every doujinshi')
+    parser.add_option('--retry', type='int', dest='retry', action='store', default=3,
+                      help='retry times when downloading failed')
+    parser.add_option('--exit-on-fail', dest='exit_on_fail', action='store_true', default=False,
+                      help='exit on fail to prevent generating incomplete files')
     parser.add_option('--proxy', type='string', dest='proxy', action='store',
                       help='store a proxy, for example: -p "http://127.0.0.1:1080"')
     parser.add_option('--file', '-f', type='string', dest='file', action='store',
