@@ -189,10 +189,7 @@ def cmd_parser():
             logger.error(f'Invalid protocol "{proxy_url.scheme}" of proxy, ignored')
             sys.exit(0)
         else:
-            constant.CONFIG['proxy'] = {
-                'http': args.proxy,
-                'https': args.proxy,
-            }
+            constant.CONFIG['proxy'] = args.proxy
             logger.info(f'Proxy now set to "{args.proxy}"')
             write_config()
             sys.exit(0)

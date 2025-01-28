@@ -31,7 +31,10 @@ def request(method, url, **kwargs):
     })
 
     if not kwargs.get('proxies', None):
-        kwargs['proxies'] = constant.CONFIG['proxy']
+        kwargs['proxies'] = {
+            'https': constant.CONFIG['proxy'],
+            'http': constant.CONFIG['proxy'],
+        }
 
     return getattr(session, method)(url, verify=False, **kwargs)
 
@@ -46,7 +49,7 @@ async def async_request(method, url, proxy = None, **kwargs):
     if proxy is None:
         proxy = constant.CONFIG['proxy']
 
-    if proxy is not None and proxy.get('http') == '' and proxy.get('https') == '':
+    if isinstance(proxy, (str, )) and not proxy:
         proxy = None
 
     async with httpx.AsyncClient(headers=headers, verify=False, proxy=proxy, **kwargs) as client:

@@ -28,8 +28,8 @@ def main():
     logger.info(f'Using mirror: {BASE_URL}')
 
     # CONFIG['proxy'] will be changed after cmd_parser()
-    if constant.CONFIG['proxy']['http']:
-        logger.info(f'Using proxy: {constant.CONFIG["proxy"]["http"]}')
+    if constant.CONFIG['proxy']:
+        logger.info(f'Using proxy: {constant.CONFIG["proxy"]}')
 
     if not constant.CONFIG['template']:
         constant.CONFIG['template'] = 'default'
