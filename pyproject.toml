@@ -19,6 +19,7 @@ urllib3 = "^1.26.20"
 httpx = "^0.28.1"
 
 
+chardet = "^5.2.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

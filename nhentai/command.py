@@ -4,10 +4,12 @@ import shutil
 import sys
 import signal
 import platform
+import urllib
+
 import urllib3.exceptions
 
 from nhentai import constant
-from nhentai.cmdline import cmd_parser, banner
+from nhentai.cmdline import cmd_parser, banner, write_config
 from nhentai.parser import doujinshi_parser, search_parser, legacy_search_parser, print_doujinshi, favorites_parser
 from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
@@ -29,6 +31,11 @@ def main():
 
     # CONFIG['proxy'] will be changed after cmd_parser()
     if constant.CONFIG['proxy']:
+        if isinstance(constant.CONFIG['proxy'], dict):
+            constant.CONFIG['proxy'] = constant.CONFIG['proxy'].get('http', '')
+            logger.warning(f'Update proxy config to: {constant.CONFIG["proxy"]}')
+            write_config()
+
         logger.info(f'Using proxy: {constant.CONFIG["proxy"]}')
 
     if not constant.CONFIG['template']:
