@@ -34,7 +34,8 @@ def download_callback(result):
 
 
 class Downloader(Singleton):
-    def __init__(self, path='', threads=5, timeout=30, delay=0, retry=3, exit_on_fail=False):
+    def __init__(self, path='', threads=5, timeout=30, delay=0, retry=3, exit_on_fail=False,
+                 no_filename_padding=False):
         self.threads = threads
         self.path = str(path)
         self.timeout = timeout
@@ -43,6 +44,7 @@ class Downloader(Singleton):
         self.exit_on_fail = exit_on_fail
         self.folder = None
         self.semaphore = None
+        self.no_filename_padding = no_filename_padding
 
     async def fiber(self, tasks):
         self.semaphore = asyncio.Semaphore(self.threads)
@@ -70,7 +72,11 @@ class Downloader(Singleton):
 
         filename = filename if filename else os.path.basename(urlparse(url).path)
         base_filename, extension = os.path.splitext(filename)
-        filename = base_filename.zfill(length) + extension
+
+        if not self.no_filename_padding:
+            filename = base_filename.zfill(length) + extension
+        else:
+            filename = base_filename + extension
 
         save_file_path = os.path.join(self.folder, filename)
 

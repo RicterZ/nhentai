@@ -109,6 +109,9 @@ def cmd_parser():
                       help='format the saved folder name', default='[%i][%a][%t]')
     parser.add_option('--dry-run', action='store_true', dest='dryrun', help='Dry run, skip file download')
 
+    parser.add_option('--no-filename-padding', action='store_true', dest='no_filename_padding',
+                      default=False, help='no padding in the images filename, such as \'001.jpg\'')
+
     # generate options
     parser.add_option('--html', dest='html_viewer', action='store_true',
                       help='generate a html viewer at current directory')

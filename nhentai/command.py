@@ -86,7 +86,8 @@ def main():
     if not options.is_show:
         downloader = Downloader(path=options.output_dir, threads=options.threads,
                                 timeout=options.timeout, delay=options.delay,
-                                retry=options.retry, exit_on_fail=options.exit_on_fail)
+                                retry=options.retry, exit_on_fail=options.exit_on_fail,
+                                no_filename_padding=options.no_filename_padding)
 
         for doujinshi_id in doujinshi_ids:
             doujinshi_info = doujinshi_parser(doujinshi_id)
