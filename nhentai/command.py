@@ -15,6 +15,7 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
+from nhentai.serializer import serialize_json
 from nhentai.utils import generate_html, generate_doc, generate_main_html, generate_metadata_file, \
     paging, check_cookie, signal_handler, DB, move_to_folder
 
@@ -114,6 +115,9 @@ def main():
 
             if not options.is_nohtml:
                 generate_html(options.output_dir, doujinshi, template=constant.CONFIG['template'])
+
+            if not options.no_metadata:
+                generate_doc('json', options.output_dir, doujinshi, options.regenerate)
 
             if options.is_cbz:
                 generate_doc('cbz', options.output_dir, doujinshi, options.regenerate)

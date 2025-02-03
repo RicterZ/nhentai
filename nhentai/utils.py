@@ -16,7 +16,7 @@ from requests.structures import CaseInsensitiveDict
 from nhentai import constant
 from nhentai.constant import PATH_SEPARATOR
 from nhentai.logger import logger
-from nhentai.serializer import serialize_json, serialize_comic_xml, set_js_database
+from nhentai.serializer import serialize_comic_xml, serialize_json, set_js_database
 
 MAX_FIELD_LENGTH = 100
 EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.webp')
@@ -142,7 +142,7 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
     js = readfile(f'viewer/{template}/scripts.js')
 
     if doujinshi_obj is not None:
-        serialize_json(doujinshi_obj, doujinshi_dir)
+        # serialize_json(doujinshi_obj, doujinshi_dir)
         name = doujinshi_obj.name
     else:
         name = {'title': 'nHentai HTML Viewer'}
@@ -273,6 +273,9 @@ def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, regenerate=Fa
 
         except ImportError:
             logger.error("Please install img2pdf package by using pip.")
+
+    elif file_type == 'json':
+        serialize_json(doujinshi_obj, doujinshi_dir)
 
 
 def format_filename(s, length=MAX_FIELD_LENGTH, _truncate_only=False):

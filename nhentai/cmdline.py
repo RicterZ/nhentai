@@ -131,6 +131,8 @@ def cmd_parser():
                       help='generate a metadata file in doujinshi format')
     parser.add_option('--regenerate', dest='regenerate', action='store_true', default=False,
                       help='regenerate the cbz or pdf file if exists')
+    parser.add_option('--no-metadata', dest='no_metadata', action='store_true', default=False,
+                      help='don\'t generate metadata json file in doujinshi output path')
 
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',

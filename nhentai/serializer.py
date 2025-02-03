@@ -2,12 +2,11 @@
 import json
 import os
 
-from nhentai.constant import PATH_SEPARATOR
+from nhentai.constant import PATH_SEPARATOR, LANGUAGE_ISO
 from xml.sax.saxutils import escape
-from nhentai.constant import LANGUAGE_ISO
 
 
-def serialize_json(doujinshi, output_dir):
+def serialize_json(doujinshi, output_dir: str):
     metadata = {'title': doujinshi.name,
                 'subtitle': doujinshi.info.subtitle}
     if doujinshi.info.favorite_counts:
