@@ -136,6 +136,8 @@ Format output doujinshi folder name:
 .. code-block:: bash
 
     nhentai --id 261100 --format '[%i]%s'
+    # for Windows
+    nhentai --id 261100 --format "[%%i]%%s"
 
 Supported doujinshi folder formatter:
 
@@ -148,6 +150,7 @@ Supported doujinshi folder formatter:
 - %p: Doujinshi pretty name
 - %ag: Doujinshi authors name or groups name
 
+Note: for Windows operation system, please use double "%", such as "%%i".
 
 Other options:
 
