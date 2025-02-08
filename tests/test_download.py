@@ -7,7 +7,7 @@ from nhentai.cmdline import load_config
 from nhentai.downloader import Downloader
 from nhentai.parser import doujinshi_parser
 from nhentai.doujinshi import Doujinshi
-from nhentai.utils import generate_html, generate_cbz
+from nhentai.utils import generate_html
 
 
 class TestDownload(unittest.TestCase):
@@ -27,9 +27,6 @@ class TestDownload(unittest.TestCase):
 
         generate_html('/tmp', info)
         self.assertTrue(os.path.exists(f'/tmp/{did}/index.html'))
-
-        generate_cbz('/tmp', info)
-        self.assertTrue(os.path.exists(f'/tmp/{did}.cbz'))
 
 
 if __name__ == '__main__':

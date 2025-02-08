@@ -9,3 +9,4 @@ output/
 venv/
 .vscode/
 test-output
+*.whl

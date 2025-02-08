@@ -1,8 +1,0 @@
-httpx==0.27.2
-requests
-soupsieve
-setuptools
-BeautifulSoup4
-tabulate
-iso8601
-urllib3

@@ -55,7 +55,7 @@ NHENTAI_CONFIG_FILE = os.path.join(NHENTAI_HOME, 'config.json')
 __api_suspended_DETAIL_URL = f'{BASE_URL}/api/gallery'
 
 CONFIG = {
-    'proxy': {'http': '', 'https': ''},
+    'proxy': '',
     'cookie': '',
     'language': '',
     'template': '',

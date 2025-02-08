@@ -16,7 +16,7 @@ from requests.structures import CaseInsensitiveDict
 from nhentai import constant
 from nhentai.constant import PATH_SEPARATOR
 from nhentai.logger import logger
-from nhentai.serializer import serialize_json, serialize_comic_xml, set_js_database
+from nhentai.serializer import serialize_comic_xml, serialize_json, set_js_database
 
 MAX_FIELD_LENGTH = 100
 EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.webp')
@@ -31,29 +31,28 @@ def request(method, url, **kwargs):
     })
 
     if not kwargs.get('proxies', None):
-        kwargs['proxies'] = constant.CONFIG['proxy']
+        kwargs['proxies'] = {
+            'https': constant.CONFIG['proxy'],
+            'http': constant.CONFIG['proxy'],
+        }
 
     return getattr(session, method)(url, verify=False, **kwargs)
 
 
-async def async_request(method, url, proxies = None, **kwargs):
+async def async_request(method, url, proxy = None, **kwargs):
     headers = {
         'Referer': constant.LOGIN_URL,
         'User-Agent': constant.CONFIG['useragent'],
         'Cookie': constant.CONFIG['cookie'],
     }
 
-    if proxies is None:
-        proxies = constant.CONFIG['proxy']
+    if proxy is None:
+        proxy = constant.CONFIG['proxy']
 
-    if proxies.get('http') == '' and proxies.get('https') == '':
-        proxies = None
+    if isinstance(proxy, (str, )) and not proxy:
+        proxy = None
 
-    if proxies:
-        _proxies = {f'{k}://': v for k, v in proxies.items() if v}
-        proxies = _proxies
-
-    async with httpx.AsyncClient(headers=headers, verify=False, proxies=proxies, **kwargs) as client:
+    async with httpx.AsyncClient(headers=headers, verify=False, proxy=proxy, **kwargs) as client:
         response = await client.request(method, url, **kwargs)
 
     return response
@@ -143,7 +142,7 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
     js = readfile(f'viewer/{template}/scripts.js')
 
     if doujinshi_obj is not None:
-        serialize_json(doujinshi_obj, doujinshi_dir)
+        # serialize_json(doujinshi_obj, doujinshi_dir)
         name = doujinshi_obj.name
     else:
         name = {'title': 'nHentai HTML Viewer'}
@@ -274,6 +273,9 @@ def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, regenerate=Fa
 
         except ImportError:
             logger.error("Please install img2pdf package by using pip.")
+
+    elif file_type == 'json':
+        serialize_json(doujinshi_obj, doujinshi_dir)
 
 
 def format_filename(s, length=MAX_FIELD_LENGTH, _truncate_only=False):

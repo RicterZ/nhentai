@@ -4,15 +4,18 @@ import shutil
 import sys
 import signal
 import platform
+import urllib
+
 import urllib3.exceptions
 
 from nhentai import constant
-from nhentai.cmdline import cmd_parser, banner
+from nhentai.cmdline import cmd_parser, banner, write_config
 from nhentai.parser import doujinshi_parser, search_parser, legacy_search_parser, print_doujinshi, favorites_parser
 from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
+from nhentai.serializer import serialize_json
 from nhentai.utils import generate_html, generate_doc, generate_main_html, generate_metadata_file, \
     paging, check_cookie, signal_handler, DB, move_to_folder
 
@@ -28,8 +31,13 @@ def main():
     logger.info(f'Using mirror: {BASE_URL}')
 
     # CONFIG['proxy'] will be changed after cmd_parser()
-    if constant.CONFIG['proxy']['http']:
-        logger.info(f'Using proxy: {constant.CONFIG["proxy"]["http"]}')
+    if constant.CONFIG['proxy']:
+        if isinstance(constant.CONFIG['proxy'], dict):
+            constant.CONFIG['proxy'] = constant.CONFIG['proxy'].get('http', '')
+            logger.warning(f'Update proxy config to: {constant.CONFIG["proxy"]}')
+            write_config()
+
+        logger.info(f'Using proxy: {constant.CONFIG["proxy"]}')
 
     if not constant.CONFIG['template']:
         constant.CONFIG['template'] = 'default'
@@ -78,7 +86,9 @@ def main():
 
     if not options.is_show:
         downloader = Downloader(path=options.output_dir, threads=options.threads,
-                                timeout=options.timeout, delay=options.delay)
+                                timeout=options.timeout, delay=options.delay,
+                                retry=options.retry, exit_on_fail=options.exit_on_fail,
+                                no_filename_padding=options.no_filename_padding)
 
         for doujinshi_id in doujinshi_ids:
             doujinshi_info = doujinshi_parser(doujinshi_id)
@@ -105,6 +115,9 @@ def main():
 
             if not options.is_nohtml:
                 generate_html(options.output_dir, doujinshi, template=constant.CONFIG['template'])
+
+            if not options.no_metadata:
+                generate_doc('json', options.output_dir, doujinshi, options.regenerate)
 
             if options.is_cbz:
                 generate_doc('cbz', options.output_dir, doujinshi, options.regenerate)

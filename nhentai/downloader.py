@@ -34,25 +34,31 @@ def download_callback(result):
 
 
 class Downloader(Singleton):
-    def __init__(self, path='', threads=5, timeout=30, delay=0):
+    def __init__(self, path='', threads=5, timeout=30, delay=0, retry=3, exit_on_fail=False,
+                 no_filename_padding=False):
         self.threads = threads
         self.path = str(path)
         self.timeout = timeout
         self.delay = delay
+        self.retry = retry
+        self.exit_on_fail = exit_on_fail
         self.folder = None
         self.semaphore = None
+        self.no_filename_padding = no_filename_padding
 
     async def fiber(self, tasks):
         self.semaphore = asyncio.Semaphore(self.threads)
         for completed_task in asyncio.as_completed(tasks):
             try:
                 result = await completed_task
-                if result[1]:
+                if result[0] > 0:
                     logger.info(f'{result[1]} download completed')
                 else:
-                    logger.warning(f'{result[1]} download failed, return value {result[0]}')
+                    raise Exception(f'{result[1]} download failed, return value {result[0]}')
             except Exception as e:
                 logger.error(f'An error occurred: {e}')
+                if self.exit_on_fail:
+                    raise Exception('User intends to exit on fail')
 
     async def _semaphore_download(self, *args, **kwargs):
         async with self.semaphore:
@@ -66,7 +72,11 @@ class Downloader(Singleton):
 
         filename = filename if filename else os.path.basename(urlparse(url).path)
         base_filename, extension = os.path.splitext(filename)
-        filename = base_filename.zfill(length) + extension
+
+        if not self.no_filename_padding:
+            filename = base_filename.zfill(length) + extension
+        else:
+            filename = base_filename + extension
 
         save_file_path = os.path.join(self.folder, filename)
 
@@ -75,7 +85,7 @@ class Downloader(Singleton):
                 logger.warning(f'Skipped download: {save_file_path} already exists')
                 return 1, url
 
-            response = await async_request('GET', url, timeout=self.timeout, proxies=proxy)
+            response = await async_request('GET', url, timeout=self.timeout, proxy=proxy)
 
             if response.status_code != 200:
                 path = urlparse(url).path
@@ -88,10 +98,10 @@ class Downloader(Singleton):
 
             if not await self.save(filename, response):
                 logger.error(f'Can not download image {url}')
-                return 1, url
+                return -1, url
 
         except (httpx.HTTPStatusError, httpx.TimeoutException, httpx.ConnectError) as e:
-            if retried < 3:
+            if retried < self.retry:
                 logger.warning(f'Download {filename} failed, retrying({retried + 1}) times...')
                 return await self.download(
                     url=url,
@@ -101,12 +111,12 @@ class Downloader(Singleton):
                     proxy=proxy,
                 )
             else:
-                logger.warning(f'Download {filename} failed with 3 times retried, skipped')
-                return 0, url
+                logger.warning(f'Download {filename} failed with {self.retry} times retried, skipped')
+                return -2, url
 
         except NHentaiImageNotExistException as e:
             os.remove(save_file_path)
-            return -1, url
+            return -3, url
 
         except Exception as e:
             import traceback
@@ -114,10 +124,10 @@ class Downloader(Singleton):
             logger.error(f"Exception type: {type(e)}")
             traceback.print_stack()
             logger.critical(str(e))
-            return 0, url
+            return -9, url
 
         except KeyboardInterrupt:
-            return -3, url
+            return -4, url
 
         return 1, url
 

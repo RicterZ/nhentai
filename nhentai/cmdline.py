@@ -97,6 +97,10 @@ def cmd_parser():
                       help='timeout for downloading doujinshi')
     parser.add_option('--delay', '-d', type='int', dest='delay', action='store', default=0,
                       help='slow down between downloading every doujinshi')
+    parser.add_option('--retry', type='int', dest='retry', action='store', default=3,
+                      help='retry times when downloading failed')
+    parser.add_option('--exit-on-fail', dest='exit_on_fail', action='store_true', default=False,
+                      help='exit on fail to prevent generating incomplete files')
     parser.add_option('--proxy', type='string', dest='proxy', action='store',
                       help='store a proxy, for example: -p "http://127.0.0.1:1080"')
     parser.add_option('--file', '-f', type='string', dest='file', action='store',
@@ -104,6 +108,9 @@ def cmd_parser():
     parser.add_option('--format', type='string', dest='name_format', action='store',
                       help='format the saved folder name', default='[%i][%a][%t]')
     parser.add_option('--dry-run', action='store_true', dest='dryrun', help='Dry run, skip file download')
+
+    parser.add_option('--no-filename-padding', action='store_true', dest='no_filename_padding',
+                      default=False, help='no padding in the images filename, such as \'001.jpg\'')
 
     # generate options
     parser.add_option('--html', dest='html_viewer', action='store_true',
@@ -124,6 +131,8 @@ def cmd_parser():
                       help='generate a metadata file in doujinshi format')
     parser.add_option('--regenerate', dest='regenerate', action='store_true', default=False,
                       help='regenerate the cbz or pdf file if exists')
+    parser.add_option('--no-metadata', dest='no_metadata', action='store_true', default=False,
+                      help='don\'t generate metadata json file in doujinshi output path')
 
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
@@ -185,10 +194,7 @@ def cmd_parser():
             logger.error(f'Invalid protocol "{proxy_url.scheme}" of proxy, ignored')
             sys.exit(0)
         else:
-            constant.CONFIG['proxy'] = {
-                'http': args.proxy,
-                'https': args.proxy,
-            }
+            constant.CONFIG['proxy'] = args.proxy
             logger.info(f'Proxy now set to "{args.proxy}"')
             write_config()
             sys.exit(0)
