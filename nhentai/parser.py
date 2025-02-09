@@ -95,8 +95,9 @@ def favorites_parser(page=None):
         logger.info(f'Getting doujinshi ids of page {page}')
 
         i = 0
-        while i < constant.RETRY_TIMES:
-            if i == 2:
+        while i <= constant.RETRY_TIMES + 1:
+            i += 1
+            if i > 3:
                 logger.error(f'Failed to get favorites at page {page} after 3 times retried, skipped')
                 break
 
@@ -104,14 +105,14 @@ def favorites_parser(page=None):
                 resp = request('get', f'{constant.FAV_URL}?page={page}').content
                 temp_result = _get_title_and_id(resp)
                 if not temp_result:
-                    i += 1
+                    logger.warning(f'Failed to get favorites at page {page}, retrying ({i} times) ...')
                     continue
                 else:
                     result.extend(temp_result)
                     break
 
             except Exception as e:
-                logger.warning(f'Error: {e}, retrying ({i} times)...')
+                logger.warning(f'Error: {e}, retrying ({i} times) ...')
 
     return result
 

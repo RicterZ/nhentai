@@ -171,21 +171,24 @@ def cmd_parser():
 
     # --- set config ---
     if args.cookie is not None:
-        constant.CONFIG['cookie'] = args.cookie
+        constant.CONFIG['cookie'] = args.cookie.strip()
         write_config()
         logger.info('Cookie saved.')
-        sys.exit(0)
-    elif args.useragent is not None:
-        constant.CONFIG['useragent'] = args.useragent
+
+    if args.useragent is not None:
+        constant.CONFIG['useragent'] = args.useragent.strip()
         write_config()
         logger.info('User-Agent saved.')
-        sys.exit(0)
-    elif args.language is not None:
+
+    if args.language is not None:
         constant.CONFIG['language'] = args.language
         write_config()
         logger.info(f'Default language now set to "{args.language}"')
-        sys.exit(0)
         # TODO: search without language
+
+    if any([args.cookie, args.useragent, args.language]):
+        sys.exit(0)
+    # -- end set config
 
     if args.proxy is not None:
         proxy_url = urlparse(args.proxy)

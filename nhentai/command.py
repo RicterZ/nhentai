@@ -4,10 +4,7 @@ import shutil
 import sys
 import signal
 import platform
-import urllib
-
 import urllib3.exceptions
-from requests import options
 
 from nhentai import constant
 from nhentai.cmdline import cmd_parser, banner, write_config
@@ -16,7 +13,6 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.serializer import serialize_json
 from nhentai.utils import generate_html, generate_doc, generate_main_html, generate_metadata_file, \
     paging, check_cookie, signal_handler, DB, move_to_folder
 
