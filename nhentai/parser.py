@@ -92,13 +92,26 @@ def favorites_parser(page=None):
         page_range_list = range(1, pages + 1)
 
     for page in page_range_list:
-        try:
-            logger.info(f'Getting doujinshi ids of page {page}')
-            resp = request('get', f'{constant.FAV_URL}?page={page}').content
+        logger.info(f'Getting doujinshi ids of page {page}')
 
-            result.extend(_get_title_and_id(resp))
-        except Exception as e:
-            logger.error(f'Error: {e}, continue')
+        i = 0
+        while i < constant.RETRY_TIMES:
+            if i == 2:
+                logger.error(f'Failed to get favorites at page {page} after 3 times retried, skipped')
+                break
+
+            try:
+                resp = request('get', f'{constant.FAV_URL}?page={page}').content
+                temp_result = _get_title_and_id(resp)
+                if not temp_result:
+                    i += 1
+                    continue
+                else:
+                    result.extend(temp_result)
+                    break
+
+            except Exception as e:
+                logger.warning(f'Error: {e}, retrying ({i} times)...')
 
     return result
 
@@ -261,7 +274,7 @@ def search_parser(keyword, sorting, page, is_page_all=False):
         i = 0
 
         logger.info(f'Searching doujinshis using keywords "{keyword}" on page {p}{total}')
-        while i < 3:
+        while i < constant.RETRY_TIMES:
             try:
                 url = request('get', url=constant.SEARCH_URL, params={'query': keyword,
                                                                       'page': p, 'sort': sorting}).url

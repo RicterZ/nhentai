@@ -34,13 +34,12 @@ def download_callback(result):
 
 
 class Downloader(Singleton):
-    def __init__(self, path='', threads=5, timeout=30, delay=0, retry=3, exit_on_fail=False,
+    def __init__(self, path='', threads=5, timeout=30, delay=0, exit_on_fail=False,
                  no_filename_padding=False):
         self.threads = threads
         self.path = str(path)
         self.timeout = timeout
         self.delay = delay
-        self.retry = retry
         self.exit_on_fail = exit_on_fail
         self.folder = None
         self.semaphore = None
@@ -101,7 +100,7 @@ class Downloader(Singleton):
                 return -1, url
 
         except (httpx.HTTPStatusError, httpx.TimeoutException, httpx.ConnectError) as e:
-            if retried < self.retry:
+            if retried < constant.RETRY_TIMES:
                 logger.warning(f'Download {filename} failed, retrying({retried + 1}) times...')
                 return await self.download(
                     url=url,
@@ -111,7 +110,7 @@ class Downloader(Singleton):
                     proxy=proxy,
                 )
             else:
-                logger.warning(f'Download {filename} failed with {self.retry} times retried, skipped')
+                logger.warning(f'Download {filename} failed with {constant.RETRY_TIMES} times retried, skipped')
                 return -2, url
 
         except NHentaiImageNotExistException as e:

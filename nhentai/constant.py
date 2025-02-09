@@ -37,6 +37,8 @@ FAV_URL = f'{BASE_URL}/favorites/'
 
 PATH_SEPARATOR = os.path.sep
 
+RETRY_TIMES = 3
+
 
 IMAGE_URL = f'{urlparse(BASE_URL).scheme}://i1.{urlparse(BASE_URL).hostname}/galleries'
 IMAGE_URL_MIRRORS = [
