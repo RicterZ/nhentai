@@ -10,7 +10,7 @@ from nhentai import constant
 from nhentai.cmdline import cmd_parser, banner, write_config
 from nhentai.parser import doujinshi_parser, search_parser, legacy_search_parser, print_doujinshi, favorites_parser
 from nhentai.doujinshi import Doujinshi
-from nhentai.downloader import Downloader
+from nhentai.downloader import Downloader, CompressedDownloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
 from nhentai.utils import generate_html, generate_doc, generate_main_html, generate_metadata, \
@@ -84,8 +84,11 @@ def main():
 
         doujinshi_ids = list(set(map(int, doujinshi_ids)) - set(data))
 
+    if options.zip:
+        options.is_nohtml = True
+        options.no_metadata = True
     if not options.is_show:
-        downloader = Downloader(path=options.output_dir, threads=options.threads,
+        downloader = (CompressedDownloader if options.zip else Downloader)(path=options.output_dir, threads=options.threads,
                                 timeout=options.timeout, delay=options.delay,
                                 exit_on_fail=options.exit_on_fail,
                                 no_filename_padding=options.no_filename_padding)
