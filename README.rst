@@ -22,7 +22,7 @@ From Github:
 
     git clone https://github.com/RicterZ/nhentai
     cd nhentai
-    python setup.py install
+    pip install --no-cache-dir .
 
 Build Docker container:
 
