@@ -111,8 +111,6 @@ def cmd_parser():
 
     parser.add_option('--no-filename-padding', action='store_true', dest='no_filename_padding',
                       default=False, help='no padding in the images filename, such as \'001.jpg\'')
-    parser.add_option('--only-meta', action='store_true', dest='only_meta', default=False,
-                      help='only download doujinshi metadata')
 
     # generate options
     parser.add_option('--html', dest='html_viewer', action='store_true',
