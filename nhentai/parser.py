@@ -167,7 +167,7 @@ def doujinshi_parser(id_, counter=0):
     #                   doujinshi_cover.a.img.attrs['data-src'])
 
     # fix cover.webp.webp
-    img_id = re.search(r'/galleries/(\d+)/cover(.webp)?\.\w+$', doujinshi_cover.a.img.attrs['data-src'])
+    img_id = re.search(r'/galleries/(\d+)/cover(\.webp|\.jpg|\.png)?\.\w+$', doujinshi_cover.a.img.attrs['data-src'])
 
     ext = []
     for i in html.find_all('div', attrs={'class': 'thumb-container'}):
