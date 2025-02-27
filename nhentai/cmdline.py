@@ -65,6 +65,8 @@ def cmd_parser():
     # operation options
     parser.add_option('--download', '-D', dest='is_download', action='store_true',
                       help='download doujinshi (for search results)')
+    parser.add_option('--no-download', dest='no_download', action='store_true', default=False,
+                      help='download doujinshi (for search results)')
     parser.add_option('--show', '-S', dest='is_show', action='store_true',
                       help='just show the doujinshi information')
 
@@ -107,7 +109,6 @@ def cmd_parser():
                       help='read gallery IDs from file.')
     parser.add_option('--format', type='string', dest='name_format', action='store',
                       help='format the saved folder name', default='[%i][%a][%t]')
-    parser.add_option('--dry-run', action='store_true', dest='dryrun', help='Dry run, skip file download')
 
     parser.add_option('--no-filename-padding', action='store_true', dest='no_filename_padding',
                       default=False, help='no padding in the images filename, such as \'001.jpg\'')
@@ -123,16 +124,19 @@ def cmd_parser():
                       help='generate Comic Book CBZ File')
     parser.add_option('--pdf', '-P', dest='is_pdf', action='store_true',
                       help='generate PDF file')
+
+    parser.add_option('--meta', dest='generate_metadata', action='store_true', default=False,
+                      help='generate a metadata file in doujinshi format')
+    parser.add_option('--update-meta', dest='update_metadata', action='store_true', default=False,
+                      help='update the metadata file of a doujinshi, update CBZ metadata if exists')
+
     parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
                       help='remove downloaded doujinshi dir when generated CBZ or PDF file')
     parser.add_option('--move-to-folder', dest='move_to_folder', action='store_true', default=False,
                       help='remove files in doujinshi dir then move new file to folder when generated CBZ or PDF file')
-    parser.add_option('--meta', dest='generate_metadata', action='store_true',
-                      help='generate a metadata file in doujinshi format')
+
     parser.add_option('--regenerate', dest='regenerate', action='store_true', default=False,
                       help='regenerate the cbz or pdf file if exists')
-    parser.add_option('--no-metadata', dest='no_metadata', action='store_true', default=False,
-                      help='don\'t generate metadata json file in doujinshi output path')
 
     # nhentai options
     parser.add_option('--cookie', type='str', dest='cookie', action='store',
@@ -239,10 +243,6 @@ def cmd_parser():
 
     elif args.threads > 15:
         logger.critical('Maximum number of used threads is 15')
-        sys.exit(1)
-
-    if args.dryrun and (args.is_cbz or args.is_pdf):
-        logger.critical('Cannot generate PDF or CBZ during dry-run')
         sys.exit(1)
 
     return args

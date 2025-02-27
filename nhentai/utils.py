@@ -11,12 +11,11 @@ import requests
 import sqlite3
 import urllib.parse
 from typing import Tuple
-from requests.structures import CaseInsensitiveDict
 
 from nhentai import constant
 from nhentai.constant import PATH_SEPARATOR
 from nhentai.logger import logger
-from nhentai.serializer import serialize_comic_xml, serialize_json, set_js_database
+from nhentai.serializer import serialize_comic_xml, serialize_json, serialize_info_txt, set_js_database
 
 MAX_FIELD_LENGTH = 100
 EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.webp')
@@ -105,15 +104,15 @@ def parse_doujinshi_obj(
         doujinshi_dir = os.path.join(output_dir, doujinshi_obj.filename)
         _filename = f'{doujinshi_obj.filename}.{file_type}'
 
-        if file_type == 'cbz':
-            serialize_comic_xml(doujinshi_obj, doujinshi_dir)
-
         if file_type == 'pdf':
             _filename = _filename.replace('/', '-')
 
         filename = os.path.join(output_dir, _filename)
     else:
         doujinshi_dir = f'.{PATH_SEPARATOR}'
+
+    if not os.path.exists(doujinshi_dir):
+        os.makedirs(doujinshi_dir)
 
     return doujinshi_dir, filename
 
@@ -235,8 +234,20 @@ def generate_main_html(output_dir=f'.{PATH_SEPARATOR}'):
         logger.warning(f'Writing Main Viewer failed ({e})')
 
 
-def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, regenerate=False):
+def generate_cbz(doujinshi_dir, filename):
+    file_list = os.listdir(doujinshi_dir)
+    file_list.sort()
 
+    logger.info(f'Writing CBZ file to path: {filename}')
+    with zipfile.ZipFile(filename, 'w') as cbz_pf:
+        for image in file_list:
+            image_path = os.path.join(doujinshi_dir, image)
+            cbz_pf.write(image_path, image)
+
+    logger.log(16, f'Comic Book CBZ file has been written to "{filename}"')
+
+
+def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, regenerate=False):
     doujinshi_dir, filename = parse_doujinshi_obj(output_dir, doujinshi_obj, file_type)
 
     if os.path.exists(f'{doujinshi_dir}.{file_type}') and not regenerate:
@@ -244,16 +255,9 @@ def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, regenerate=Fa
         return
 
     if file_type == 'cbz':
-        file_list = os.listdir(doujinshi_dir)
-        file_list.sort()
+        serialize_comic_xml(doujinshi_obj, doujinshi_dir)
+        generate_cbz(doujinshi_dir, filename)
 
-        logger.info(f'Writing CBZ file to path: {filename}')
-        with zipfile.ZipFile(filename, 'w') as cbz_pf:
-            for image in file_list:
-                image_path = os.path.join(doujinshi_dir, image)
-                cbz_pf.write(image_path, image)
-
-        logger.log(16, f'Comic Book CBZ file has been written to "{filename}"')
     elif file_type == 'pdf':
         try:
             import img2pdf
@@ -273,9 +277,16 @@ def generate_doc(file_type='', output_dir='.', doujinshi_obj=None, regenerate=Fa
 
         except ImportError:
             logger.error("Please install img2pdf package by using pip.")
+    else:
+        raise ValueError('invalid file type')
 
-    elif file_type == 'json':
-        serialize_json(doujinshi_obj, doujinshi_dir)
+
+def generate_metadata(output_dir, doujinshi_obj=None):
+    doujinshi_dir, filename = parse_doujinshi_obj(output_dir, doujinshi_obj, '')
+    serialize_json(doujinshi_obj, doujinshi_dir)
+    serialize_comic_xml(doujinshi_obj, doujinshi_dir)
+    serialize_info_txt(doujinshi_obj, doujinshi_dir)
+    logger.log(16, f'Metadata files have been written to "{doujinshi_dir}"')
 
 
 def format_filename(s, length=MAX_FIELD_LENGTH, _truncate_only=False):
@@ -330,29 +341,6 @@ def paging(page_string):
             page_list.append(int(i))
 
     return page_list
-
-
-def generate_metadata_file(output_dir, doujinshi_obj):
-
-    info_txt_path = os.path.join(output_dir, doujinshi_obj.filename, 'info.txt')
-
-    f = open(info_txt_path, 'w', encoding='utf-8')
-
-    fields = ['TITLE', 'ORIGINAL TITLE', 'AUTHOR', 'ARTIST', 'GROUPS', 'CIRCLE', 'SCANLATOR',
-              'TRANSLATOR', 'PUBLISHER', 'DESCRIPTION', 'STATUS', 'CHAPTERS', 'PAGES',
-              'TAGS',  'FAVORITE COUNTS', 'TYPE', 'LANGUAGE', 'RELEASED', 'READING DIRECTION', 'CHARACTERS',
-              'SERIES', 'PARODY', 'URL']
-
-    temp_dict = CaseInsensitiveDict(dict(doujinshi_obj.table))
-    for i in fields:
-        v = temp_dict.get(i)
-        v = temp_dict.get(f'{i}s') if v is None else v
-        v = doujinshi_obj.info.get(i.lower(), None) if v is None else v
-        v = doujinshi_obj.info.get(f'{i.lower()}s', "Unknown") if v is None else v
-        f.write(f'{i}: {v}\n')
-
-    f.close()
-    logger.log(16, f'Metadata Info has been written to "{info_txt_path}"')
 
 
 class DB(object):

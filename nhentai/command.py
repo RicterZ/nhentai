@@ -13,7 +13,7 @@ from nhentai.doujinshi import Doujinshi
 from nhentai.downloader import Downloader
 from nhentai.logger import logger
 from nhentai.constant import BASE_URL
-from nhentai.utils import generate_html, generate_doc, generate_main_html, generate_metadata_file, \
+from nhentai.utils import generate_html, generate_doc, generate_main_html, generate_metadata, \
     paging, check_cookie, signal_handler, DB, move_to_folder
 
 
@@ -97,17 +97,15 @@ def main():
             else:
                 continue
 
-            if not options.dryrun:
-                doujinshi.downloader = downloader
+            doujinshi.downloader = downloader
 
-                if doujinshi.check_if_need_download(options):
-                    doujinshi.download()
-                else:
-                    logger.info(f'Skip download doujinshi because a PDF/CBZ file exists of doujinshi {doujinshi.name}')
-                    continue
+            if doujinshi.check_if_need_download(options):
+                doujinshi.download()
+            else:
+                logger.info(f'Skip download doujinshi because a PDF/CBZ file exists of doujinshi {doujinshi.name}')
 
             if options.generate_metadata:
-                generate_metadata_file(options.output_dir, doujinshi)
+                generate_metadata(options.output_dir, doujinshi)
 
             if options.is_save_download_history:
                 with DB() as db:
@@ -115,9 +113,6 @@ def main():
 
             if not options.is_nohtml:
                 generate_html(options.output_dir, doujinshi, template=constant.CONFIG['template'])
-
-            if not options.no_metadata:
-                generate_doc('json', options.output_dir, doujinshi, options.regenerate)
 
             if options.is_cbz:
                 generate_doc('cbz', options.output_dir, doujinshi, options.regenerate)

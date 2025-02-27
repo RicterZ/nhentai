@@ -77,6 +77,9 @@ class Doujinshi(object):
         logger.info(f'Print doujinshi information of {self.id}\n{tabulate(self.table)}')
 
     def check_if_need_download(self, options):
+        if options.no_download:
+            return False
+
         base_path = os.path.join(self.downloader.path, self.filename)
 
         # regenerate, re-download
