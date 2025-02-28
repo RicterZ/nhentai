@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 from optparse import OptionParser
 
 from nhentai import __version__
-from nhentai.utils import generate_html, generate_main_html, DB
+from nhentai.utils import generate_html, generate_main_html, DB, EXTENSIONS
 from nhentai.logger import logger
 from nhentai.constant import PATH_SEPARATOR
 
@@ -114,8 +114,9 @@ def cmd_parser():
                       default=False, help='no padding in the images filename, such as \'001.jpg\'')
 
     # generate options
-    parser.add_option('--html', dest='html_viewer', action='store_true',
-                      help='generate a html viewer at current directory')
+    parser.add_option('--html', dest='html_viewer', action='store', default=None,
+                      help='generate an HTML viewer in the specified directory, or scan all subfolders'
+                           ' within the entire directory to generate the HTML viewer.')
     parser.add_option('--no-html', dest='is_nohtml', action='store_true',
                       help='don\'t generate HTML after downloading')
     parser.add_option('--gen-main', dest='main_viewer', action='store_true',
@@ -159,7 +160,26 @@ def cmd_parser():
     args, _ = parser.parse_args(sys.argv[1:])
 
     if args.html_viewer:
-        generate_html(template=constant.CONFIG['template'])
+        if not os.path.exists(args.html_viewer):
+            logger.error(f'Path \'{args.html_viewer}\' not exists')
+            sys.exit(1)
+
+        for root, dirs, files in os.walk(args.html_viewer):
+            if not dirs:
+                generate_html(output_dir=args.html_viewer, template=constant.CONFIG['template'])
+                sys.exit(0)
+
+            for dir_name in dirs:
+                # it will scan the entire subdirectories
+                doujinshi_dir = os.path.join(root, dir_name)
+                items = set(map(lambda s: os.path.splitext(s)[1], os.listdir(doujinshi_dir)))
+
+                # skip directory without any images
+                if items & set(EXTENSIONS):
+                    generate_html(output_dir=doujinshi_dir, template=constant.CONFIG['template'])
+
+            sys.exit(0)
+
         sys.exit(0)
 
     if args.main_viewer and not args.id and not args.keyword and not args.favorites:

@@ -109,6 +109,9 @@ def parse_doujinshi_obj(
 
         filename = os.path.join(output_dir, _filename)
     else:
+        if file_type == 'html':
+            return output_dir, 'index.html'
+
         doujinshi_dir = f'.{PATH_SEPARATOR}'
 
     if not os.path.exists(doujinshi_dir):
@@ -118,7 +121,7 @@ def parse_doujinshi_obj(
 
 
 def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
-    doujinshi_dir, filename = parse_doujinshi_obj(output_dir, doujinshi_obj, '.html')
+    doujinshi_dir, filename = parse_doujinshi_obj(output_dir, doujinshi_obj, 'html')
     image_html = ''
 
     if not os.path.exists(doujinshi_dir):
