@@ -144,7 +144,7 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
         # serialize_json(doujinshi_obj, doujinshi_dir)
         name = doujinshi_obj.name
     else:
-        name = {'title': 'nHentai HTML Viewer'}
+        name = 'nHentai HTML Viewer'
 
     data = html.format(TITLE=name, IMAGES=image_html, SCRIPTS=js, STYLES=css)
     try:
