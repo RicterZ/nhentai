@@ -80,9 +80,10 @@ def main():
 
     if options.is_save_download_history:
         with DB() as db:
-            data = map(int, db.get_all())
+            data = set(map(int, db.get_all()))
 
         doujinshi_ids = list(set(map(int, doujinshi_ids)) - set(data))
+        logger.info(f'New doujinshis account: {len(doujinshi_ids)}')
 
     if not options.is_show:
         downloader = Downloader(path=options.output_dir, threads=options.threads,
