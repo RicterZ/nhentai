@@ -6,7 +6,7 @@ import json
 import nhentai.constant as constant
 
 from urllib.parse import urlparse
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 from nhentai import __version__
 from nhentai.utils import generate_html, generate_main_html, DB, EXTENSIONS
@@ -57,108 +57,111 @@ def callback(option, _opt_str, _value, parser):
 def cmd_parser():
     load_config()
 
-    parser = OptionParser('\n  nhentai --search [keyword] --download'
-                          '\n  NHENTAI=https://nhentai-mirror-url/ nhentai --id [ID ...]'
-                          '\n  nhentai --file [filename]'
-                          '\n\nEnvironment Variable:\n'
-                          '  NHENTAI                 nhentai mirror url')
+    parser = ArgumentParser(
+        description='\n  nhentai --search [keyword] --download'
+                    '\n  NHENTAI=https://nhentai-mirror-url/ nhentai --id [ID ...]'
+                    '\n  nhentai --file [filename]'
+                    '\n\nEnvironment Variable:\n'
+                    '  NHENTAI                 nhentai mirror url'
+    )
+
     # operation options
-    parser.add_option('--download', '-D', dest='is_download', action='store_true',
-                      help='download doujinshi (for search results)')
-    parser.add_option('--no-download', dest='no_download', action='store_true', default=False,
-                      help='download doujinshi (for search results)')
-    parser.add_option('--show', '-S', dest='is_show', action='store_true',
-                      help='just show the doujinshi information')
+    parser.add_argument('--download', '-D', dest='is_download', action='store_true',
+                        help='download doujinshi (for search results)')
+    parser.add_argument('--no-download', dest='no_download', action='store_true', default=False,
+                        help='download doujinshi (for search results)')
+    parser.add_argument('--show', '-S', dest='is_show', action='store_true',
+                        help='just show the doujinshi information')
 
     # doujinshi options
-    parser.add_option('--id', dest='id', action='callback', callback=callback,
-                      help='doujinshi ids set, e.g. 167680 167681 167682')
-    parser.add_option('--search', '-s', type='string', dest='keyword', action='store',
-                      help='search doujinshi by keyword')
-    parser.add_option('--favorites', '-F', action='store_true', dest='favorites',
-                      help='list or download your favorites')
-    parser.add_option('--artist', '-a', action='store', dest='artist',
-                      help='list doujinshi by artist name')
+    parser.add_argument('--id', dest='id', nargs='+', type=int,
+                        help='doujinshi ids set, e.g. 167680 167681 167682')
+    parser.add_argument('--search', '-s', type=str, dest='keyword',
+                        help='search doujinshi by keyword')
+    parser.add_argument('--favorites', '-F', action='store_true', dest='favorites',
+                        help='list or download your favorites')
+    parser.add_argument('--artist', '-a', type=str, dest='artist',
+                        help='list doujinshi by artist name')
 
     # page options
-    parser.add_option('--page-all', dest='page_all', action='store_true', default=False,
-                      help='all search results')
-    parser.add_option('--page', '--page-range', type='string', dest='page', action='store',
-                      help='page number of search results. e.g. 1,2-5,14')
-    parser.add_option('--sorting', '--sort', dest='sorting', action='store', default='popular',
-                      help='sorting of doujinshi (recent / popular / popular-[today|week])',
-                      choices=['recent', 'popular', 'popular-today', 'popular-week', 'date'])
+    parser.add_argument('--page-all', dest='page_all', action='store_true', default=False,
+                        help='all search results')
+    parser.add_argument('--page', '--page-range', type=str, dest='page',
+                        help='page number of search results. e.g. 1,2-5,14')
+    parser.add_argument('--sorting', '--sort', dest='sorting', type=str, default='popular',
+                        help='sorting of doujinshi (recent / popular / popular-[today|week])',
+                        choices=['recent', 'popular', 'popular-today', 'popular-week', 'date'])
 
     # download options
-    parser.add_option('--output', '-o', type='string', dest='output_dir', action='store',
-                      default=f'.{PATH_SEPARATOR}',
-                      help='output dir')
-    parser.add_option('--threads', '-t', type='int', dest='threads', action='store', default=5,
-                      help='thread count for downloading doujinshi')
-    parser.add_option('--timeout', '-T', type='int', dest='timeout', action='store', default=30,
-                      help='timeout for downloading doujinshi')
-    parser.add_option('--delay', '-d', type='int', dest='delay', action='store', default=0,
-                      help='slow down between downloading every doujinshi')
-    parser.add_option('--retry', type='int', dest='retry', action='store', default=3,
-                      help='retry times when downloading failed')
-    parser.add_option('--exit-on-fail', dest='exit_on_fail', action='store_true', default=False,
-                      help='exit on fail to prevent generating incomplete files')
-    parser.add_option('--proxy', type='string', dest='proxy', action='store',
-                      help='store a proxy, for example: -p "http://127.0.0.1:1080"')
-    parser.add_option('--file', '-f', type='string', dest='file', action='store',
-                      help='read gallery IDs from file.')
-    parser.add_option('--format', type='string', dest='name_format', action='store',
-                      help='format the saved folder name', default='[%i][%a][%t]')
+    parser.add_argument('--output', '-o', type=str, dest='output_dir', default='.',
+                        help='output dir')
+    parser.add_argument('--threads', '-t', type=int, dest='threads', default=5,
+                        help='thread count for downloading doujinshi')
+    parser.add_argument('--timeout', '-T', type=int, dest='timeout', default=30,
+                        help='timeout for downloading doujinshi')
+    parser.add_argument('--delay', '-d', type=int, dest='delay', default=0,
+                        help='slow down between downloading every doujinshi')
+    parser.add_argument('--retry', type=int, dest='retry', default=3,
+                        help='retry times when downloading failed')
+    parser.add_argument('--exit-on-fail', dest='exit_on_fail', action='store_true', default=False,
+                        help='exit on fail to prevent generating incomplete files')
+    parser.add_argument('--proxy', type=str, dest='proxy',
+                        help='store a proxy, for example: -p "http://127.0.0.1:1080"')
+    parser.add_argument('--file', '-f', type=str, dest='file',
+                        help='read gallery IDs from file.')
+    parser.add_argument('--format', type=str, dest='name_format', default='[%i][%a][%t]',
+                        help='format the saved folder name')
 
-    parser.add_option('--no-filename-padding', action='store_true', dest='no_filename_padding',
-                      default=False, help='no padding in the images filename, such as \'001.jpg\'')
+    parser.add_argument('--no-filename-padding', action='store_true', dest='no_filename_padding',
+                        default=False, help='no padding in the images filename, such as \'001.jpg\'')
 
     # generate options
-    parser.add_option('--html', dest='html_viewer', action='store', default=None,
-                      help='generate an HTML viewer in the specified directory, or scan all subfolders'
-                           ' within the entire directory to generate the HTML viewer.')
-    parser.add_option('--no-html', dest='is_nohtml', action='store_true',
-                      help='don\'t generate HTML after downloading')
-    parser.add_option('--gen-main', dest='main_viewer', action='store_true',
-                      help='generate a main viewer contain all the doujin in the folder')
-    parser.add_option('--cbz', '-C', dest='is_cbz', action='store_true',
-                      help='generate Comic Book CBZ File')
-    parser.add_option('--pdf', '-P', dest='is_pdf', action='store_true',
-                      help='generate PDF file')
+    parser.add_argument('--html', dest='html_viewer', type=str, nargs='?', const='.',
+                        help='generate an HTML viewer in the specified directory, or scan all subfolders '
+                             'within the entire directory to generate the HTML viewer. By default, current '
+                             'working directory is used.')
+    parser.add_argument('--no-html', dest='is_nohtml', action='store_true',
+                        help='don\'t generate HTML after downloading')
+    parser.add_argument('--gen-main', dest='main_viewer', action='store_true',
+                        help='generate a main viewer contain all the doujin in the folder')
+    parser.add_argument('--cbz', '-C', dest='is_cbz', action='store_true',
+                        help='generate Comic Book CBZ File')
+    parser.add_argument('--pdf', '-P', dest='is_pdf', action='store_true',
+                        help='generate PDF file')
 
-    parser.add_option('--meta', dest='generate_metadata', action='store_true', default=False,
-                      help='generate a metadata file in doujinshi format')
-    parser.add_option('--update-meta', dest='update_metadata', action='store_true', default=False,
-                      help='update the metadata file of a doujinshi, update CBZ metadata if exists')
+    parser.add_argument('--meta', dest='generate_metadata', action='store_true', default=False,
+                        help='generate a metadata file in doujinshi format')
+    parser.add_argument('--update-meta', dest='update_metadata', action='store_true', default=False,
+                        help='update the metadata file of a doujinshi, update CBZ metadata if exists')
 
-    parser.add_option('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
-                      help='remove downloaded doujinshi dir when generated CBZ or PDF file')
-    parser.add_option('--move-to-folder', dest='move_to_folder', action='store_true', default=False,
-                      help='remove files in doujinshi dir then move new file to folder when generated CBZ or PDF file')
+    parser.add_argument('--rm-origin-dir', dest='rm_origin_dir', action='store_true', default=False,
+                        help='remove downloaded doujinshi dir when generated CBZ or PDF file')
+    parser.add_argument('--move-to-folder', dest='move_to_folder', action='store_true', default=False,
+                        help='remove files in doujinshi dir then move new file to folder when generated CBZ or PDF file')
 
-    parser.add_option('--regenerate', dest='regenerate', action='store_true', default=False,
-                      help='regenerate the cbz or pdf file if exists')
-    parser.add_option('--zip', action='store_true', help='Package into a single zip file')
+    parser.add_argument('--regenerate', dest='regenerate', action='store_true', default=False,
+                        help='regenerate the cbz or pdf file if exists')
+    parser.add_argument('--zip', action='store_true', help='Package into a single zip file')
 
     # nhentai options
-    parser.add_option('--cookie', type='str', dest='cookie', action='store',
-                      help='set cookie of nhentai to bypass Cloudflare captcha')
-    parser.add_option('--useragent', '--user-agent', type='str', dest='useragent', action='store',
-                      help='set useragent to bypass Cloudflare captcha')
-    parser.add_option('--language', type='str', dest='language', action='store',
-                      help='set default language to parse doujinshis')
-    parser.add_option('--clean-language', dest='clean_language', action='store_true', default=False,
-                      help='set DEFAULT as language to parse doujinshis')
-    parser.add_option('--save-download-history', dest='is_save_download_history', action='store_true',
-                      default=False, help='save downloaded doujinshis, whose will be skipped if you re-download them')
-    parser.add_option('--clean-download-history', action='store_true', default=False, dest='clean_download_history',
-                      help='clean download history')
-    parser.add_option('--template', dest='viewer_template', action='store',
-                      help='set viewer template', default='')
-    parser.add_option('--legacy', dest='legacy', action='store_true', default=False,
-                      help='use legacy searching method')
+    parser.add_argument('--cookie', type=str, dest='cookie',
+                        help='set cookie of nhentai to bypass Cloudflare captcha')
+    parser.add_argument('--useragent', '--user-agent', type=str, dest='useragent',
+                        help='set useragent to bypass Cloudflare captcha')
+    parser.add_argument('--language', type=str, dest='language',
+                        help='set default language to parse doujinshis')
+    parser.add_argument('--clean-language', dest='clean_language', action='store_true', default=False,
+                        help='set DEFAULT as language to parse doujinshis')
+    parser.add_argument('--save-download-history', dest='is_save_download_history', action='store_true',
+                        default=False, help='save downloaded doujinshis, whose will be skipped if you re-download them')
+    parser.add_argument('--clean-download-history', action='store_true', default=False, dest='clean_download_history',
+                        help='clean download history')
+    parser.add_argument('--template', dest='viewer_template', type=str, default='',
+                        help='set viewer template')
+    parser.add_argument('--legacy', dest='legacy', action='store_true', default=False,
+                        help='use legacy searching method')
 
-    args, _ = parser.parse_args(sys.argv[1:])
+    args = parser.parse_args()
 
     if args.html_viewer:
         if not os.path.exists(args.html_viewer):
