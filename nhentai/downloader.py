@@ -4,6 +4,8 @@ import os
 import asyncio
 import httpx
 import urllib3.exceptions
+import zipfile
+import io
 
 from urllib.parse import urlparse
 from nhentai import constant
@@ -12,11 +14,6 @@ from nhentai.utils import Singleton, async_request
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-
-class NHentaiImageNotExistException(Exception):
-    pass
-
 
 def download_callback(result):
     result, data = result
@@ -77,13 +74,7 @@ class Downloader(Singleton):
         else:
             filename = base_filename + extension
 
-        save_file_path = os.path.join(self.folder, filename)
-
         try:
-            if os.path.exists(save_file_path):
-                logger.warning(f'Skipped download: {save_file_path} already exists')
-                return 1, url
-
             response = await async_request('GET', url, timeout=self.timeout, proxy=proxy)
 
             if response.status_code != 200:
@@ -113,10 +104,6 @@ class Downloader(Singleton):
                 logger.warning(f'Download {filename} failed with {constant.RETRY_TIMES} times retried, skipped')
                 return -2, url
 
-        except NHentaiImageNotExistException as e:
-            os.remove(save_file_path)
-            return -3, url
-
         except Exception as e:
             import traceback
 
@@ -130,11 +117,11 @@ class Downloader(Singleton):
 
         return 1, url
 
-    async def save(self, save_file_path, response) -> bool:
+    async def save(self, filename, response) -> bool:
         if response is None:
             logger.error('Error: Response is None')
             return False
-        save_file_path = os.path.join(self.folder, save_file_path)
+        save_file_path = os.path.join(self.folder, filename)
         with open(save_file_path, 'wb') as f:
             if response is not None:
                 length = response.headers.get('content-length')
@@ -145,6 +132,14 @@ class Downloader(Singleton):
                         f.write(chunk)
         return True
 
+    def create_storage_object(self, folder:str):
+        if not os.path.exists(folder):
+            try:
+                os.makedirs(folder)
+            except EnvironmentError as e:
+                logger.critical(str(e))
+        self.folder:str = folder
+
     def start_download(self, queue, folder='') -> bool:
         if not isinstance(folder, (str,)):
             folder = str(folder)
@@ -153,12 +148,7 @@ class Downloader(Singleton):
             folder = os.path.join(self.path, folder)
 
         logger.info(f'Doujinshi will be saved at "{folder}"')
-        if not os.path.exists(folder):
-            try:
-                os.makedirs(folder)
-            except EnvironmentError as e:
-                logger.critical(str(e))
-        self.folder = folder
+        self.create_storage_object(folder)
 
         if os.getenv('DEBUG', None) == 'NODOWNLOAD':
             # Assuming we want to continue with rest of process.
@@ -175,3 +165,30 @@ class Downloader(Singleton):
         asyncio.run(self.fiber(coroutines))
 
         return True
+
+class CompressedDownloader(Downloader):
+    def create_storage_object(self, folder):
+        filename = f'{folder}.zip'
+        print(filename)
+        self.zipfile = zipfile.ZipFile(filename,'w')
+
+    async def save(self, filename, response) -> bool:
+        if response is None:
+            logger.error('Error: Response is None')
+            return False
+
+        image_data = io.BytesIO()
+        length = response.headers.get('content-length')
+        if length is None:
+            content = await response.read()
+            image_data.write(content)
+        else:
+            async for chunk in response.aiter_bytes(2048):
+                image_data.write(chunk)
+
+        image_data.seek(0)
+        self.zipfile.writestr(filename, image_data.read())
+        return True
+
+    def __del__(self):
+         self.zipfile.close()
