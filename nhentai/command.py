@@ -87,6 +87,7 @@ def main():
 
     if options.zip:
         options.is_nohtml = True
+
     if not options.is_show:
         downloader = (CompressedDownloader if options.zip else Downloader)(path=options.output_dir, threads=options.threads,
                                 timeout=options.timeout, delay=options.delay,

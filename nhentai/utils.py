@@ -1,5 +1,5 @@
 # coding: utf-8
-
+import json
 import sys
 import re
 import os
@@ -147,7 +147,13 @@ def generate_html(output_dir='.', doujinshi_obj=None, template='default'):
         # serialize_json(doujinshi_obj, doujinshi_dir)
         name = doujinshi_obj.name
     else:
-        name = 'nHentai HTML Viewer'
+        metadata_path = os.path.join(doujinshi_dir, "metadata.json")
+        if os.path.exists(metadata_path):
+            with open(metadata_path, 'r') as file:
+                doujinshi_info = json.loads(file.read())
+            name = doujinshi_info.get("title")
+        else:
+            name = 'nHentai HTML Viewer'
 
     data = html.format(TITLE=name, IMAGES=image_html, SCRIPTS=js, STYLES=css)
     try:
