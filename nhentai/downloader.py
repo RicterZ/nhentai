@@ -139,6 +139,7 @@ class Downloader(Singleton):
             except EnvironmentError as e:
                 logger.critical(str(e))
         self.folder:str = folder
+        self.close = lambda: None # Only available in class CompressedDownloader
 
     def start_download(self, queue, folder='') -> bool:
         if not isinstance(folder, (str,)):
@@ -164,6 +165,8 @@ class Downloader(Singleton):
         # Prevent coroutines infection
         asyncio.run(self.fiber(coroutines))
 
+        self.close()
+
         return True
 
 class CompressedDownloader(Downloader):
@@ -171,6 +174,7 @@ class CompressedDownloader(Downloader):
         filename = f'{folder}.zip'
         print(filename)
         self.zipfile = zipfile.ZipFile(filename,'w')
+        self.close = lambda: self.zipfile.close()
 
     async def save(self, filename, response) -> bool:
         if response is None:
@@ -189,6 +193,3 @@ class CompressedDownloader(Downloader):
         image_data.seek(0)
         self.zipfile.writestr(filename, image_data.read())
         return True
-
-    def __del__(self):
-         self.zipfile.close()
