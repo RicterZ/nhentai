@@ -20,14 +20,24 @@ from nhentai.serializer import serialize_comic_xml, serialize_json, serialize_in
 MAX_FIELD_LENGTH = 100
 EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.webp')
 
+def get_headers():
+    headers = {
+        'Referer': constant.LOGIN_URL
+    }
+
+    user_agent = constant.CONFIG.get('useragent')
+    if user_agent and user_agent.strip():
+        headers['User-Agent'] = user_agent
+
+    cookie = constant.CONFIG.get('cookie')
+    if cookie and cookie.strip():
+        headers['Cookie'] = cookie
+
+    return headers
 
 def request(method, url, **kwargs):
     session = requests.Session()
-    session.headers.update({
-        'Referer': constant.LOGIN_URL,
-        'User-Agent': constant.CONFIG['useragent'],
-        'Cookie': constant.CONFIG['cookie']
-    })
+    session.headers.update(get_headers())
 
     if not kwargs.get('proxies', None):
         kwargs['proxies'] = {
@@ -39,11 +49,7 @@ def request(method, url, **kwargs):
 
 
 async def async_request(method, url, proxy = None, **kwargs):
-    headers = {
-        'Referer': constant.LOGIN_URL,
-        'User-Agent': constant.CONFIG['useragent'],
-        'Cookie': constant.CONFIG['cookie'],
-    }
+    headers=get_headers()
 
     if proxy is None:
         proxy = constant.CONFIG['proxy']
